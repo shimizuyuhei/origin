@@ -3,29 +3,39 @@ package com.android.camp;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class SettingsActivity extends AppCompatActivity implements ServiceConnection {
+public class SettingsActivity extends AppCompatActivity implements ServiceConnection{
 
     private ListView deviceList;
     private TextView usageTextView;
@@ -33,16 +43,20 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     ArrayList<String> list;
     //ArrayAdapterオブジェクト生成
     private ArrayAdapter<String> adapter;
-
+    private SharedPreferences id_pref; //プリファレンス
     private SwitchCompat SettingsSwitch;
     private Intent BeaconGetIntent;
     private boolean serviceStart = false;
     Receiver myreceiver;
-
+    private int setidparse;
+    private int index;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+
+        id_pref = PreferenceManager.getDefaultSharedPreferences(this); //プリファレンスの取得
 
         setSupportActionBar((Toolbar) findViewById(R.id.settings_toolbar));
         ActionBar actionBar = getSupportActionBar();
@@ -51,6 +65,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
 
         deviceList = (ListView) findViewById(R.id.deviceList);
         usageTextView = (TextView) findViewById(R.id.usageTextView);
+
 
         //list設定
         list = new ArrayList<String>();
@@ -83,19 +98,74 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
             //Listクリック処理
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                int setid=0;
                 // save the target device
-                int setid = Integer.parseInt(list.get(position));
+                //int setid = Integer.parseInt(list.get(position));
                 //String setid = list.get(position);
+                try
+                {
+                    setid = Integer.parseInt(list.get(position));
+                } catch (Exception e) {
+                    String setidstr = list.get(position);
+                    String[] str = setidstr.split("/", 0);
+                    setid = Integer.valueOf(str[1]);
+                }
+
                 //Log.d("TEST",String.valueOf(setid));
 
-                BeaconGetIntent.putExtra("SETID",setid);
+               BeaconGetIntent.putExtra("SETID",setid);
                 bindService(BeaconGetIntent,SettingsActivity.this,0);
                 unbindService(SettingsActivity.this);
-
                 finish();
             }
         });
+        deviceList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //テキスト入力を受け付けるビューを作成します。
 
+                try
+                {
+                    setidparse = Integer.parseInt(list.get(position));
+                    index = position;
+
+                } catch (Exception e) {
+                    String setidstr = list.get(position);
+                    String[] str = setidstr.split("/", 0);
+                    setidparse = Integer.valueOf(str[1]);
+                    index = position;
+                }
+
+                final EditText editView = new EditText(SettingsActivity.this);
+                new AlertDialog.Builder(SettingsActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setTitle("ボードの表示名を変更します")
+                        //setViewにてビューを設定します。
+                        .setView(editView)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //入力した文字をトースト出力する
+                                list.remove(index);
+                                list.add(editView.getText().toString()+"/"+setidparse);
+
+                                //Adapterセット
+                                deviceList.setAdapter(adapter);
+                                Toast.makeText(SettingsActivity.this,
+                                        editView.getText().toString()+"に変更しました。",
+                                        Toast.LENGTH_LONG).show();
+                                SharedPreferences.Editor editor = id_pref.edit();
+                                editor.putString(String.valueOf(setidparse),editView.getText().toString());
+                                editor.commit();
+                            }
+                        })
+                        .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .show();
+                return true;
+            }
+        });
         //onServiceDisconnected(null);
 
         //Intent intent = getIntent();
@@ -198,12 +268,22 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
             Bundle bundle = intent.getExtras();
             Id = bundle.getInt("index");
             //Log.d("TEST",Integer.toString(Id));
-
             String setid = String.format("%d", Id);
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
 
-            if(list.indexOf(setid) == -1) {
-                list.add(setid);
+            String useId = pref.getString(setid,setid);
+            try
+            {
+                int i = Integer.parseInt(useId);
+                if(list.indexOf(useId) == -1) {
+                    list.add(useId);
+                }
+            } catch (Exception e) {
+                if(list.indexOf(useId+"/"+setid) == -1) {
+                    list.add(useId+"/"+setid);
             }
+            }
+
             //Adapterセット
             deviceList.setAdapter(adapter);
         }
