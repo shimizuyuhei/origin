@@ -25,8 +25,6 @@ import java.util.Arrays;
  * Created by USER on 2016/07/06.
  */
 public class CookingListActivity extends AppCompatActivity{
-
-
     private static final class CampMenu {
         public final String title;
         public final String caption;
@@ -68,6 +66,7 @@ public class CookingListActivity extends AppCompatActivity{
                 }else{
                     row = convertView;
                 }
+
                 CampMenu menu = menus[position];
                 ((TextView) row.findViewById(R.id.title)).setText(menu.title);
                 ((TextView) row.findViewById(R.id.caption)).setText(menu.caption);

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     tools:context="com.android.camp9.MainActivity"
-    android:background="@color/background_material_light">
+    android:background="@drawable/grass">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -17,11 +17,154 @@
         android:background="?attr/colorPrimary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
     </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_weight="3">
+
+    <ImageView
+        android:layout_width="226dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ladybug"
+        android:src="@drawable/good"
+        android:layout_weight="0.40" />
+    <LinearLayout    android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#e1ffffff"
+        android:gravity="center"
+        android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ボードを選択"
+                        android:id="@+id/textView4"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignStart="@+id/image_button_choice" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/image_button_choice"
+                        android:src="@drawable/board"
+                        android:scaleType="centerCrop"
+                        android:background="#00000000"
+                        android:layout_below="@+id/textView4"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal">
+
+                    </ImageButton>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="温度"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignRight="@+id/top_center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
+                    android:fontFamily="@string/abc_activitychooserview_choose_application"
+                    android:textColor="#ea3b3b"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/textView2"
+                    android:layout_below="@+id/textView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignLeft="@+id/top_center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="@dimen/abc_text_size_display_1_material"
+                    android:fontFamily="@string/abc_activitychooserview_choose_application" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="湿度"
+                    android:layout_below="@+id/textView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignLeft="@+id/top_center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
+                    android:fontFamily="@string/abc_activitychooserview_choose_application"
+                    android:textColor="#369f97"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/textView3"
+                    android:layout_below="@+id/textView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignLeft="@+id/top_center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="@dimen/abc_text_size_display_1_material"
+                    android:fontFamily="@string/abc_activitychooserview_choose_application" />
+                </LinearLayout>
+            </LinearLayout>
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#dcffffff"
+    android:layout_weight="2">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="体感：不快度"
+        android:id="@+id/textView"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#37419c"
+        android:textSize="@dimen/abc_text_size_display_1_material"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:layout_gravity="top|center"
+        android:text="コメント"
+        android:textSize="@dimen/abc_text_size_title_material"
+        android:id="@+id/text_comment"
+        android:gravity="top|center"
+        android:layout_weight="1">
+
+    </TextView>
+</LinearLayout>
 
     <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#7ac0f9fa">
+        android:background="#fec0f9fa"
+        android:layout_weight="1">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,22 +178,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center">>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/sunny"
-            android:layout_gravity="center_horizontal" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="晴れ"
-            android:layout_marginLeft="10dp" />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/sunny"
+                    android:layout_gravity="center_horizontal" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="晴れ"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,172 +201,42 @@
                 android:layout_marginLeft="0dp"
                 android:layout_weight="1"
                 android:layout_gravity="center">
-        <ImageView
-            android:layout_width="75dp"
-            android:layout_height="60dp"
-            android:src="@drawable/arrow"
-            android:layout_marginLeft="20dp" />
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/arrow"
+                    android:layout_marginLeft="20dp" />
             </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="0dp"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/cloudiness"
-                android:layout_marginLeft="10dp" />
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="曇り"
-                android:layout_gravity="center_horizontal" />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:layout_marginLeft="0dp"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/cloudiness"
+                    android:layout_marginLeft="10dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="曇り"
+                    android:layout_gravity="center_horizontal" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp"
-        android:id="@+id/relativelayout"
-        android:layout_weight="2">
-
-        <View android:id="@+id/top_center"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="体感：不快度"
-            android:id="@+id/textView"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="#37419c"
-            android:textSize="@dimen/abc_text_size_display_2_material"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
-    <TextView
-        android:layout_height="50dp"
-        android:layout_width="match_parent"
-        android:layout_gravity="top|center"
-        android:text="コメント"
-        android:textSize="@dimen/abc_select_dialog_padding_start_material"
-        android:id="@+id/text_comment"
-        android:gravity="top|center"
-        android:layout_weight="1">
-
-    </TextView>
-<LinearLayout android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <LinearLayout    android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="3">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="温度："
-            android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/top_center"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:textSize="@dimen/abc_text_size_display_1_material"
-            android:fontFamily="@string/abc_activitychooserview_choose_application"
-            android:textColor="#ea3b3b" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/textView2"
-                android:layout_below="@+id/textView"
-                android:layout_alignParentEnd="true"
-                android:layout_alignLeft="@+id/top_center"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:textSize="@dimen/abc_text_size_display_1_material"
-                android:fontFamily="@string/abc_activitychooserview_choose_application" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="湿度："
-            android:layout_below="@+id/textView"
-            android:layout_alignParentEnd="true"
-            android:layout_alignLeft="@+id/top_center"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:textSize="@dimen/abc_text_size_display_1_material"
-            android:fontFamily="@string/abc_activitychooserview_choose_application"
-            android:textColor="#369f97" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/textView3"
-                android:layout_below="@+id/textView"
-                android:layout_alignParentEnd="true"
-                android:layout_alignLeft="@+id/top_center"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:textSize="@dimen/abc_text_size_display_1_material"
-                android:fontFamily="@string/abc_activitychooserview_choose_application" />
-        </LinearLayout> </LinearLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp"
-        android:layout_weight="1">
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/image_button_choice"
-        android:src="@drawable/board"
-        android:scaleType="centerCrop"
-        android:background="#00000000"
-        android:layout_below="@+id/textView4"
-        android:layout_centerHorizontal="true">
-
-    </ImageButton>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ボードを選択"
-            android:id="@+id/textView4"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/image_button_choice" />
-    </RelativeLayout>
-
-</LinearLayout>
- <LinearLayout
+    <LinearLayout
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
-     android:orientation="vertical">
+     android:orientation="vertical"
+        android:layout_weight="1">
      <TextView
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:text="@string/main_content"
-         android:background="#7fe58b" />
+         android:background="#e0fde4" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -239,7 +252,8 @@
             android:layout_weight="1">
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="#e8ffffff">
 
 
 
@@ -273,7 +287,8 @@
 
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="#ebeeeb">
 
                 <ImageButton
                     android:id="@+id/image_button2"
@@ -309,7 +324,7 @@
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:orientation="vertical"
-                >
+                android:background="#e2ffffff">
                 <ImageButton
                     android:id="@+id/image_button3"
                     android:layout_width="wrap_content"

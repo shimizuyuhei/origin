@@ -41,6 +41,7 @@ public class BeaconGetService extends Service{
     private String comment ="コメント";
     private double di;  //discomfort index
     private String di_index="";
+    private int id=2;
 
     private int linkingID = 0;
     private static boolean gStarted = false;
@@ -235,6 +236,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("colorG",color[2]);
         actionIntent.putExtra("colorB",color[3]);
         actionIntent.putExtra("comment",comment);
+        actionIntent.putExtra("id",id);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 
@@ -253,6 +255,7 @@ public class BeaconGetService extends Service{
             color[1] = 100;
             color[2] = 100;
             color[3] = 255;
+            id=0;
             comment="寒いかも";
         }
         else if(di<65)
@@ -261,6 +264,7 @@ public class BeaconGetService extends Service{
             color[1] = 126;
             color[2] = 128;
             color[3] = 255;
+            id=1;
             comment="風邪を引かないように";
         }
         else if(di<70)
@@ -269,22 +273,25 @@ public class BeaconGetService extends Service{
             color[1] = 255;
             color[2] = 255;
             color[3] = 255;
+            id=2;
             comment="快適な環境です";
         }
         else if(di<75)
         {
-            moji ="暑く感じる";
+            moji ="ちょっと暑い";
             color[1] = 255;
             color[2] = 255;
             color[3] = 128;
+            id=3;
             comment="ちょっと暑いかも";
         }
         else if(di<80)
         {
-            moji ="暑い";
+            moji ="暑く感じる";
             color[1] = 255;
             color[2] = 64;
             color[3] = 64;
+            id=4;
             comment=
                     "こまめに水分補給しようね";
         }
@@ -294,6 +301,7 @@ public class BeaconGetService extends Service{
             color[1] = 255;
             color[2] = 0;
             color[3] = 0;
+            id=5;
             comment="涼しい日陰で休憩をとろう";
         }
 

@@ -15,15 +15,18 @@ import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,17 +40,20 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private Intent BeaconGetIntent;
     private Intent SettingsIntent;
     private Receiver myreceiver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         ImageButton imagebutton1= (ImageButton)findViewById(R.id.image_button1);
         ImageButton imagebutton2= (ImageButton)findViewById(R.id.image_button2);
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
+
+        WindowManager wm = getWindowManager();
+        final Display disp = wm.getDefaultDisplay();
+
+
         ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
@@ -188,7 +194,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         String[] text = new String[3];
         int[] color = new int[4];
         String comment="" ;
+        int id=2;
+        String[] draw_ladybug={"@drawable/cold",
+                               "@drawable/cool",
+                               "@drawable/good",
+                               "@drawable/warm",
+                               "@drawable/hot",
+                               "@drawable/veryhot"};
 
+
+        //  横幅のみ画面サイズに変更
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
@@ -200,20 +215,45 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             color[2] = bundle.getInt("colorG");
             color[3] = bundle.getInt("colorB");
             comment=bundle.getString("comment");
+            id=bundle.getInt("id");
 
             Log.d("TEST_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
-            RelativeLayout rl = (RelativeLayout) findViewById(R.id.relativelayout);
-            //rl.setBackgroundColor(Color.argb(color[0],color[1],color[2],color[3]));
 
             TextView t1 = (TextView) findViewById(R.id.textView);
             TextView t2 = (TextView) findViewById(R.id.textView2);
             TextView t3 = (TextView) findViewById(R.id.textView3);
             TextView tc = (TextView) findViewById(R.id.text_comment);
-            t1.setBackgroundColor(Color.argb(color[0],color[1],color[2],color[3]));
-            t1.setText("体感: "+text[0]);
+            t1.setText(text[0]);
             t2.setText(text[1]);
             t3.setText(text[2]);
             tc.setText(comment);
+
+            ImageView iv = (ImageView)findViewById(R.id.ladybug);
+            switch (id){
+                case 0:
+                        iv.setImageResource(R.drawable.cold);
+                        break;
+                case 1:
+                        iv.setImageResource(R.drawable.cool);
+                        break;
+                case 2:
+                        iv.setImageResource(R.drawable.good);
+                        break;
+                case 3:
+                        iv.setImageResource(R.drawable.warm);
+                        break;
+                case 4:
+                        iv.setImageResource(R.drawable.hot);
+                        break;
+                case 5:
+                        iv.setImageResource(R.drawable.veryhot);
+                        break;
+
+            }
+
+
+
+
         }
     }
 }
