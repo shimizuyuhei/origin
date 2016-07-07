@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -125,6 +126,7 @@ public class PreparationListActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+
         Log.d("TEST_MainActivity","onRestart");
     }
 
@@ -132,6 +134,8 @@ public class PreparationListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        ImageView im = (ImageView)findViewById(R.id.src) ;
+        im.setImageResource(R.drawable.gw_family);
         Log.d("TEST_MainActivity","onResume");
     }
 

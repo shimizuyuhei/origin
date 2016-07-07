@@ -252,29 +252,19 @@
             android:layout_weight="1">
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:background="#e8ffffff">
-
-
+                android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/image_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
-                android:src="@drawable/bag"
+                android:src="@drawable/bag_icon"
                 android:scaleType="centerCrop"
-                android:background="#00000000"
+                android:background="@null"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="準備編"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="@dimen/abc_text_size_menu_material" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -288,27 +278,20 @@
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:orientation="vertical"
-                android:background="#ebeeeb">
+                android:background="@null">
 
                 <ImageButton
                     android:id="@+id/image_button2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|center_horizontal"
-                    android:src="@drawable/cook"
+                    android:src="@drawable/cook_icon"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"
+                    android:background="@null"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="top|center_horizontal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="料理編"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignStart="@+id/image_button2"
-                    android:textSize="@dimen/abc_text_size_menu_material" />
             </LinearLayout>
 
 
@@ -324,7 +307,7 @@
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:orientation="vertical"
-                android:background="#e2ffffff">
+                >
                 <ImageButton
                     android:id="@+id/image_button3"
                     android:layout_width="wrap_content"
@@ -332,16 +315,10 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:src="@drawable/mount_warn"
                     android:scaleType="centerCrop"
-                    android:background="#00000000"
+                    android:background="@null"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true" />
-                <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="危険編"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                    android:textSize="@dimen/abc_text_size_menu_material" />
+
             </LinearLayout>
 
 

@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,6 +44,8 @@ public class CookingListActivity extends AppCompatActivity{
             new CampMenu("・キャンプ料理　アウトドアレシピ", "おすすめのアウトドア料理のレシピをまとめたページです。", "http://camphack.nap-camp.com/762"),
             new CampMenu("・キャンプ料理　ホイル焼き", "たき火で出来るホイル焼きレシピのページです。", "http://camphack.nap-camp.com/889"),
             new CampMenu("・キャンプ料理　煮込み料理", "キャンプにおすすめの煮込み料理のページです。", "http://camphack.nap-camp.com/945"),
+            new CampMenu("・キャンプ料理　初心者","料理初心者にも簡単な料理のページです。","http://marumarumaru.com/310.html"),
+            new CampMenu("・キャンプ料理　バーベキュー","バーベキューにおすすめな料理のページです。","http://park.ajinomoto.co.jp/recipe/corner/season/barbecue")
         };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +135,8 @@ public class CookingListActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        ImageView im = (ImageView)findViewById(R.id.src) ;
+        im.setImageResource(R.drawable.bbq);
         Log.d("TEST_MainActivity","onResume");
     }
 
