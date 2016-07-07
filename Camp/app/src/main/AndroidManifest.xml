@@ -42,6 +42,22 @@
         </activity>
 
         <activity
+            android:name=".CookingListActivity"
+            android:screenOrientation="portrait"
+            android:label="お役立ち情報 / 料理編">
+        </activity>
+        <activity
+            android:name=".DangerListActivity"
+            android:screenOrientation="portrait"
+            android:label="お役立ち情報 / 危険編">
+
+        </activity>
+        <activity
+            android:name=".PreparationListActivity"
+            android:screenOrientation="portrait"
+            android:label="お役立ち情報 / 準備編">
+        </activity>
+        <activity
             android:name=".WebViewActivity"
             android:configChanges="orientation|screenSize"/>
         <!-- 画面回転再起動阻止 -->

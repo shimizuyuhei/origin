@@ -5,7 +5,7 @@
 
     <string name="title_activity_settings">設定</string>
     <string name="menu_settings_enabled">有効</string>
-
+    <string name="main_content" >お役立ち情報</string>
     <string name="scan_usage">
         利用可能なLinkingデバイスを表示するには設定を有効にしてください。
     </string>

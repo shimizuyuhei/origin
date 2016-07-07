@@ -38,6 +38,7 @@ public class BeaconGetService extends Service{
     private String log="";
     private String[] Cosiness={"測定中","測定中","測定中"};
     private int[] color = {0,0,0,0};
+    private String comment ="コメント";
     private double di;  //discomfort index
     private String di_index="";
 
@@ -75,7 +76,11 @@ public class BeaconGetService extends Service{
                 if (detail == 0) {
                     state = "スキャン実行中";
                 } else {
-                    state = "エラーが発生しました：" + detail;
+                    if(detail==3) {
+                        state = "エラーが発生しました：\n" + "端末のブルートゥースをONにしてください";
+                    }else{
+                        state = "エラーが発生しました：" + detail;
+                    }
                 }
             } else {
                 if(detail == 0) {
@@ -128,10 +133,12 @@ public class BeaconGetService extends Service{
         color[1] = 0;
         color[2] = 0;
         color[3] = 0;
+        comment="コメント";
         actionIntent.putExtra("colorA",color[0]);
         actionIntent.putExtra("colorR",color[1]);
         actionIntent.putExtra("colorG",color[2]);
         actionIntent.putExtra("colorB",color[3]);
+        actionIntent.putExtra("comment",comment);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
     }
@@ -191,7 +198,7 @@ public class BeaconGetService extends Service{
 
         //時間
         //        String time = timeLogFormat(System.currentTimeMillis());
-
+        comment="";
         temp = beaconData.getTemperature();//取得
         humid = beaconData.getHumidity();//取得
 
@@ -227,6 +234,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("colorR",color[1]);
         actionIntent.putExtra("colorG",color[2]);
         actionIntent.putExtra("colorB",color[3]);
+        actionIntent.putExtra("comment",comment);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 
@@ -245,6 +253,7 @@ public class BeaconGetService extends Service{
             color[1] = 100;
             color[2] = 100;
             color[3] = 255;
+            comment="寒いかも";
         }
         else if(di<65)
         {
@@ -252,6 +261,7 @@ public class BeaconGetService extends Service{
             color[1] = 126;
             color[2] = 128;
             color[3] = 255;
+            comment="風邪を引かないように";
         }
         else if(di<70)
         {
@@ -259,6 +269,7 @@ public class BeaconGetService extends Service{
             color[1] = 255;
             color[2] = 255;
             color[3] = 255;
+            comment="快適な環境です";
         }
         else if(di<75)
         {
@@ -266,20 +277,24 @@ public class BeaconGetService extends Service{
             color[1] = 255;
             color[2] = 255;
             color[3] = 128;
+            comment="ちょっと暑いかも";
         }
         else if(di<80)
         {
-            moji ="注意";
+            moji ="暑い";
             color[1] = 255;
             color[2] = 64;
             color[3] = 64;
+            comment=
+                    "こまめに水分補給しようね";
         }
         else
         {
-            moji ="危険";
+            moji ="危険な暑さ";
             color[1] = 255;
             color[2] = 0;
             color[3] = 0;
+            comment="涼しい日陰で休憩をとろう";
         }
 
         return moji;
