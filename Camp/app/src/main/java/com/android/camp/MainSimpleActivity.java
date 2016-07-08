@@ -7,9 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
@@ -18,52 +15,44 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection {
+/**
+ * Created by USER on 2016/07/08.
+ */
+public class MainSimpleActivity extends AppCompatActivity implements ServiceConnection {
 
     private Intent BeaconGetIntent;
     private Intent SettingsIntent;
     private Receiver myreceiver;
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_second);
 
         ImageButton imagebutton1= (ImageButton)findViewById(R.id.image_button1);
         ImageButton imagebutton2= (ImageButton)findViewById(R.id.image_button2);
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
-
-        ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
-         LinearLayout l1=(LinearLayout)findViewById(R.id.weather_layout);
+        ImageView iv=(ImageView)findViewById(R.id.ladybug);
 
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
         BeaconGetIntent = new Intent(this, BeaconGetService.class);
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+
+        LinearLayout l2=(LinearLayout)findViewById(R.id.weather_layout2);
 
         //startService(BeaconGetIntent);
 
@@ -72,10 +61,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         intentfilter.addAction("action");
         registerReceiver(myreceiver, intentfilter);
 
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(SettingsIntent,RESULTCODE);
+            }
+
+        });
+
         imagebutton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CookingListActivity.class);
+                Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
                 // 次画面のアクティビティ起動
                 startActivity(intent);
             }
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         imagebutton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PreparationListActivity.class);
+                Intent intent = new Intent(MainSimpleActivity.this, PreparationListActivity.class);
                 // 次画面のアクティビティ起動
                 startActivity(intent);
             }
@@ -93,28 +90,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         imagebutton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DangerListActivity.class);
+                Intent intent = new Intent(MainSimpleActivity.this, DangerListActivity.class);
                 // 次画面のアクティビティ起動
                 startActivity(intent);
             }
 
         });
 
-        image_button_choice.setOnClickListener(new View.OnClickListener() {
+        l2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(SettingsIntent,RESULTCODE);
+
             }
 
         });
 
-         l1.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-
-             }
-
-         });
     }
 
     //onCreateの後
@@ -178,14 +168,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         switch (item.getItemId()) {
             case R.id.menu_main_settings:
 
-                //startActivityForResult(SettingsIntent,RESULTCODE);
+               // startActivityForResult(SettingsIntent,RESULTCODE);
                 return true;
             case R.id.menu_main_layout:
                 final String[] items = {"ポップ", "シンプル"};
-                int defaultItem = 0; // デフォルトでチェックされているアイテム
+                int defaultItem = 1; // デフォルトでチェックされているアイテム
                 final List<Integer> checkedItems = new ArrayList<>();
                 checkedItems.add(defaultItem);
-                new AlertDialog.Builder(MainActivity.this)
+                new AlertDialog.Builder(MainSimpleActivity.this)
                         .setTitle("デザインの変更")
                         .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
                             @Override
@@ -198,9 +188,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!checkedItems.isEmpty()) {
-                                   // Log.d("checkedItem:", "" + checkedItems.get(0));
-                                    if(checkedItems.get(0)==1){
-                                        Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
+                                    // Log.d("checkedItem:", "" + checkedItems.get(0));
+                                    if(checkedItems.get(0)==0){
+                                        Intent intent = new Intent(MainSimpleActivity.this, MainActivity.class);
                                         // 次画面のアクティビティ起動
                                         startActivity(intent);
                                         finish();
@@ -237,13 +227,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         int[] color = new int[4];
         String comment="" ;
         int id=2;
-        String[] draw_ladybug={"@drawable/cold",
-                "@drawable/cool",
-                "@drawable/good",
-                "@drawable/warm",
-                "@drawable/hot",
-                "@drawable/veryhot"};
-        String[] draw_ladybug2={"@drawable/cold2",
+        String[] draw_ladybug={"@drawable/cold2",
                 "@drawable/cool2",
                 "@drawable/good2",
                 "@drawable/warm2",
@@ -267,36 +251,35 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
             Log.d("TEST_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
 
-            TextView t1 = (TextView) findViewById(R.id.textView);
-            TextView t2 = (TextView) findViewById(R.id.textView2);
-            TextView t3 = (TextView) findViewById(R.id.textView3);
-            TextView tc = (TextView) findViewById(R.id.text_comment);
+            TextView t1 = (TextView)findViewById(R.id.textView);
+            TextView t2 = (TextView)findViewById(R.id.textView2);
+            TextView t3 = (TextView)findViewById(R.id.textView3);
+            TextView tc = (TextView)findViewById(R.id.text_comment);
             t1.setText(text[0]);
             t2.setText(text[1]);
             t3.setText(text[2]);
             tc.setText(comment);
 
             ImageView iv = (ImageView)findViewById(R.id.ladybug);
-
             switch (id){
                 case 0:
-                        iv.setImageResource(R.drawable.cold);
-                        break;
+                    iv.setImageResource(R.drawable.cold2);
+                    break;
                 case 1:
-                        iv.setImageResource(R.drawable.cool);
-                        break;
+                    iv.setImageResource(R.drawable.cool2);
+                    break;
                 case 2:
-                        iv.setImageResource(R.drawable.good);
-                        break;
+                    iv.setImageResource(R.drawable.good2);
+                    break;
                 case 3:
-                        iv.setImageResource(R.drawable.warm);
-                        break;
+                    iv.setImageResource(R.drawable.warm2);
+                    break;
                 case 4:
-                        iv.setImageResource(R.drawable.hot);
-                        break;
+                    iv.setImageResource(R.drawable.hot2);
+                    break;
                 case 5:
-                        iv.setImageResource(R.drawable.veryhot);
-                        break;
+                    iv.setImageResource(R.drawable.veryhot2);
+                    break;
 
             }
 
