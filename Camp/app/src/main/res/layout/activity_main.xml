@@ -172,7 +172,8 @@
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/abc_select_dialog_padding_start_material"
             android:layout_marginLeft="0dp"
-            android:layout_weight="2"/>
+            android:layout_weight="2"
+            android:id="@+id/PlaceWeather"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -187,12 +188,14 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/sunny"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/CurrentWeatherIcon"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="晴れ"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/CurrentWeather"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -205,7 +208,7 @@
                     android:layout_width="75dp"
                     android:layout_height="60dp"
                     android:src="@drawable/arrow"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -217,12 +220,14 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/cloudiness"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/FutureWeatherIcon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="曇り"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/FutureWeather"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

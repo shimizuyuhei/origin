@@ -1,45 +1,43 @@
 package com.android.camp;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.media.Image;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection {
+public class MainActivity extends AppCompatActivity implements ServiceConnection,LocationListener {
 
-    private Intent BeaconGetIntent;
     private Intent SettingsIntent;
     private Receiver myreceiver;
+
+    private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
@@ -51,14 +49,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
 
         WindowManager wm = getWindowManager();
-        final Display disp = wm.getDefaultDisplay();
 
+        // LocationManager インスタンス生成
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        //終了
 
         ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
-        BeaconGetIntent = new Intent(this, BeaconGetService.class);
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
 
         //startService(BeaconGetIntent);
@@ -105,6 +107,47 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         });
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+        }
+        else{
+            locationStart();
+        }
+
+    }
+
+    private void locationStart(){
+        Log.d("debug","locationStart()");
+
+        // LocationManager インスタンス生成
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            // GPSを設定するように促す
+            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(settingsIntent);
+            Log.d("debug", "gpsEnable, startActivity");
+        } else {
+            Log.d("debug", "gpsEnabled");
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+
+            Log.d("debug", "checkSelfPermission false");
+            return;
+        }
+        try{
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
+        }catch (Exception e) {
+
+        }
     }
 
     //onCreateの後
@@ -190,6 +233,32 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         _messenger = null;
     }
 
+    /*GPS設定*/
+    //取得
+    @Override
+    public void onLocationChanged(Location location) {
+        location.getLatitude();
+        Log.d("TEST",String.valueOf());
+        Log.d("TEST",String.valueOf(location.getLongitude()));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    /*GPS終了*/
+
     public class Receiver extends BroadcastReceiver {
         String[] text = new String[3];
         int[] color = new int[4];
@@ -250,9 +319,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         break;
 
             }
-
-
-
 
         }
     }
