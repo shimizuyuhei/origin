@@ -47,6 +47,10 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".MainSimpleActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity
             android:name=".CookingListActivity"

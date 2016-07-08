@@ -41,10 +41,10 @@ public class PreparationListActivity extends AppCompatActivity {
     }
 
     private static final CampMenu[] menus = {
-            new CampMenu("・事前準備", "蜂に刺された場合の対処を解説したページです。", "http://t-meister.jp/hachi/lab/sasaretara"),
-            new CampMenu("・子供と楽しむキャンプ", "ブヨに刺された場合の対処を解説したページです。", "http://kenkoucheck-navi.com/%E3%83%96%E3%83%A8%E3%81%AB%E5%88%BA%E3%81%95%E3%82%8C%E3%81%9F%E8%B7%A1%E3%81%AE%E5%87%A6%E7%BD%AE/"),
-       //     new CampMenu("・蛇　かまれた場合の対処", "蛇にかまれた場合の種類別対策ページです。", "http://www.asobon.net/c3/con5_4.html"),
-       //     new CampMenu("・キャンプお役立ち情報", "キャンプに役立つ情報です。", "http://google.com/")
+            new CampMenu("・事前準備", "必需品を紹介したぺージです。", "http://www.geocities.jp/hmrmyamada/camp/campdougu.html"),
+            new CampMenu("・事前準備(家族向け)", "家族でキャンプへ行くときの必需品を紹介したページです。", "http://www.sohappydays.net/archives/3257"),
+            new CampMenu("・持ち物チェックリスト", "持ち物チェックリストページです。", "http://www.ne.jp/asahi/kobe/yanase/camplist.htm"),
+            new CampMenu("・キャンプのマナー", "キャンプの心がけを紹介したページです。", "http://camphack.nap-camp.com/227")
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {

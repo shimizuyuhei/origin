@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"  >
+    android:layout_height="match_parent"
+    android:background="@drawable/grass">
     <android.support.v7.widget.Toolbar
         android:id="@+id/settings_toolbar"
         android:layout_height="wrap_content"
@@ -14,12 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
-        android:minHeight="60dp"
         android:divider="@color/abc_search_url_text_normal"
+        android:background="#81ffffff"
         />
     <ImageView
-      android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:background="@null"
         android:id="@+id/src"/>
 
 

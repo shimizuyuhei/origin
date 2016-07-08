@@ -15,6 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:navigationIcon="@drawable/campicon"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
     </android.support.v7.widget.Toolbar>
     <LinearLayout
@@ -32,7 +33,7 @@
     <LinearLayout    android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#e1ffffff"
+        android:background="#00ffffff"
         android:gravity="center"
         android:layout_weight="1">
 
@@ -63,9 +64,11 @@
                     </ImageButton>
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="#c9ffffff"
+                    android:layout_marginRight="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,10 +78,11 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
-                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
+                    android:textSize="@dimen/abc_dialog_padding_top_material"
                     android:fontFamily="@string/abc_activitychooserview_choose_application"
                     android:textColor="#ea3b3b"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -91,12 +95,15 @@
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
                     android:textSize="@dimen/abc_text_size_display_1_material"
-                    android:fontFamily="@string/abc_activitychooserview_choose_application" />
+                    android:fontFamily="@string/abc_activitychooserview_choose_application"
+                    android:layout_marginLeft="10dp" />
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="#c8ffffff"
+                    android:layout_marginRight="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -108,10 +115,11 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
-                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
+                    android:textSize="@dimen/abc_dialog_padding_top_material"
                     android:fontFamily="@string/abc_activitychooserview_choose_application"
                     android:textColor="#369f97"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -125,7 +133,8 @@
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
                     android:textSize="@dimen/abc_text_size_display_1_material"
-                    android:fontFamily="@string/abc_activitychooserview_choose_application" />
+                    android:fontFamily="@string/abc_activitychooserview_choose_application"
+                    android:layout_marginLeft="10dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -134,8 +143,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#dcffffff"
-    android:layout_weight="2">
+    android:background="#c8ffffff"
+    android:layout_weight="2"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -143,18 +154,20 @@
         android:id="@+id/textView"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#37419c"
-        android:textSize="@dimen/abc_text_size_display_1_material"
+        android:textSize="@dimen/abc_text_size_headline_material"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:layout_height="50dp"
         android:layout_width="match_parent"
-        android:layout_gravity="top|center"
+        android:layout_gravity="center_horizontal"
         android:text="コメント"
-        android:textSize="@dimen/abc_text_size_title_material"
+        android:textSize="@dimen/abc_text_size_medium_material"
         android:id="@+id/text_comment"
-        android:gravity="top|center"
+        android:gravity="center"
         android:layout_weight="1">
 
     </TextView>
@@ -164,13 +177,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fec0f9fa"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/weather_layout">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="○○周辺の天気"
+            android:text="GPSを\nONにしてください"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/abc_select_dialog_padding_start_material"
+            android:textSize="@dimen/abc_dialog_padding_top_material"
             android:layout_marginLeft="0dp"
             android:layout_weight="2"
             android:id="@+id/PlaceWeather"/>
@@ -196,12 +210,21 @@
                     android:text="晴れ"
                     android:layout_marginLeft="10dp"
                     android:id="@+id/CurrentWeather"/>
+=======
+                    android:src="@drawable/weather_null"
+                    android:layout_gravity="center_horizontal" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="なし"
+                    android:layout_marginLeft="10dp" />
+>>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="0dp"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:layout_gravity="center">
                 <ImageView
@@ -228,6 +251,15 @@
                     android:text="曇り"
                     android:layout_gravity="center_horizontal"
                     android:id="@+id/FutureWeather"/>
+=======
+                    android:src="@drawable/weather_null"
+                    android:layout_marginLeft="10dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="なし"
+                    android:layout_gravity="center_horizontal" />
+>>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -241,7 +273,7 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:text="@string/main_content"
-         android:background="#e0fde4" />
+         android:background="#d3d1ffd9" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

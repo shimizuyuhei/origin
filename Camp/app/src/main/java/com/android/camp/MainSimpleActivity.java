@@ -1,6 +1,5 @@
 package com.android.camp;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,83 +7,52 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
-<<<<<<< HEAD
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-=======
 import android.support.v7.app.AlertDialog;
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-<<<<<<< HEAD
-=======
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection,LocationListener {
+/**
+ * Created by USER on 2016/07/08.
+ */
+public class MainSimpleActivity extends AppCompatActivity implements ServiceConnection {
 
+    private Intent BeaconGetIntent;
     private Intent SettingsIntent;
     private Receiver myreceiver;
-<<<<<<< HEAD
-
-    private LocationManager locationManager;
-
     @Override
-=======
-     @Override
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_second);
 
         ImageButton imagebutton1= (ImageButton)findViewById(R.id.image_button1);
         ImageButton imagebutton2= (ImageButton)findViewById(R.id.image_button2);
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
-
-<<<<<<< HEAD
-        WindowManager wm = getWindowManager();
-
-        // LocationManager インスタンス生成
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        //終了
-
-=======
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
-        ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
-         LinearLayout l1=(LinearLayout)findViewById(R.id.weather_layout);
+        ImageView iv=(ImageView)findViewById(R.id.ladybug);
 
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
+        BeaconGetIntent = new Intent(this, BeaconGetService.class);
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+
+        LinearLayout l2=(LinearLayout)findViewById(R.id.weather_layout2);
 
         //startService(BeaconGetIntent);
 
@@ -93,10 +61,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         intentfilter.addAction("action");
         registerReceiver(myreceiver, intentfilter);
 
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(SettingsIntent,RESULTCODE);
+            }
+
+        });
+
         imagebutton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CookingListActivity.class);
+                Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
                 // 次画面のアクティビティ起動
                 startActivity(intent);
             }
@@ -105,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         imagebutton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PreparationListActivity.class);
+                Intent intent = new Intent(MainSimpleActivity.this, PreparationListActivity.class);
                 // 次画面のアクティビティ起動
                 startActivity(intent);
             }
@@ -114,72 +90,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         imagebutton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DangerListActivity.class);
+                Intent intent = new Intent(MainSimpleActivity.this, DangerListActivity.class);
                 // 次画面のアクティビティ起動
                 startActivity(intent);
             }
 
         });
 
-        image_button_choice.setOnClickListener(new View.OnClickListener() {
+        l2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(SettingsIntent,RESULTCODE);
+
             }
 
         });
 
-<<<<<<< HEAD
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-        }
-        else{
-            locationStart();
-        }
-
-    }
-
-    private void locationStart(){
-        Log.d("debug","locationStart()");
-
-        // LocationManager インスタンス生成
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled) {
-            // GPSを設定するように促す
-            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(settingsIntent);
-            Log.d("debug", "gpsEnable, startActivity");
-        } else {
-            Log.d("debug", "gpsEnabled");
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-
-            Log.d("debug", "checkSelfPermission false");
-            return;
-        }
-        try{
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
-        }catch (Exception e) {
-
-        }
-=======
-         l1.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-
-             }
-
-         });
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
     }
 
     //onCreateの後
@@ -243,14 +168,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         switch (item.getItemId()) {
             case R.id.menu_main_settings:
 
-                //startActivityForResult(SettingsIntent,RESULTCODE);
+               // startActivityForResult(SettingsIntent,RESULTCODE);
                 return true;
             case R.id.menu_main_layout:
                 final String[] items = {"ポップ", "シンプル"};
-                int defaultItem = 0; // デフォルトでチェックされているアイテム
+                int defaultItem = 1; // デフォルトでチェックされているアイテム
                 final List<Integer> checkedItems = new ArrayList<>();
                 checkedItems.add(defaultItem);
-                new AlertDialog.Builder(MainActivity.this)
+                new AlertDialog.Builder(MainSimpleActivity.this)
                         .setTitle("デザインの変更")
                         .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
                             @Override
@@ -263,9 +188,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!checkedItems.isEmpty()) {
-                                   // Log.d("checkedItem:", "" + checkedItems.get(0));
-                                    if(checkedItems.get(0)==1){
-                                        Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
+                                    // Log.d("checkedItem:", "" + checkedItems.get(0));
+                                    if(checkedItems.get(0)==0){
+                                        Intent intent = new Intent(MainSimpleActivity.this, MainActivity.class);
                                         // 次画面のアクティビティ起動
                                         startActivity(intent);
                                         finish();
@@ -297,44 +222,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         _messenger = null;
     }
 
-    /*GPS設定*/
-    //取得
-    @Override
-    public void onLocationChanged(Location location) {
-        location.getLatitude();
-        Log.d("TEST",String.valueOf());
-        Log.d("TEST",String.valueOf(location.getLongitude()));
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    /*GPS終了*/
-
     public class Receiver extends BroadcastReceiver {
         String[] text = new String[3];
         int[] color = new int[4];
         String comment="" ;
         int id=2;
-        String[] draw_ladybug={"@drawable/cold",
-                "@drawable/cool",
-                "@drawable/good",
-                "@drawable/warm",
-                "@drawable/hot",
-                "@drawable/veryhot"};
-        String[] draw_ladybug2={"@drawable/cold2",
+        String[] draw_ladybug={"@drawable/cold2",
                 "@drawable/cool2",
                 "@drawable/good2",
                 "@drawable/warm2",
@@ -358,38 +251,40 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
             Log.d("TEST_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
 
-            TextView t1 = (TextView) findViewById(R.id.textView);
-            TextView t2 = (TextView) findViewById(R.id.textView2);
-            TextView t3 = (TextView) findViewById(R.id.textView3);
-            TextView tc = (TextView) findViewById(R.id.text_comment);
+            TextView t1 = (TextView)findViewById(R.id.textView);
+            TextView t2 = (TextView)findViewById(R.id.textView2);
+            TextView t3 = (TextView)findViewById(R.id.textView3);
+            TextView tc = (TextView)findViewById(R.id.text_comment);
             t1.setText(text[0]);
             t2.setText(text[1]);
             t3.setText(text[2]);
             tc.setText(comment);
 
             ImageView iv = (ImageView)findViewById(R.id.ladybug);
-
             switch (id){
                 case 0:
-                        iv.setImageResource(R.drawable.cold);
-                        break;
+                    iv.setImageResource(R.drawable.cold2);
+                    break;
                 case 1:
-                        iv.setImageResource(R.drawable.cool);
-                        break;
+                    iv.setImageResource(R.drawable.cool2);
+                    break;
                 case 2:
-                        iv.setImageResource(R.drawable.good);
-                        break;
+                    iv.setImageResource(R.drawable.good2);
+                    break;
                 case 3:
-                        iv.setImageResource(R.drawable.warm);
-                        break;
+                    iv.setImageResource(R.drawable.warm2);
+                    break;
                 case 4:
-                        iv.setImageResource(R.drawable.hot);
-                        break;
+                    iv.setImageResource(R.drawable.hot2);
+                    break;
                 case 5:
-                        iv.setImageResource(R.drawable.veryhot);
-                        break;
+                    iv.setImageResource(R.drawable.veryhot2);
+                    break;
 
             }
+
+
+
 
         }
     }
