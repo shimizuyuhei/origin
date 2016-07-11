@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    tools:context="com.android.camp9.MainActivity"
+    tools:context="com.android.camp.MainActivity"
     android:background="@drawable/grass">
 
     <android.support.v7.widget.Toolbar
@@ -204,13 +204,6 @@
                     android:src="@drawable/sunny"
                     android:layout_gravity="center_horizontal"
                     android:id="@+id/CurrentWeatherIcon"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="晴れ"
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/CurrentWeather"/>
-=======
                     android:src="@drawable/weather_null"
                     android:layout_gravity="center_horizontal" />
                 <TextView
@@ -218,7 +211,7 @@
                     android:layout_height="wrap_content"
                     android:text="なし"
                     android:layout_marginLeft="10dp" />
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -242,24 +235,16 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/cloudiness"
                     android:layout_marginLeft="10dp"
-                    android:id="@+id/FutureWeatherIcon" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="曇り"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/FutureWeather"/>
-=======
+                    android:id="@+id/FutureWeatherIcon"
                     android:src="@drawable/weather_null"
-                    android:layout_marginLeft="10dp" />
+                    />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="なし"
                     android:layout_gravity="center_horizontal" />
->>>>>>> 212ca59d194f8d8b11619d100f21ecb6bfebd990
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -357,8 +342,6 @@
                     android:layout_centerHorizontal="true" />
 
             </LinearLayout>
-
-
         </LinearLayout>
 
     </LinearLayout>

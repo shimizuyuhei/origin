@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    tools:context="com.android.camp9.MainActivity"
+    tools:context="com.android.camp.MainActivity"
     android:background="@drawable/grass">
 
     <android.support.v7.widget.Toolbar
