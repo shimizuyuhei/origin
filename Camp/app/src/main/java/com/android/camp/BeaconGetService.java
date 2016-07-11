@@ -36,9 +36,9 @@ public class BeaconGetService extends Service{
     NotificationCompat.Builder THbuilder;
 
     private String log="";
-    private String[] Cosiness={"測定中","測定中","測定中"};
+    private String[] Cosiness={null,null,null};
     private int[] color = {0,0,0,0};
-    private String comment ="コメント";
+    private String comment =null;
     private double di;  //discomfort index
     private String di_index="";
     private int id=2;
@@ -124,9 +124,9 @@ public class BeaconGetService extends Service{
         gStarted = false;
         unregisterReceiver(mReceiver);
 
-        Cosiness[0] = "不快度";
-        Cosiness[1] = "温度";
-        Cosiness[2] = "湿度";
+        Cosiness[0] = "";
+        Cosiness[1] = "";
+        Cosiness[2] = "";
         actionIntent.putExtra("index1",Cosiness[0]);
         actionIntent.putExtra("index2",Cosiness[1]);
         actionIntent.putExtra("index3",Cosiness[2]);
@@ -134,7 +134,7 @@ public class BeaconGetService extends Service{
         color[1] = 0;
         color[2] = 0;
         color[3] = 0;
-        comment="コメント";
+        comment=null;
         actionIntent.putExtra("colorA",color[0]);
         actionIntent.putExtra("colorR",color[1]);
         actionIntent.putExtra("colorG",color[2]);
@@ -205,12 +205,12 @@ public class BeaconGetService extends Service{
 
         if(temp != null){
             temp_s = temp;
-            Cosiness[1] = String.format("%.2f℃",temp_s);
+            Cosiness[1] = String.format("%.2f",temp_s);
             Log.d("temparature", String.format("temp: %f", temp));
         }
         if(humid != null) {
             humid_s = humid;
-            Cosiness[2] = String.format("%.2f%%",humid_s);
+            Cosiness[2] = String.format("%.2f",humid_s);
             Log.d("humidity", String.format("humid: %f", humid));
         }
         if(temp_s == 0 || humid_s == 0){
@@ -223,8 +223,8 @@ public class BeaconGetService extends Service{
 
             log = String.format("%s \n 気温:%.2f,湿度:%.2f", di_index, temp_s, humid_s);
             Cosiness[0] = di_index;
-            Cosiness[1] = String.format("%.2f℃", temp_s);
-            Cosiness[2] = String.format("%.2f%%", humid_s);
+            Cosiness[1] = String.format("%.2f", temp_s);
+            Cosiness[2] = String.format("%.2f", humid_s);
         }
         THbuilder.setContentText(log);
 
@@ -246,7 +246,7 @@ public class BeaconGetService extends Service{
     //static用意
     private   String  di_to_diindex(double di)
     {
-        String moji ="";
+        String moji =null;
         color[0] = 200;
 
         if(di <60)
@@ -423,9 +423,9 @@ public class BeaconGetService extends Service{
         linkingID = intent.getIntExtra("SETID",0);
         Log.d("TEST_BeaconGetService",String.format("%s",linkingID));
 
-        Cosiness[0] = "測定中";
-        Cosiness[1] = "℃";
-        Cosiness[2] = "％";
+        Cosiness[0] =null;
+        Cosiness[1] = null;
+        Cosiness[2] = null;
         actionIntent.putExtra("index1",Cosiness[0]);
         actionIntent.putExtra("index2",Cosiness[1]);
         actionIntent.putExtra("index3",Cosiness[2]);

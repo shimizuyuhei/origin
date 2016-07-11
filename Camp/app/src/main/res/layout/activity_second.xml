@@ -104,7 +104,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
-                    android:textSize="@dimen/abc_text_size_display_1_material"
+                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
                     android:fontFamily="@string/abc_activitychooserview_choose_application" />
             </LinearLayout>
             <LinearLayout
@@ -139,7 +139,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
-                    android:textSize="@dimen/abc_text_size_display_1_material"
+                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
                     android:fontFamily="@string/abc_activitychooserview_choose_application" />
             </LinearLayout>
 
@@ -155,7 +155,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GPSを\nONにして下さい"
+                android:text="新宿周辺の天気"
                 android:layout_gravity="center_horizontal"
                 android:textSize="@dimen/abc_action_bar_icon_vertical_padding_material"
                 android:layout_marginLeft="0dp"
@@ -174,12 +174,12 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/weather_null"
+                        android:src="@drawable/sunny"
                         android:layout_gravity="center_horizontal" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="なし"
+                        android:text="晴れ"
                         android:layout_marginLeft="10dp" />
                 </LinearLayout>
                 <LinearLayout
@@ -204,12 +204,12 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/weather_null"
+                        android:src="@drawable/cloudiness"
                         android:layout_marginLeft="10dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="なし"
+                        android:text="くもり"
                         android:layout_gravity="center_horizontal" />
                 </LinearLayout>
             </LinearLayout>

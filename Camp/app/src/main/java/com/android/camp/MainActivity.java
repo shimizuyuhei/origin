@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,8 +32,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import org.w3c.dom.Text;
 
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private Intent BeaconGetIntent;
     private Intent SettingsIntent;
     private Receiver myreceiver;
+
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
@@ -56,11 +62,15 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         ImageButton imagebutton2= (ImageButton)findViewById(R.id.image_button2);
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
 
+
         ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
          LinearLayout l1=(LinearLayout)findViewById(R.id.weather_layout);
 
+         ImageView iv = (ImageView)findViewById(R.id.ladybug);
+        TextView comment=(TextView)findViewById(R.id.text_comment);
+         comment.setText("ボードを選択してください");
 
-        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+           setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
         BeaconGetIntent = new Intent(this, BeaconGetService.class);
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -103,18 +113,24 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         image_button_choice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
+                ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
+                ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
+                ImageView gifView4 = (ImageView) findViewById(R.id.gifView4);
+
+                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(gifView1);
+                Glide.with(MainActivity.this).load(R.raw.loading).into(target1);
+                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(gifView2);
+                Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
+                GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(gifView3);
+                Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
+                GlideDrawableImageViewTarget target4 = new GlideDrawableImageViewTarget(gifView4);
+                Glide.with(MainActivity.this).load(R.raw.loading).into(target4);
                 startActivityForResult(SettingsIntent,RESULTCODE);
             }
 
         });
 
-         l1.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-
-             }
-
-         });
     }
 
     //onCreateの後
@@ -190,28 +206,19 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                checkedItems.clear();
-                                checkedItems.add(which);
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (!checkedItems.isEmpty()) {
-                                   // Log.d("checkedItem:", "" + checkedItems.get(0));
-                                    if(checkedItems.get(0)==1){
-                                        Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
-                                        // 次画面のアクティビティ起動
-                                        startActivity(intent);
-                                        finish();
-                                    }else{
+                           //     checkedItems.clear();
+                             //   checkedItems.add(which);
+                                if(checkedItems.get(0)==1){
+                                    Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
+                                    // 次画面のアクティビティ起動
+                                    startActivity(intent);
+                                    finish();
+                                }else{
 
-                                    }
                                 }
                             }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
+
+                        }) .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -224,6 +231,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d("TEST_MainActivity","onServiceConnected");
         _messenger = new Messenger(service);
+        TextView comment=(TextView)findViewById(R.id.text_comment);
+        comment.setText("");
     }
 
     @Override
@@ -266,18 +275,47 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             id=bundle.getInt("id");
 
             Log.d("TEST_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
+            Log.d("aAAAAA_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));
 
             TextView t1 = (TextView) findViewById(R.id.textView);
             TextView t2 = (TextView) findViewById(R.id.textView2);
             TextView t3 = (TextView) findViewById(R.id.textView3);
             TextView tc = (TextView) findViewById(R.id.text_comment);
-            t1.setText(text[0]);
-            t2.setText(text[1]);
-            t3.setText(text[2]);
-            tc.setText(comment);
+
+
+            ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
+            ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
+            ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
+            ImageView gifView4 = (ImageView) findViewById(R.id.gifView4);
+
+            if(text[0]==null){
+                gifView3.setVisibility(View.VISIBLE);
+                tc.setText("");
+                gifView4.setVisibility(View.VISIBLE);
+            }else{
+                t1.setText("不快度:"+text[0]);
+                gifView3.setVisibility(View.INVISIBLE);
+
+                tc.setText(comment);
+                gifView4.setVisibility(View.INVISIBLE);
+            }
+            if(text[1]==null){
+                gifView1.setVisibility(View.VISIBLE);
+                t2.setText("");
+            }else{
+                gifView1.setVisibility(View.INVISIBLE);
+                t2.setText(text[1]+"℃");
+            }
+            if(text[2]==null){
+                gifView2.setVisibility(View.VISIBLE);
+                t3.setText("");
+            }else{
+                gifView2.setVisibility(View.INVISIBLE);
+
+                t3.setText(text[2]+"％");
+            }
 
             ImageView iv = (ImageView)findViewById(R.id.ladybug);
-
             switch (id){
                 case 0:
                         iv.setImageResource(R.drawable.cold);

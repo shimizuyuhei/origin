@@ -182,25 +182,17 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                             public void onClick(DialogInterface dialog, int which) {
                                 checkedItems.clear();
                                 checkedItems.add(which);
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (!checkedItems.isEmpty()) {
-                                    // Log.d("checkedItem:", "" + checkedItems.get(0));
-                                    if(checkedItems.get(0)==0){
-                                        Intent intent = new Intent(MainSimpleActivity.this, MainActivity.class);
-                                        // 次画面のアクティビティ起動
-                                        startActivity(intent);
-                                        finish();
-                                    }else{
+                                if(checkedItems.get(0)==0){
+                                    Intent intent = new Intent(MainSimpleActivity.this, MainActivity.class);
+                                    // 次画面のアクティビティ起動
+                                    startActivity(intent);
+                                    finish();
+                                }else{
 
-                                    }
                                 }
                             }
+
                         })
-                        .setNegativeButton("Cancel", null)
                         .show();
                 return true;
             default:
