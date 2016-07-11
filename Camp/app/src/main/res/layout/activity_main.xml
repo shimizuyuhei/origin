@@ -201,16 +201,15 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/sunny"
                     android:layout_gravity="center_horizontal"
-                    android:id="@+id/CurrentWeatherIcon"/>
-                    android:src="@drawable/weather_null"
-                    android:layout_gravity="center_horizontal" />
+                    android:id="@+id/CurrentWeatherIcon"
+                    android:src="@drawable/weather_null" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="なし"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/CurrentWeatherText"/>
 
             </LinearLayout>
             <LinearLayout
@@ -237,14 +236,14 @@
                     android:layout_height="50dp"
                     android:layout_marginLeft="10dp"
                     android:id="@+id/FutureWeatherIcon"
-                    android:src="@drawable/weather_null"
-                    />
+                    android:src="@drawable/weather_null" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="なし"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/FutureWeatherText"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

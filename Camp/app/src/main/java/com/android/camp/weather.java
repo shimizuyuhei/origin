@@ -1,14 +1,22 @@
 package com.android.camp;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by shimizu.yuhei on 2016/07/07.
  */
-public class weather {
+public class Weather {
     public HashMap<String,String> weathermap = new HashMap<String,String>();
+    public HashMap<String,String> weathericon = new HashMap<String,String>();
 
-    public void weather()
+    public void Weather()
     {
         weathermap.put("200","小雨と雷雨");
         weathermap.put("201","雨と雷雨");
@@ -77,5 +85,67 @@ public class weather {
         weathermap.put("904","暑い");
         weathermap.put("905","風が強い");
         weathermap.put("906","雹");
+
+        weathericon.put("01d", String.valueOf(R.drawable.sunny));
+        weathericon.put("02d",String.valueOf(R.drawable.partlycloudy));
+        weathericon.put("03d",String.valueOf(R.drawable.cloudiness));
+        weathericon.put("04d",String.valueOf(R.drawable.cloudiness));
+        weathericon.put("09d",String.valueOf(R.drawable.partryrainy));
+        weathericon.put("10d",String.valueOf(R.drawable.rain));
+        weathericon.put("11d",String.valueOf(R.drawable.thunder));
+        weathericon.put("13d",String.valueOf(R.drawable.snow));
+        weathericon.put("50d",String.valueOf(R.drawable.mist));
+        weathericon.put("01n",String.valueOf(R.drawable.sunny));
+        weathericon.put("02n",String.valueOf(R.drawable.partlycloudy));
+        weathericon.put("03n",String.valueOf(R.drawable.cloudiness));
+        weathericon.put("04n",String.valueOf(R.drawable.cloudiness));
+        weathericon.put("09n",String.valueOf(R.drawable.partryrainy));
+        weathericon.put("10n",String.valueOf(R.drawable.rain));
+        weathericon.put("11n",String.valueOf(R.drawable.thunder));
+        weathericon.put("13n",String.valueOf(R.drawable.snow));
+        weathericon.put("50n",String.valueOf(R.drawable.mist));
+        weathericon.put("NULL",String.valueOf(R.drawable.weather_null));
+    }
+
+    public String Getweather(String id) {
+        return weathermap.get(id);
+    }
+
+    public int Getweathericon(String id) {
+        return Integer.valueOf(weathericon.get(id));
+    }
+
+    /**
+     * 緯度・経度から住所を取得する。
+     * @param context
+     * @param latitude
+     * @param longitude
+     * @return 住所
+     */
+    public static String getAddress(Context context, double latitude, double longitude) {
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses;
+        String add = new String();
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 5);
+        } catch (IOException e) {
+            return "";
+        }
+
+        if (!addresses.isEmpty()) {
+            add = addresses.get(0).getLocality();    //市区町村取得
+            //add = addresses.get(0).getAdminArea();   //都市名取得
+            //add = addresses.get(0).getCountryName(); //国名取得
+        }
+
+        if (add == null) {
+            add = "現在地が\n特定できませんでした。";
+        } else {
+            add += "\n周辺の天気";
+        }
+
+        return add;
     }
 }

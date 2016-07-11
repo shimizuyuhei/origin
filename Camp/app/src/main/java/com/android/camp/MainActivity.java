@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -40,13 +42,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
 
@@ -54,10 +59,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private Receiver myreceiver;
 
     private LocationManager locationManager;
-    String url;
-    String pass = new String();
-    JsonLoader jsonLoader;
-    Thread thread;
+    private String url;
+    private String pass = new String();
+    private JsonLoader jsonLoader;
+    private Thread thread;
+    private TextView Streetview;
+    private ImageView Crrenticon;
+    private TextView CurrentWeather;
+    private ImageView Futureicon;
+    private TextView FutureWeather;
+    private Weather weather;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +144,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
              }
          });
 
+         Streetview = (TextView) findViewById(R.id.PlaceWeather);
+         Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
+         CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
+         Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
+         FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
+         weather = new Weather();
+         weather.Weather();
+
          pass = "6bc4bdb0435fb3599d879b987453b459";
 
          // LocationManager インスタンス生成
@@ -140,23 +159,26 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     }
 
-    private static final long MinTime = 0;//30*60*1000; //30分
-    private static final float MinDistance = 100;
+    private static final long MinTime = 30; //30分
+    private static final float MinDistance = 100;   //100m
 
     //GPS開始
     protected void startGPS() {
         Log.d("TEST_MainActivity", "startGPS");
-        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
             // GPSを設定するように促す
             enableLocationSettings();
         }
 
-        if (locationManager != null) {
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (locationManager != null && gpsEnabled) {
             onGPS();
         } else {
-
+            Streetview.setText("GPSを\nONにしてください");
+            Log.d("TEST_MainActivity", "startGPS_エラー");
         }
     }
 
@@ -180,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 return;
             }
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
+            Streetview.setText("計測中");
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -230,7 +253,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     protected void onResume() {
         super.onResume();
         Log.d("TEST_MainActivity","onResume");
-        startGPS();
+
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (locationManager != null && gpsEnabled) {
+            onGPS();
+        } else {
+            Log.d("TEST_MainActivity", "startGPS_エラー");
+        }
     }
 
     //アクティビティ実行の後
@@ -328,9 +357,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         _messenger = null;
     }
 
-    String lat = new String();
-    String lon = new String();
-
     /*GPS設定*/
     // 結果の受け取り
     @Override
@@ -352,10 +378,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
+    double lat;
+    double lon;
+    String Street = new String();
+
     @Override
     public void onLocationChanged(Location location) {
-        lat = String.valueOf(location.getLatitude());
-        lon = String.valueOf(location.getLongitude());
+        lat = location.getLatitude();
+        lon = location.getLongitude();
 
         Log.d("TEST_MainActivity","onLocationChanged = " + lat);
         Log.d("TEST_MainActivity","onLocationChanged = " + lon);
@@ -370,14 +400,19 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         thread = new Thread(this);
         thread.start();
 
+        Street = weather.getAddress(getApplicationContext(),lat,lon);
+
+        Streetview.setText(Street);
+
+        Log.d("TEST_MainActivity","onLocationChanged = " + Street);
         //stopGPS();
     }
 
     //HandlerはUIスレッドで生成する。
     Handler handler = new Handler();
     JSONObject jsonObject;
-    String id = new String();
-    String icon = new String();
+    String[] id = new String[2];
+    String[] icon = new String[2];
 
     @Override
     public void run() {
@@ -397,9 +432,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                             JSONArray weatherlist = list.getJSONArray("weather");
                             JSONObject weather = weatherlist.getJSONObject(0);
 
-                            id = weather.get("id").toString();
-                            icon = weather.get("icon").toString();
-                            Log.d("TEST", id + " , " + icon);
+                            id[i] = weather.get("id").toString();
+                            icon[i] = weather.get("icon").toString();
+                            Log.d("TEST_MainActivity", "run=" + id + " , " + icon);
 
 
                         } catch (JSONException e) {
@@ -411,9 +446,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     e.printStackTrace();
                 }
 
-                Calendar cal = Calendar.getInstance();
+                CurrentWeather.setText(weather.Getweather(id[0]));
+                Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
 
-                Toast.makeText(MainActivity.this, "TEST", Toast.LENGTH_LONG).show();
+                FutureWeather.setText(weather.Getweather(id[1]));
+                Futureicon.setImageResource(weather.Getweathericon(icon[1]));
+
+                //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
             }
         });
         thread = null;
@@ -436,12 +475,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        Log.d("TEST_MainActivity","onProviderEnabled");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        Log.d("TEST_MainActivity","onProviderDisabled");
     }
     /*GPS終了*/
 
