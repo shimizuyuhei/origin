@@ -22,6 +22,7 @@ import com.nttdocomo.android.sdaiflib.BeaconScanner;
 import com.nttdocomo.android.sdaiflib.Define;
 
 import java.util.Calendar;
+import android.os.Handler;
 
 /**
  * Created by USER on 2016/06/14.
@@ -311,14 +312,16 @@ public class BeaconGetService extends Service{
     int notificnt = 0;
     int notificomp = 4;
     boolean notififlg = false;
+    NotificationCompat.Builder builder;
 
     private void setNotification(BeaconData data)
     {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+       builder = new NotificationCompat.Builder(getApplicationContext());
 
         String time = timeLogFormat(System.currentTimeMillis());
         //アイコン
         builder.setSmallIcon(R.drawable.danger);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         int val = data.getDistance();
 
         switch (val)
@@ -373,6 +376,16 @@ public class BeaconGetService extends Service{
         builder.setAutoCancel(true);
         Intent intent = new Intent(this, MainActivity.class);
         builder.setContentIntent(PendingIntent.getActivity(this,0,intent,0));
+
+        // 2.5秒後に通常のNotificationに変更
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                builder.setPriority(Notification.PRIORITY_DEFAULT);
+                builder.setVibrate(null);
+                manager.notify(2, builder.build());
+            }
+        }, 2500);
 
         if (notififlg)
         {
