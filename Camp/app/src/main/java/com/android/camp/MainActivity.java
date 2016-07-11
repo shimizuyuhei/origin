@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 return;
             }
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
-            Streetview.setText("計測中");
+            Streetview.setText("計測中\n");
         } catch (Exception e) {
             e.printStackTrace();
 
