@@ -1,5 +1,6 @@
 package com.android.camp;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,9 +8,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +32,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +44,23 @@ import java.util.List;
 /**
  * Created by USER on 2016/07/08.
  */
-public class MainSimpleActivity extends AppCompatActivity implements ServiceConnection {
+public class MainSimpleActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
 
-    private Intent BeaconGetIntent;
     private Intent SettingsIntent;
     private Receiver myreceiver;
+
+    private LocationManager locationManager;
+    private String url;
+    private String pass = new String();
+    private JsonLoader jsonLoader;
+    private Thread thread;
+    private TextView Streetview;
+    private ImageView Crrenticon;
+    private TextView CurrentWeather;
+    private ImageView Futureicon;
+    private TextView FutureWeather;
+    private Weather weather;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
@@ -49,10 +75,9 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
-        BeaconGetIntent = new Intent(this, BeaconGetService.class);
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
 
-        LinearLayout l2=(LinearLayout)findViewById(R.id.weather_layout2);
+        LinearLayout l2=(LinearLayout)findViewById(R.id.weather_layout);
 
         //startService(BeaconGetIntent);
 
@@ -97,14 +122,103 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
         });
 
+
+        //天気領域クリック処理
         l2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startGPS();
             }
 
         });
 
+        Streetview = (TextView) findViewById(R.id.PlaceWeather);
+        Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
+        CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
+        Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
+        FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
+        weather = new Weather();
+        weather.Weather();
+
+        pass = "6bc4bdb0435fb3599d879b987453b459";
+
+        // LocationManager インスタンス生成
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+    }
+
+    private static final long MinTime = 30; //30分
+    private static final float MinDistance = 100;   //100m
+
+    //GPS開始
+    protected void startGPS() {
+        Log.d("TEST_MainActivity", "startGPS");
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!gpsEnabled) {
+            // GPSを設定するように促す
+            enableLocationSettings();
+        }
+
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (locationManager != null && gpsEnabled) {
+            onGPS();
+        } else {
+            Streetview.setText("GPSを\nONにしてください");
+            Log.d("TEST_MainActivity", "startGPS_エラー");
+        }
+    }
+
+    protected void onGPS(){
+        Log.d("TEST_MainActivity", "onGPS");
+        // バックグラウンドから戻ってしまうと例外が発生する場合がある
+        try {
+            //GPSの開始
+            // minTime = 1000msec, minDistance = 50m
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
+            Streetview.setText("計測中");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast toast = Toast.makeText(this, "例外が発生、位置情報のPermissionを許可していますか？", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    //GPS停止
+    private void stopGPS(){
+        if (locationManager != null) {
+            Log.d("TEST_MainActivity", "onStop");
+            // update を止める
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            locationManager.removeUpdates(this);
+        } else {
+
+        }
+    }
+
+    //GPS設定画面表示
+    private void enableLocationSettings() {
+        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(settingsIntent);
     }
 
     //onCreateの後
@@ -126,6 +240,13 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     protected void onResume() {
         super.onResume();
         Log.d("TEST_MainActivity","onResume");
+
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (locationManager != null && gpsEnabled) {
+            onGPS();
+        } else {
+            Log.d("TEST_MainActivity", "startGPS_エラー");
+        }
     }
 
     //アクティビティ実行の後
@@ -222,6 +343,133 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         _messenger = null;
     }
 
+    /*GPS設定*/
+    // 結果の受け取り
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.d("TEST",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );
+        if (requestCode == 1000) {
+            // 使用が許可された
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("debug","checkSelfPermission true");
+                startGPS();
+
+                return;
+
+            } else {
+                // それでも拒否された時の対応
+                Toast toast = Toast.makeText(this, "これ以上なにもできません", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    }
+
+    double lat;
+    double lon;
+    String Street = new String();
+
+    @Override
+    public void onLocationChanged(Location location) {
+        lat = location.getLatitude();
+        lon = location.getLongitude();
+
+        Log.d("TEST_MainActivity","onLocationChanged = " + lat);
+        Log.d("TEST_MainActivity","onLocationChanged = " + lon);
+
+        url = "http://api.openweathermap.org/data/2.5/forecast"
+                + "?lat=" + String.valueOf(lat)
+                + "&lon=" + String.valueOf(lon)
+                + "&cnt=2"
+                + "&APPID=" + pass;
+
+        jsonLoader = new JsonLoader(url);
+        thread = new Thread(this);
+        thread.start();
+
+        Street = weather.getAddress(getApplicationContext(),lat,lon);
+
+        Streetview.setText(Street);
+
+        Log.d("TEST_MainActivity","onLocationChanged = " + Street);
+        //stopGPS();
+    }
+
+    //HandlerはUIスレッドで生成する。
+    Handler handler = new Handler();
+    JSONObject jsonObject;
+    String[] id = new String[2];
+    String[] icon = new String[2];
+
+    @Override
+    public void run() {
+        jsonObject = jsonLoader.loadInBackground();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    JSONArray lists = jsonObject.getJSONArray("list");
+
+                    //Log.d("TEST",jsonObject.toString(4));
+
+                    for (int i = 0; i < 2; i++) {
+                        try {
+                            JSONObject list = lists.getJSONObject(i);
+                            JSONArray weatherlist = list.getJSONArray("weather");
+                            JSONObject weather = weatherlist.getJSONObject(0);
+
+                            id[i] = weather.get("id").toString();
+                            icon[i] = weather.get("icon").toString();
+                            Log.d("TEST_MainActivity", "run=" + id + " , " + icon);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                CurrentWeather.setText(weather.Getweather(id[0]));
+                Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
+
+                FutureWeather.setText(weather.Getweather(id[1]));
+                Futureicon.setImageResource(weather.Getweathericon(icon[1]));
+
+                //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
+            }
+        });
+        thread = null;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        switch (status) {
+            case LocationProvider.AVAILABLE:
+                Log.d("debug", "LocationProvider.AVAILABLE");
+                break;
+            case LocationProvider.OUT_OF_SERVICE:
+                Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
+                break;
+            case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
+                break;
+        }
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("TEST_MainActivity","onProviderEnabled");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("TEST_MainActivity","onProviderDisabled");
+    }
+    /*GPS終了*/
+
     public class Receiver extends BroadcastReceiver {
         String[] text = new String[3];
         int[] color = new int[4];
@@ -282,10 +530,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                     break;
 
             }
-
-
-
-
         }
     }
 }

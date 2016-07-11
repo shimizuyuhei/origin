@@ -135,9 +135,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         });
 
          //天気領域クリック処理
-         LinearLayout linerlayoutView = (LinearLayout) findViewById(R.id.weather_layout);
-         linerlayoutView.setClickable(true);
-         linerlayoutView.setOnClickListener(new View.OnClickListener() {
+         l1.setClickable(true);
+         l1.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
                  startGPS();
