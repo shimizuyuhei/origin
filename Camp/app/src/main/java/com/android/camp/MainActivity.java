@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -28,51 +26,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-<<<<<<< HEAD
-=======
-import android.view.animation.RotateAnimation;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
->>>>>>> origin/icon
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-<<<<<<< HEAD
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-=======
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-
->>>>>>> origin/icon
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-import java.sql.Date;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
+
 
 public class MainActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
 
     private Intent SettingsIntent;
     private Receiver myreceiver;
 
-<<<<<<< HEAD
     private LocationManager locationManager;
     private String url;
     private String pass = new String();
@@ -85,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private TextView FutureWeather;
     private Weather weather;
 
-=======
->>>>>>> origin/icon
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
@@ -96,19 +66,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         ImageButton imagebutton1= (ImageButton)findViewById(R.id.image_button1);
         ImageButton imagebutton2= (ImageButton)findViewById(R.id.image_button2);
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
-
-<<<<<<< HEAD
-        WindowManager wm = getWindowManager();
-
         //終了
          ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
-=======
 
-        ImageButton image_button_choice =(ImageButton)findViewById(R.id.image_button_choice);
->>>>>>> origin/icon
+
          LinearLayout l1=(LinearLayout)findViewById(R.id.weather_layout);
 
-         ImageView iv = (ImageView)findViewById(R.id.ladybug);
         TextView comment=(TextView)findViewById(R.id.text_comment);
          comment.setText("ボードを選択してください");
 
@@ -154,10 +117,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         image_button_choice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                startActivityForResult(SettingsIntent,RESULTCODE);
                 ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
                 ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
                 ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
-                ImageView gifView4 = (ImageView) findViewById(R.id.gifView4);
 
                 GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(gifView1);
                 Glide.with(MainActivity.this).load(R.raw.loading).into(target1);
@@ -165,14 +129,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
                 GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(gifView3);
                 Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
-                GlideDrawableImageViewTarget target4 = new GlideDrawableImageViewTarget(gifView4);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target4);
-                startActivityForResult(SettingsIntent,RESULTCODE);
+                TextView comment=(TextView)findViewById(R.id.text_comment);
+                comment.setText("");
             }
 
         });
 
-<<<<<<< HEAD
          //天気領域クリック処理
          l1.setClickable(true);
          l1.setOnClickListener(new View.OnClickListener() {
@@ -241,6 +203,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
             Streetview.setText("計測中\n");
+            ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
+            GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
+            Glide.with(MainActivity.this).load(R.raw.load_weather).into(target1);
+            ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
+            GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
+            Glide.with(MainActivity.this).load(R.raw.load_weather).into(target2);
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -270,8 +239,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private void enableLocationSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(settingsIntent);
-=======
->>>>>>> origin/icon
     }
 
     //onCreateの後
@@ -355,15 +322,15 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                           //     checkedItems.clear();
-                             //   checkedItems.add(which);
+                                checkedItems.clear();
+                                checkedItems.add(which);
                                 if(checkedItems.get(0)==1){
                                     Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
                                     // 次画面のアクティビティ起動
                                     startActivity(intent);
                                     finish();
                                 }else{
-
+                                    return;
                                 }
                             }
 
@@ -469,7 +436,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                             icon[i] = weather.get("icon").toString();
                             Log.d("TEST_MainActivity", "run=" + id + " , " + icon);
 
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -522,19 +488,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         int[] color = new int[4];
         String comment="" ;
         int id=2;
-        String[] draw_ladybug={"@drawable/cold",
-                "@drawable/cool",
-                "@drawable/good",
-                "@drawable/warm",
-                "@drawable/hot",
-                "@drawable/veryhot"};
-        String[] draw_ladybug2={"@drawable/cold2",
-                "@drawable/cool2",
-                "@drawable/good2",
-                "@drawable/warm2",
-                "@drawable/hot2",
-                "@drawable/veryhot2"};
-
 
         //  横幅のみ画面サイズに変更
         @Override
@@ -558,22 +511,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             TextView t3 = (TextView) findViewById(R.id.textView3);
             TextView tc = (TextView) findViewById(R.id.text_comment);
 
-
             ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
             ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
             ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
-            ImageView gifView4 = (ImageView) findViewById(R.id.gifView4);
 
             if(text[0]==null){
                 gifView3.setVisibility(View.VISIBLE);
-                tc.setText("");
-                gifView4.setVisibility(View.VISIBLE);
             }else{
-                t1.setText("不快度:"+text[0]);
+                t1.setText(text[0]);
                 gifView3.setVisibility(View.INVISIBLE);
 
                 tc.setText(comment);
-                gifView4.setVisibility(View.INVISIBLE);
             }
             if(text[1]==null){
                 gifView1.setVisibility(View.VISIBLE);

@@ -79,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:background="#c9ffffff"
+                    android:background="@color/colorbackground"
                     android:layout_marginRight="10dp"
 
                     android:layout_weight="1">
@@ -129,7 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:background="#c8ffffff"
+                    android:background="@color/colorbackground"
                     android:layout_marginRight="10dp"
 
                     android:layout_weight="1">
@@ -179,20 +179,20 @@
     </LinearLayout>
     </FrameLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#d8ffffff"
-    android:layout_weight="2"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp">
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
 
         android:layout_weight="1">
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorbackground"
+            android:layout_weight="2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -206,49 +206,39 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gifView3"
-        android:layout_gravity="center" />
-    </FrameLayout>
 
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    android:layout_weight="1">
     <TextView
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_gravity="center_horizontal"
         android:text=""
-
         android:textSize="@dimen/abc_text_size_medium_material"
         android:id="@+id/text_comment"
         android:gravity="center"
         android:layout_weight="1">
     </TextView>
+
+        </LinearLayout>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/gifView4"
+        android:id="@+id/gifView3"
         android:layout_gravity="center" />
 </FrameLayout>
-</LinearLayout>
 
 
 
     <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fec0f9fa"
+        android:background="@color/colorbackground"
         android:layout_weight="1"
         android:id="@+id/weather_layout">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="新宿周辺の天気"
+            android:text=""
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/abc_dialog_padding_top_material"
             android:layout_marginLeft="0dp"
@@ -267,7 +257,6 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-<<<<<<< HEAD
                     android:layout_gravity="center_horizontal"
                     android:id="@+id/CurrentWeatherIcon"
                     android:src="@drawable/weather_null" />
@@ -276,17 +265,10 @@
                     android:layout_height="wrap_content"
                     android:text="なし"
                     android:layout_marginLeft="10dp"
-                    android:id="@+id/CurrentWeatherText"/>
+                    android:id="@+id/CurrentWeatherText"
 
-=======
                     android:src="@drawable/sunny"
                     android:layout_gravity="center_horizontal" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="晴れ"
-                    android:layout_marginLeft="10dp" />
->>>>>>> origin/icon
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -310,7 +292,6 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-<<<<<<< HEAD
                     android:layout_marginLeft="10dp"
                     android:id="@+id/FutureWeatherIcon"
                     android:src="@drawable/weather_null" />
@@ -320,16 +301,9 @@
                     android:layout_height="wrap_content"
                     android:text="なし"
                     android:layout_gravity="center_horizontal"
-                    android:id="@+id/FutureWeatherText"/>
-=======
+                    android:id="@+id/FutureWeatherText"
                     android:src="@drawable/cloudiness"
                     android:layout_marginLeft="10dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="くもり"
-                    android:layout_gravity="center_horizontal" />
->>>>>>> origin/icon
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

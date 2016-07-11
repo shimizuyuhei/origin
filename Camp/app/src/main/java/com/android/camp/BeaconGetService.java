@@ -256,7 +256,7 @@ public class BeaconGetService extends Service{
             color[2] = 100;
             color[3] = 255;
             id=0;
-            comment="寒いかも";
+            comment="一枚羽織ろう";
         }
         else if(di<65)
         {
@@ -265,7 +265,7 @@ public class BeaconGetService extends Service{
             color[2] = 128;
             color[3] = 255;
             id=1;
-            comment="風邪を引かないように";
+            comment="一枚羽織ろう";
         }
         else if(di<70)
         {
@@ -274,7 +274,7 @@ public class BeaconGetService extends Service{
             color[2] = 255;
             color[3] = 255;
             id=2;
-            comment="快適な環境です";
+            comment="快適です";
         }
         else if(di<75)
         {
@@ -293,7 +293,7 @@ public class BeaconGetService extends Service{
             color[3] = 64;
             id=4;
             comment=
-                    "こまめに水分補給しようね";
+                    "こまめに\n水分補給しようね";
         }
         else
         {
@@ -320,7 +320,7 @@ public class BeaconGetService extends Service{
         //アイコン
         builder.setSmallIcon(R.drawable.danger);
         int val = data.getDistance();
-
+        long[] vibrate_ptn = {0, 1200, 300, 200}; // 独自バイブレーションパターン
         switch (val)
         {
             case 1:
@@ -328,6 +328,8 @@ public class BeaconGetService extends Service{
                 //アイコンの背景色
                 builder.setColor(Color.argb(0,255,0,0));
                 builder.setContentText("警告 これ以上近づく場合は命を保証しません");
+                builder.setLights(0xff0000,1000,500);
+                builder.setVibrate(vibrate_ptn);
                 notificnt = 0;
                 notififlg = true;
                 break;
@@ -335,6 +337,9 @@ public class BeaconGetService extends Service{
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning2));
                 //アイコンの背景色
                 builder.setColor(Color.argb(0,255,128,0));
+                builder.setLights(0xff6d00,1000,500);
+                vibrate_ptn[1] = 500; // 独自バイブレーションパターン
+                builder.setVibrate(vibrate_ptn);
                 builder.setContentText("危険 それ以上近づかないでください");
                 setTime(val,2);
 
@@ -344,6 +349,9 @@ public class BeaconGetService extends Service{
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning3));
                 //アイコンの背景色
                 builder.setColor(Color.argb(0,0,200,0));
+                builder.setLights(0x00ff38,1000,500);
+                vibrate_ptn[1] = 200; // 独自バイブレーションパターン
+                builder.setVibrate(vibrate_ptn);
                 builder.setContentText("注意 その先は危険です");
                 setTime(val,3);
 
@@ -362,12 +370,6 @@ public class BeaconGetService extends Service{
         //Android5.0から表示しない
         builder.setTicker("DANGER");
 
-        //通知時の音・バイブ・ライト
-        builder.setDefaults(
-                Notification.DEFAULT_SOUND |
-                        Notification.DEFAULT_VIBRATE |
-                        Notification.DEFAULT_LIGHTS
-        );
 
         //タップ時に消える
         builder.setAutoCancel(true);

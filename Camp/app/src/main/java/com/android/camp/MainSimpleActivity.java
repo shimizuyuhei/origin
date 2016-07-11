@@ -34,6 +34,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +75,8 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
         ImageView iv=(ImageView)findViewById(R.id.ladybug);
 
+        TextView comment=(TextView)findViewById(R.id.textView);
+        comment.setText("ボードを\n選択してください");
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
@@ -90,6 +95,16 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             @Override
             public void onClick(View v) {
                 startActivityForResult(SettingsIntent,RESULTCODE);
+                ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
+                ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
+                ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
+
+                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(gifView1);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target1);
+                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(gifView2);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target2);
+                GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(gifView3);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target3);
             }
 
         });
@@ -121,7 +136,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             }
 
         });
-
 
         //天気領域クリック処理
         l2.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +204,12 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             }
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
             Streetview.setText("計測中\n");
+            ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
+            GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
+            Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target1);
+            ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
+            GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
+            Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target2);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -308,8 +328,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                                     // 次画面のアクティビティ起動
                                     startActivity(intent);
                                     finish();
-                                }else{
-
                                 }
                             }
 
@@ -467,13 +485,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         int[] color = new int[4];
         String comment="" ;
         int id=2;
-        String[] draw_ladybug={"@drawable/cold2",
-                "@drawable/cool2",
-                "@drawable/good2",
-                "@drawable/warm2",
-                "@drawable/hot2",
-                "@drawable/veryhot2"};
-
 
         //  横幅のみ画面サイズに変更
         @Override
@@ -495,10 +506,33 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             TextView t2 = (TextView)findViewById(R.id.textView2);
             TextView t3 = (TextView)findViewById(R.id.textView3);
             TextView tc = (TextView)findViewById(R.id.text_comment);
-            t1.setText(text[0]);
-            t2.setText(text[1]);
-            t3.setText(text[2]);
-            tc.setText(comment);
+            ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
+            ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
+            ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
+
+            if(text[0]==null){
+                gifView3.setVisibility(View.VISIBLE);
+                tc.setText("");
+            }else{
+                t1.setText(text[0]);
+                gifView3.setVisibility(View.INVISIBLE);
+                tc.setText(comment);
+            }
+            if(text[1]==null){
+                gifView1.setVisibility(View.VISIBLE);
+                t2.setText("");
+            }else{
+                gifView1.setVisibility(View.INVISIBLE);
+                t2.setText(text[1]+"℃");
+            }
+            if(text[2]==null){
+                gifView2.setVisibility(View.VISIBLE);
+                t3.setText("");
+            }else{
+                gifView2.setVisibility(View.INVISIBLE);
+
+                t3.setText(text[2]+"％");
+            }
 
             ImageView iv = (ImageView)findViewById(R.id.ladybug);
             switch (id){

@@ -1,13 +1,12 @@
 package com.android.camp;
-
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
+        import android.location.Address;
+        import android.location.Geocoder;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+        import java.io.IOException;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Locale;
 
 /**
  * Created by shimizu.yuhei on 2016/07/07.
