@@ -330,11 +330,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d("CAMP_MainActivity","onOptionsItemSelected");
         switch (item.getItemId()) {
-            case R.id.menu_main_settings:
-
-                //startActivityForResult(SettingsIntent,RESULTCODE);
-                return true;
-            case R.id.menu_main_layout:
+              case R.id.menu_main_layout:
                 final String[] items = {"ポップ", "シンプル"};
                 int defaultItem = 0; // デフォルトでチェックされているアイテム
                 final List<Integer> checkedItems = new ArrayList<>();

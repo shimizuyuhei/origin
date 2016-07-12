@@ -319,10 +319,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d("CAMP_MainSimpleActivity","onOptionsItemSelected");
         switch (item.getItemId()) {
-            case R.id.menu_main_settings:
-
-               // startActivityForResult(SettingsIntent,RESULTCODE);
-                return true;
             case R.id.menu_main_layout:
                 final String[] items = {"ポップ", "シンプル"};
                 int defaultItem = 1; // デフォルトでチェックされているアイテム
