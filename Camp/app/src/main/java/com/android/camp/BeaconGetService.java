@@ -44,7 +44,7 @@ public class BeaconGetService extends Service{
     private String di_index="";   //discomfort index(string)
     private int id=2;             //icon id
 
-    private int linkingID = 0;
+    private static int linkingID = 0;
     private static boolean gStarted = false;
 
     Intent actionIntent;
@@ -57,13 +57,14 @@ public class BeaconGetService extends Service{
     public final class BeaconReceiver extends BeaconReceiverBase {
         @Override
         protected void onReceiveScanResult(BeaconData beaconData) {
-            if(linkingID == 0) {
-                BeaconGetService.this.BeaconSetID(beaconData);
-            }
-            else {
+
+            BeaconGetService.this.BeaconSetID(beaconData);
+            //Log.d("TEST_BeaconGetService", "linkingID=" + linkingID);
+            if(linkingID != 0) {
                 if (beaconData.getExtraId() == linkingID) {
                     BeaconGetService.this.onBeaconArrived(beaconData);
                 }else {
+                    //デモ用フィルター
                     if(beaconData.getExtraId() == 32849) {
                         BeaconGetService.this.setNotification(beaconData);
                     }
@@ -123,7 +124,7 @@ public class BeaconGetService extends Service{
     public void onDestroy() {
         super.onDestroy();
         Log.d("TEST_BeaconGetService","onDestroy");
-        linkingID = 0;
+        //linkingID = 0;
         gStarted = false;
         unregisterReceiver(mReceiver);
 

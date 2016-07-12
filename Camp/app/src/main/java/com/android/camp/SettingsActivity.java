@@ -182,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
 
         serviceStart = BeaconGetService.isStarted();
         if(serviceStart) {
-            stopService(BeaconGetIntent);
+            //stopService(BeaconGetIntent);
             Log.d("TEST_SettingsActivity","SettingsSwitch");
             SettingsSwitch.setChecked(true);
         }
@@ -233,7 +233,9 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     private void startScanning() {
         Log.d("TEST_SettingsActivity","startScanning");
 
-        startService(BeaconGetIntent);
+        if(!serviceStart) {
+            startService(BeaconGetIntent);
+        }
 
         //テキストを詰めて消してListを表示
         deviceList.setVisibility(View.VISIBLE);

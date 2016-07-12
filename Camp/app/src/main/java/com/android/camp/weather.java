@@ -130,7 +130,7 @@ public class Weather { public HashMap<String,String> weathermap = new HashMap<St
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 5);
         } catch (IOException e) {
-            return "";
+            return "現在地\n取得失敗";
         }
 
         if (!addresses.isEmpty()) {
@@ -140,7 +140,7 @@ public class Weather { public HashMap<String,String> weathermap = new HashMap<St
         }
 
         if (add == null) {
-            add = "現在地が\n特定できませんでした。";
+            add = "現在地\n取得失敗";
         } else {
             add += "\n周辺の天気";
         }
