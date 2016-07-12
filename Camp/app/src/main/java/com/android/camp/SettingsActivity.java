@@ -117,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
                BeaconGetIntent.putExtra("SETID",setid);
                 bindService(BeaconGetIntent,SettingsActivity.this,0);
                 unbindService(SettingsActivity.this);
+                setResult(1);
                 finish();
             }
         });
@@ -206,10 +207,9 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-
+                setResult(0);
                 finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -221,6 +221,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
         Log.d("TEST_SettingsActivity","onKeyDown");
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             // 戻るボタンの処理
+            setResult(0);
             finish();
             return false;
         } else {

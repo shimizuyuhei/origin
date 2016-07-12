@@ -36,12 +36,12 @@ public class BeaconGetService extends Service{
     NotificationCompat.Builder THbuilder;
 
     private String log="";
-    private String[] Cosiness={null,null,null};
+    private String[] Cosiness={null,null,null}; //di_index,temp,humid
     private int[] color = {0,0,0,0};
     private String comment =null;
-    private double di;  //discomfort index
-    private String di_index="";
-    private int id=2;
+    private double di;            //discomfort index(double)
+    private String di_index="";   //discomfort index(string)
+    private int id=2;             //icon id
 
     private int linkingID = 0;
     private static boolean gStarted = false;
@@ -79,8 +79,10 @@ public class BeaconGetService extends Service{
                 } else {
                     if(detail==3) {
                         state = "エラーが発生しました：\n" + "端末のブルートゥースをONにしてください";
+                    }else if(detail==4){
+                        state = "エラーが発生しました：\n" + "Linkingアプリでビーコンの受信を行ってください";
                     }else{
-                        state = "エラーが発生しました：" + detail;
+                        state="エラーが発生しました:\n"+detail;
                     }
                 }
             } else {
@@ -254,7 +256,7 @@ public class BeaconGetService extends Service{
             moji ="寒い";
             color[1] = 100;
             color[2] = 100;
-            color[3] = 255;
+           color[3] = 255;
             id=0;
             comment="一枚羽織ろう";
         }
@@ -270,7 +272,7 @@ public class BeaconGetService extends Service{
         else if(di<70)
         {
             moji ="快適";
-            color[1] = 255;
+           color[1] = 255;
             color[2] = 255;
             color[3] = 255;
             id=2;
@@ -298,7 +300,7 @@ public class BeaconGetService extends Service{
         else
         {
             moji ="危険な暑さ";
-            color[1] = 255;
+          color[1] = 255;
             color[2] = 0;
             color[3] = 0;
             id=5;

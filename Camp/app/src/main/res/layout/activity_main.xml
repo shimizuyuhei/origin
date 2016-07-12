@@ -34,42 +34,17 @@
         android:layout_height="match_parent"
         android:id="@+id/ladybug"
         android:src="@drawable/good"
-        android:layout_weight="0.40" />
+        android:layout_weight="0.40"
+        android:layout_gravity="center" />
     <LinearLayout    android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#00ffffff"
         android:gravity="center"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
 
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ボードを選択"
-                        android:id="@+id/textView4"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignStart="@+id/image_button_choice" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/image_button_choice"
-                        android:src="@drawable/board"
-                        android:scaleType="centerCrop"
-                        android:background="#00000000"
-                        android:layout_below="@+id/textView4"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_horizontal">
-
-                    </ImageButton>
-                </LinearLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -101,8 +76,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text=""
-                    android:id="@+id/textView2"
-                    android:layout_below="@+id/textView"
+                    android:id="@+id/temp_txt"
+                    android:layout_below="@+id/index_txt"
                     android:layout_alignParentEnd="true"
                     android:layout_alignLeft="@+id/top_center"
                     android:gravity="center_vertical|center_horizontal"
@@ -114,7 +89,7 @@
 
                 </LinearLayout>
             <ImageView
-                android:id="@+id/gifView1"
+                android:id="@+id/Loading_gif1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
@@ -138,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="湿度"
-                    android:layout_below="@+id/textView"
+                    android:layout_below="@+id/index_txt"
                     android:layout_alignParentEnd="true"
                     android:layout_alignLeft="@+id/top_center"
                     android:gravity="center_vertical|center_horizontal"
@@ -153,8 +128,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text=""
-                    android:id="@+id/textView3"
-                    android:layout_below="@+id/textView"
+                    android:id="@+id/humid_txt"
+                    android:layout_below="@+id/index_txt"
                     android:layout_alignParentEnd="true"
                     android:layout_alignLeft="@+id/top_center"
                     android:gravity="center_vertical|center_horizontal"
@@ -167,12 +142,40 @@
             </LinearLayout>
 
             <ImageView
-            android:id="@+id/gifView2"
+            android:id="@+id/Loading_gif2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
         </FrameLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ボードを選択"
+                android:id="@+id/board_txt"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/BoardSettingButton" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/BoardSettingButton"
+                android:src="@drawable/board"
+                android:scaleType="centerCrop"
+                android:background="#00000000"
+                android:layout_below="@+id/board_txt"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal">
+
+            </ImageButton>
+        </LinearLayout>
             </LinearLayout>
 
 
@@ -192,14 +195,14 @@
             android:background="@color/colorbackground"
             android:layout_weight="2"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:id="@+id/BoardSettingLayout">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text=""
-        android:id="@+id/textView"
+        android:id="@+id/index_txt"
         android:gravity="center_vertical|center_horizontal"
-        android:textColor="#37419c"
         android:textSize="@dimen/abc_text_size_headline_material"
         android:layout_weight="1"
         android:layout_centerVertical="true"
@@ -223,18 +226,25 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/gifView3"
+        android:id="@+id/Loading_gif3"
         android:layout_gravity="center" />
 </FrameLayout>
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:background="#69f695"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"></LinearLayout>
 
     <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorbackground"
         android:layout_weight="1"
-        android:id="@+id/weather_layout">
+        android:id="@+id/weather_layout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -252,19 +262,18 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_horizontal">
+                android:orientation="vertical">
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
                     android:id="@+id/CurrentWeatherIcon"
-                    android:src="@drawable/weather_null" />
+                    android:src="@drawable/weather_null"
+                    android:background="#00ffffff" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="なし"
-                    android:layout_marginLeft="10dp"
                     android:id="@+id/CurrentWeatherText"
 
                     android:src="@drawable/sunny"
@@ -278,8 +287,8 @@
                 android:layout_weight="1"
                 android:layout_gravity="center">
                 <ImageView
-                    android:layout_width="75dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/arrow"
                     android:layout_marginLeft="20dp"/>
             </LinearLayout>
@@ -287,7 +296,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="0dp"
                 android:layout_weight="1">
                 <ImageView
                     android:layout_width="50dp"
@@ -300,10 +308,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="なし"
-                    android:layout_gravity="center_horizontal"
                     android:id="@+id/FutureWeatherText"
                     android:src="@drawable/cloudiness"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_gravity="center_horizontal" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -330,13 +337,14 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
             android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_gravity="center">
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/image_button1"
+                android:id="@+id/HelpInfButton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
@@ -354,7 +362,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_gravity="center">
 
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -362,7 +371,7 @@
                 android:background="@null">
 
                 <ImageButton
-                    android:id="@+id/image_button2"
+                    android:id="@+id/HelpInfButton2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|center_horizontal"
@@ -383,14 +392,15 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_gravity="center">
 
             <LinearLayout android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:orientation="vertical"
                 >
                 <ImageButton
-                    android:id="@+id/image_button3"
+                    android:id="@+id/HelpInfButton3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|center_horizontal"

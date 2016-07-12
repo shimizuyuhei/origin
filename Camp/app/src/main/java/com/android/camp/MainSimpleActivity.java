@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,11 +24,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,23 +65,16 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("TEST_MainActivity","onCreate");
+        Log.d("CAMP_MainSimpleActivity","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        ImageButton imagebutton1= (ImageButton)findViewById(R.id.image_button1);
-        ImageButton imagebutton2= (ImageButton)findViewById(R.id.image_button2);
-        ImageButton imagebutton3= (ImageButton)findViewById(R.id.image_button3);
-        ImageView iv=(ImageView)findViewById(R.id.ladybug);
-
-        TextView comment=(TextView)findViewById(R.id.textView);
+         TextView comment=(TextView)findViewById(R.id.index_txt);
         comment.setText("ボードを\n選択してください");
 
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-
-        LinearLayout l2=(LinearLayout)findViewById(R.id.weather_layout);
 
         //startService(BeaconGetIntent);
 
@@ -91,34 +83,21 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         intentfilter.addAction("action");
         registerReceiver(myreceiver, intentfilter);
 
-        iv.setOnClickListener(new View.OnClickListener() {
+        ImageView BoardSettingView=(ImageView)findViewById(R.id.ladybug);
+        BoardSettingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(SettingsIntent,RESULTCODE);
-                ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
-                ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
-                ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
 
-                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(gifView1);
-                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target1);
-                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(gifView2);
-                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target2);
-                GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(gifView3);
-                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target3);
             }
 
         });
 
-        imagebutton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
+        ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.image_button1);
+        ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.image_button2);
+        ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.image_button3);
 
-        });
-        imagebutton1.setOnClickListener(new View.OnClickListener() {
+        HelpInfButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainSimpleActivity.this, PreparationListActivity.class);
@@ -127,7 +106,17 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             }
 
         });
-        imagebutton3.setOnClickListener(new View.OnClickListener() {
+        HelpInfButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
+                // 次画面のアクティビティ起動
+                startActivity(intent);
+            }
+
+        });
+
+        HelpInfButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainSimpleActivity.this, DangerListActivity.class);
@@ -138,7 +127,8 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         });
 
         //天気領域クリック処理
-        l2.setOnClickListener(new View.OnClickListener() {
+        LinearLayout Weather_Layout=(LinearLayout)findViewById(R.id.weather_layout);
+        Weather_Layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startGPS();
@@ -159,13 +149,33 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         // LocationManager インスタンス生成
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
+    @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
+         TextView comment=(TextView)findViewById(R.id.index_txt);
 
+        if(requestCode == this.RESULTCODE) {
+            if (resultCode ==0) {
+            } else {
+                ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
+                ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
+                ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
+
+                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target1);
+                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target2);
+                GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target3);
+                comment.setText("");
+
+            }
+        }
+    }
     private static final long MinTime = 30; //30分
     private static final float MinDistance = 100;   //100m
 
     //GPS開始
     protected void startGPS() {
-        Log.d("TEST_MainActivity", "startGPS");
+        Log.d("CAMP_MainSimpleActivity", "startGPS");
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
@@ -179,12 +189,12 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             onGPS();
         } else {
             Streetview.setText("GPSを\nONにしてください");
-            Log.d("TEST_MainActivity", "startGPS_エラー");
+            Log.d("CAMP_MainSimpleActivity", "startGPS_エラー");
         }
     }
 
     protected void onGPS(){
-        Log.d("TEST_MainActivity", "onGPS");
+        Log.d("CAMP_MainSimpleActivity", "onGPS");
         // バックグラウンドから戻ってしまうと例外が発生する場合がある
         try {
             //GPSの開始
@@ -204,12 +214,14 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             }
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
             Streetview.setText("計測中\n");
+
             ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
             GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
             Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target1);
             ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
             GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
             Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target2);
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -221,7 +233,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     //GPS停止
     private void stopGPS(){
         if (locationManager != null) {
-            Log.d("TEST_MainActivity", "onStop");
+            Log.d("CAMP_MainSimpleActivity", "onStop");
             // update を止める
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
@@ -245,27 +257,27 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     @Override
     protected void onStart(){
         super.onStart();
-        Log.d("TEST_MainActivity","onStart");
+        Log.d("CAMP_MainSimpleActivity","onStart");
     }
 
     //onStopの後
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d("TEST_MainActivity","onRestart");
+        Log.d("CAMP_MainSimpleActivity","onRestart");
     }
 
     //onStartの後
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("TEST_MainActivity","onResume");
+        Log.d("CAMP_MainSimpleActivity","onResume");
 
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (locationManager != null && gpsEnabled) {
             onGPS();
         } else {
-            Log.d("TEST_MainActivity", "startGPS_エラー");
+            Log.d("CAMP_MainSimpleActivity", "startGPS_エラー");
         }
     }
 
@@ -273,21 +285,21 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("TEST_MainActivity","onPause");
+        Log.d("CAMP_MainSimpleActivity","onPause");
     }
 
     //onPauseの後
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("TEST_MainActivity","onStop");
+        Log.d("CAMP_MainSimpleActivity","onStop");
     }
 
     //onStopの後
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("TEST_MainActivity","onDestroy");
+        Log.d("CAMP_MainSimpleActivity","onDestroy");
         unregisterReceiver(myreceiver);
         //unbindService(this);
     }
@@ -295,7 +307,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     //右上メニュー
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("TEST_MainActivity","onCreateOptionsMenu");
+        Log.d("CAMP_MainSimpleActivity","onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -305,7 +317,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     //右上メニュークリック
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("TEST_MainActivity","onOptionsItemSelected");
+        Log.d("CAMP_MainSimpleActivity","onOptionsItemSelected");
         switch (item.getItemId()) {
             case R.id.menu_main_settings:
 
@@ -324,10 +336,13 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                                 checkedItems.clear();
                                 checkedItems.add(which);
                                 if(checkedItems.get(0)==0){
+                                    dialog.dismiss();
                                     Intent intent = new Intent(MainSimpleActivity.this, MainActivity.class);
                                     // 次画面のアクティビティ起動
                                     startActivity(intent);
                                     finish();
+                                }else{
+                                    dialog.dismiss();
                                 }
                             }
 
@@ -343,13 +358,13 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.d("TEST_MainActivity","onServiceConnected");
+        Log.d("CAMP_MainSimpleActivity","onServiceConnected");
         _messenger = new Messenger(service);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.d("TEST_MainActivity","onServiceDisconnected");
+        Log.d("CAMP_MainSimpleActivity","onServiceDisconnected");
         _messenger = null;
     }
 
@@ -357,11 +372,11 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     // 結果の受け取り
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d("TEST",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );
+        Log.d("CAMP",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );
         if (requestCode == 1000) {
             // 使用が許可された
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("debug","checkSelfPermission true");
+                Log.d("CAMP Permission","checkSelfPermission true");
                 startGPS();
 
                 return;
@@ -383,8 +398,8 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         lat = location.getLatitude();
         lon = location.getLongitude();
 
-        Log.d("TEST_MainActivity","onLocationChanged = " + lat);
-        Log.d("TEST_MainActivity","onLocationChanged = " + lon);
+        Log.d("CAMP_MainSimpleActivity","onLocationChanged = " + lat);
+        Log.d("CAMP_MainSimpleActivity","onLocationChanged = " + lon);
 
         url = "http://api.openweathermap.org/data/2.5/forecast"
                 + "?lat=" + String.valueOf(lat)
@@ -400,7 +415,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
         Streetview.setText(Street);
 
-        Log.d("TEST_MainActivity","onLocationChanged = " + Street);
+        Log.d("CAMP_MainSimpleActivity","onLocationChanged = " + Street);
         //stopGPS();
     }
 
@@ -430,7 +445,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
                             id[i] = weather.get("id").toString();
                             icon[i] = weather.get("icon").toString();
-                            Log.d("TEST_MainActivity", "run=" + id + " , " + icon);
+                            Log.d("CAMP_MainSimpleActivity", "run=" + id + " , " + icon);
 
 
                         } catch (JSONException e) {
@@ -458,31 +473,31 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     public void onStatusChanged(String provider, int status, Bundle extras) {
         switch (status) {
             case LocationProvider.AVAILABLE:
-                Log.d("debug", "LocationProvider.AVAILABLE");
+                Log.d("CAMP", "LocationProvider.AVAILABLE");
                 break;
             case LocationProvider.OUT_OF_SERVICE:
-                Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
+                Log.d("CAMP", "LocationProvider.OUT_OF_SERVICE");
                 break;
             case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
+                Log.d("CAMP", "LocationProvider.TEMPORARILY_UNAVAILABLE");
                 break;
         }
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        Log.d("TEST_MainActivity","onProviderEnabled");
+        Log.d("CAMP_MainSimpleActivity","onProviderEnabled");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Log.d("TEST_MainActivity","onProviderDisabled");
+        Log.d("CAMP_MainSimpleActivity","onProviderDisabled");
     }
     /*GPS終了*/
 
     public class Receiver extends BroadcastReceiver {
         String[] text = new String[3];
-        int[] color = new int[4];
+         int[] color = new int[4];
         String comment="" ;
         int id=2;
 
@@ -500,59 +515,59 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             comment=bundle.getString("comment");
             id=bundle.getInt("id");
 
-            Log.d("TEST_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
+         //   Log.d("CAMP_MainSimpleActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
 
-            TextView t1 = (TextView)findViewById(R.id.textView);
-            TextView t2 = (TextView)findViewById(R.id.textView2);
-            TextView t3 = (TextView)findViewById(R.id.textView3);
-            TextView tc = (TextView)findViewById(R.id.text_comment);
-            ImageView gifView1 = (ImageView) findViewById(R.id.gifView1);
-            ImageView gifView2 = (ImageView) findViewById(R.id.gifView2);
-            ImageView gifView3 = (ImageView) findViewById(R.id.gifView3);
-
+            TextView index = (TextView)findViewById(R.id.index_txt);
+            TextView temp = (TextView)findViewById(R.id.temp_txt);
+            TextView humid = (TextView)findViewById(R.id.humid_txt);
+            TextView comment_t = (TextView)findViewById(R.id.text_comment);
+            ImageView gifView1 = (ImageView) findViewById(R.id.Loading_gif1);
+            ImageView gifView2 = (ImageView) findViewById(R.id.Loading_gif2);
+            ImageView gifView3 = (ImageView) findViewById(R.id.Loading_gif3);
+            index.setTextColor(Color.argb(color[0],color[1],color[2],color[3]));
             if(text[0]==null){
                 gifView3.setVisibility(View.VISIBLE);
-                tc.setText("");
+                comment_t.setText("");
             }else{
-                t1.setText(text[0]);
+                index.setText(text[0]);
                 gifView3.setVisibility(View.INVISIBLE);
-                tc.setText(comment);
+                comment_t.setText(comment);
             }
             if(text[1]==null){
                 gifView1.setVisibility(View.VISIBLE);
-                t2.setText("");
+                temp.setText("");
             }else{
                 gifView1.setVisibility(View.INVISIBLE);
-                t2.setText(text[1]+"℃");
+                temp.setText(text[1]+"℃");
             }
             if(text[2]==null){
                 gifView2.setVisibility(View.VISIBLE);
-                t3.setText("");
+                humid.setText("");
             }else{
                 gifView2.setVisibility(View.INVISIBLE);
 
-                t3.setText(text[2]+"％");
+                humid.setText(text[2]+"％");
             }
 
-            ImageView iv = (ImageView)findViewById(R.id.ladybug);
+            ImageView icon = (ImageView)findViewById(R.id.ladybug);
             switch (id){
                 case 0:
-                    iv.setImageResource(R.drawable.cold2);
+                    icon.setImageResource(R.drawable.cold2);
                     break;
                 case 1:
-                    iv.setImageResource(R.drawable.cool2);
+                    icon.setImageResource(R.drawable.cool2);
                     break;
                 case 2:
-                    iv.setImageResource(R.drawable.good2);
+                    icon.setImageResource(R.drawable.good2);
                     break;
                 case 3:
-                    iv.setImageResource(R.drawable.warm2);
+                    icon.setImageResource(R.drawable.warm2);
                     break;
                 case 4:
-                    iv.setImageResource(R.drawable.hot2);
+                    icon.setImageResource(R.drawable.hot2);
                     break;
                 case 5:
-                    iv.setImageResource(R.drawable.veryhot2);
+                    icon.setImageResource(R.drawable.veryhot2);
                     break;
 
             }

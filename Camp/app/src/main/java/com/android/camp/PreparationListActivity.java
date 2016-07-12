@@ -44,7 +44,10 @@ public class PreparationListActivity extends AppCompatActivity {
             new CampMenu("・事前準備", "必需品を紹介したぺージです。", "http://www.geocities.jp/hmrmyamada/camp/campdougu.html"),
             new CampMenu("・事前準備(家族向け)", "家族でキャンプへ行くときの必需品を紹介したページです。", "http://www.sohappydays.net/archives/3257"),
             new CampMenu("・持ち物チェックリスト", "持ち物チェックリストページです。", "http://www.ne.jp/asahi/kobe/yanase/camplist.htm"),
-            new CampMenu("・キャンプのマナー", "キャンプの心がけを紹介したページです。", "http://camphack.nap-camp.com/227")
+            new CampMenu("・キャンプのマナー", "キャンプの心がけを紹介したページです。", "http://camphack.nap-camp.com/227"),
+            new CampMenu("・女性向け持ち物","女性がキャンプへ行くときにあると便利なものを紹介したページです。","http://shittoku.xyz/archives/2591.html"),
+            new CampMenu("・100均で揃う!キャンプの持ち物","100均で買える便利グッズを紹介したページです。","http://camphack.nap-camp.com/406"),
+            new CampMenu("・全国のキャンプ場を検索","全国のキャンプ場を検索できるページです。","http://www.nap-camp.com/")
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
