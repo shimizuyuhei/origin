@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -313,14 +314,17 @@ public class BeaconGetService extends Service{
     int notificnt = 0;
     int notificomp = 4;
     boolean notififlg = false;
+    NotificationCompat.Builder builder;
 
     private void setNotification(BeaconData data)
     {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+      //  NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        builder = new NotificationCompat.Builder(getApplicationContext());
 
         String time = timeLogFormat(System.currentTimeMillis());
         //アイコン
         builder.setSmallIcon(R.drawable.danger);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         int val = data.getDistance();
         long[] vibrate_ptn = {0, 1200, 300, 200}; // 独自バイブレーションパターン
         switch (val)
@@ -371,7 +375,14 @@ public class BeaconGetService extends Service{
         //受信時のステータスバーに表示されるテキスト
         //Android5.0から表示しない
         builder.setTicker("DANGER");
-
+        new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        builder.setPriority(Notification.PRIORITY_DEFAULT);
+                        builder.setVibrate(null);
+                        manager.notify(2, builder.build());
+                    }
+                }, 2500);
 
         //タップ時に消える
         builder.setAutoCancel(true);
