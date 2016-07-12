@@ -174,6 +174,7 @@ public class BeaconGetService extends Service{
 
         THbuilder.setSmallIcon(R.drawable.camp);
         THbuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.campicon));
+
         THbuilder.setTicker("ビーコンからの通知が届きました。");
         THbuilder.setContentTitle("キャンプ役立ちアプリ");
 
