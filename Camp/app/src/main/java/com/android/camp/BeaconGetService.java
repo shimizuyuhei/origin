@@ -37,13 +37,14 @@ public class BeaconGetService extends Service{
     NotificationCompat.Builder THbuilder;
 
     private String log="";
-    private String[] Cosiness={"測定中","測定中","測定中"};
+    private String[] Cosiness={null,null,null}; //di_index,temp,humid
     private int[] color = {0,0,0,0};
-    private String comment ="コメント";
-    private double di;  //discomfort index
-    private String di_index="";
+    private String comment =null;
+    private double di;            //discomfort index(double)
+    private String di_index="";   //discomfort index(string)
+    private int id=2;             //icon id
 
-    private int linkingID = 0;
+    private static int linkingID = 0;
     private static boolean gStarted = false;
 
     Intent actionIntent;
@@ -56,13 +57,14 @@ public class BeaconGetService extends Service{
     public final class BeaconReceiver extends BeaconReceiverBase {
         @Override
         protected void onReceiveScanResult(BeaconData beaconData) {
-            if(linkingID == 0) {
-                BeaconGetService.this.BeaconSetID(beaconData);
-            }
-            else {
+
+            BeaconGetService.this.BeaconSetID(beaconData);
+            //Log.d("TEST_BeaconGetService", "linkingID=" + linkingID);
+            if(linkingID != 0) {
                 if (beaconData.getExtraId() == linkingID) {
                     BeaconGetService.this.onBeaconArrived(beaconData);
                 }else {
+                    //デモ用フィルター
                     if(beaconData.getExtraId() == 32849) {
                         BeaconGetService.this.setNotification(beaconData);
                     }
@@ -79,8 +81,10 @@ public class BeaconGetService extends Service{
                 } else {
                     if(detail==3) {
                         state = "エラーが発生しました：\n" + "端末のブルートゥースをONにしてください";
+                    }else if(detail==4){
+                        state = "エラーが発生しました：\n" + "Linkingアプリでビーコンの受信を行ってください";
                     }else{
-                        state = "エラーが発生しました：" + detail;
+                        state="エラーが発生しました:\n"+detail;
                     }
                 }
             } else {
@@ -120,13 +124,15 @@ public class BeaconGetService extends Service{
     public void onDestroy() {
         super.onDestroy();
         Log.d("TEST_BeaconGetService","onDestroy");
-        linkingID = 0;
+        //linkingID = 0;
         gStarted = false;
         unregisterReceiver(mReceiver);
 
-        Cosiness[0] = "不快度";
-        Cosiness[1] = "温度";
-        Cosiness[2] = "湿度";
+        manager.cancel(2);
+
+        Cosiness[0] = "";
+        Cosiness[1] = "";
+        Cosiness[2] = "";
         actionIntent.putExtra("index1",Cosiness[0]);
         actionIntent.putExtra("index2",Cosiness[1]);
         actionIntent.putExtra("index3",Cosiness[2]);
@@ -134,7 +140,7 @@ public class BeaconGetService extends Service{
         color[1] = 0;
         color[2] = 0;
         color[3] = 0;
-        comment="コメント";
+        comment=null;
         actionIntent.putExtra("colorA",color[0]);
         actionIntent.putExtra("colorR",color[1]);
         actionIntent.putExtra("colorG",color[2]);
@@ -153,6 +159,8 @@ public class BeaconGetService extends Service{
         //ブロードキャスト用インテント
         actionIntent = new Intent("action");
 
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+
         //Linkingインテントフィルタ指定
         IntentFilter filter = new IntentFilter();
         filter.addAction(Define.filterBeaconScanResult);
@@ -166,6 +174,7 @@ public class BeaconGetService extends Service{
 
         THbuilder.setSmallIcon(R.drawable.camp);
         THbuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.campicon));
+
         THbuilder.setTicker("ビーコンからの通知が届きました。");
         THbuilder.setContentTitle("キャンプ役立ちアプリ");
 
@@ -205,12 +214,12 @@ public class BeaconGetService extends Service{
 
         if(temp != null){
             temp_s = temp;
-            Cosiness[1] = String.format("%.2f℃",temp_s);
+            Cosiness[1] = String.format("%.2f",temp_s);
             Log.d("temparature", String.format("temp: %f", temp));
         }
         if(humid != null) {
             humid_s = humid;
-            Cosiness[2] = String.format("%.2f%%",humid_s);
+            Cosiness[2] = String.format("%.2f",humid_s);
             Log.d("humidity", String.format("humid: %f", humid));
         }
         if(temp_s == 0 || humid_s == 0){
@@ -223,8 +232,8 @@ public class BeaconGetService extends Service{
 
             log = String.format("%s \n 気温:%.2f,湿度:%.2f", di_index, temp_s, humid_s);
             Cosiness[0] = di_index;
-            Cosiness[1] = String.format("%.2f℃", temp_s);
-            Cosiness[2] = String.format("%.2f%%", humid_s);
+            Cosiness[1] = String.format("%.2f", temp_s);
+            Cosiness[2] = String.format("%.2f", humid_s);
         }
         THbuilder.setContentText(log);
 
@@ -236,6 +245,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("colorG",color[2]);
         actionIntent.putExtra("colorB",color[3]);
         actionIntent.putExtra("comment",comment);
+        actionIntent.putExtra("id",id);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 
@@ -245,7 +255,7 @@ public class BeaconGetService extends Service{
     //static用意
     private   String  di_to_diindex(double di)
     {
-        String moji ="";
+        String moji =null;
         color[0] = 200;
 
         if(di <60)
@@ -253,8 +263,9 @@ public class BeaconGetService extends Service{
             moji ="寒い";
             color[1] = 100;
             color[2] = 100;
-            color[3] = 255;
-            comment="寒いかも";
+           color[3] = 255;
+            id=0;
+            comment="一枚羽織ろう";
         }
         else if(di<65)
         {
@@ -262,39 +273,44 @@ public class BeaconGetService extends Service{
             color[1] = 126;
             color[2] = 128;
             color[3] = 255;
-            comment="風邪を引かないように";
+            id=1;
+            comment="一枚羽織ろう";
         }
         else if(di<70)
         {
             moji ="快適";
-            color[1] = 255;
+           color[1] = 255;
             color[2] = 255;
             color[3] = 255;
-            comment="快適な環境です";
+            id=2;
+            comment="快適です";
         }
         else if(di<75)
         {
-            moji ="暑く感じる";
+            moji ="ちょっと暑い";
             color[1] = 255;
             color[2] = 255;
             color[3] = 128;
+            id=3;
             comment="ちょっと暑いかも";
         }
         else if(di<80)
         {
-            moji ="暑い";
+            moji ="暑く感じる";
             color[1] = 255;
             color[2] = 64;
             color[3] = 64;
+            id=4;
             comment=
-                    "こまめに水分補給しようね";
+                    "こまめに\n水分補給しようね";
         }
         else
         {
             moji ="危険な暑さ";
-            color[1] = 255;
+          color[1] = 255;
             color[2] = 0;
             color[3] = 0;
+            id=5;
             comment="涼しい日陰で休憩をとろう";
         }
 
@@ -309,7 +325,8 @@ public class BeaconGetService extends Service{
     private void setNotification(BeaconData data)
     {
      //   NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-
+      //  NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        builder = new NotificationCompat.Builder(getApplicationContext());
         String time = timeLogFormat(System.currentTimeMillis());
         //アイコン
         builder = new NotificationCompat.Builder(getApplicationContext());
@@ -317,6 +334,9 @@ public class BeaconGetService extends Service{
 
         int val = data.getDistance();
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+
+        long[] vibrate_ptn = {0, 1200, 300, 200}; // 独自バイブレーションパターン
         switch (val)
         {
             case 1:
@@ -324,6 +344,8 @@ public class BeaconGetService extends Service{
                 //アイコンの背景色
                 builder.setColor(Color.argb(0,255,0,0));
                 builder.setContentText("警告 これ以上近づく場合は命を保証しません");
+                builder.setLights(0xff0000,1000,500);
+                builder.setVibrate(vibrate_ptn);
                 notificnt = 0;
                 notififlg = true;
                 break;
@@ -331,6 +353,9 @@ public class BeaconGetService extends Service{
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning2));
                 //アイコンの背景色
                 builder.setColor(Color.argb(0,255,128,0));
+                builder.setLights(0xff6d00,1000,500);
+                vibrate_ptn[1] = 500; // 独自バイブレーションパターン
+                builder.setVibrate(vibrate_ptn);
                 builder.setContentText("危険 それ以上近づかないでください");
                 setTime(val,2);
 
@@ -340,6 +365,9 @@ public class BeaconGetService extends Service{
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning3));
                 //アイコンの背景色
                 builder.setColor(Color.argb(0,0,200,0));
+                builder.setLights(0x00ff38,1000,500);
+                vibrate_ptn[1] = 200; // 独自バイブレーションパターン
+                builder.setVibrate(vibrate_ptn);
                 builder.setContentText("注意 その先は危険です");
                 setTime(val,3);
 
@@ -357,13 +385,14 @@ public class BeaconGetService extends Service{
         //受信時のステータスバーに表示されるテキスト
         //Android5.0から表示しない
         builder.setTicker("DANGER");
-
-        //通知時の音・バイブ・ライト
-        builder.setDefaults(
-                Notification.DEFAULT_SOUND |
-                        Notification.DEFAULT_VIBRATE |
-                        Notification.DEFAULT_LIGHTS
-        );
+        new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        builder.setPriority(Notification.PRIORITY_DEFAULT);
+                        builder.setVibrate(null);
+                        manager.notify(2, builder.build());
+                    }
+                }, 2500);
 
         //タップ時に消える
         builder.setAutoCancel(true);
@@ -427,9 +456,9 @@ public class BeaconGetService extends Service{
         linkingID = intent.getIntExtra("SETID",0);
         Log.d("TEST_BeaconGetService",String.format("%s",linkingID));
 
-        Cosiness[0] = "測定中";
-        Cosiness[1] = "℃";
-        Cosiness[2] = "％";
+        Cosiness[0] =null;
+        Cosiness[1] = null;
+        Cosiness[2] = null;
         actionIntent.putExtra("index1",Cosiness[0]);
         actionIntent.putExtra("index2",Cosiness[1]);
         actionIntent.putExtra("index3",Cosiness[2]);

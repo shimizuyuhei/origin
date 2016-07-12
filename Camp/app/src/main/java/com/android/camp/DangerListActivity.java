@@ -1,5 +1,6 @@
 package com.android.camp;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,13 +41,17 @@ public class DangerListActivity extends AppCompatActivity{
     }
 
     private static final CampMenu[] menus = {
+            new CampMenu("・この生き物に気をつけろ！", "キャンプで気を付けるべき生物を紹介したページです。", "http://news.livedoor.com/article/detail/10460394/"),
             new CampMenu("・蜂刺され　対処", "蜂に刺された場合の対処を解説したページです。", "http://t-meister.jp/hachi/lab/sasaretara"),
             new CampMenu("・ブヨ刺され　対処", "ブヨに刺された場合の対処を解説したページです。", "http://kenkoucheck-navi.com/%E3%83%96%E3%83%A8%E3%81%AB%E5%88%BA%E3%81%95%E3%82%8C%E3%81%9F%E8%B7%A1%E3%81%AE%E5%87%A6%E7%BD%AE/"),
             new CampMenu("・蛇　かまれた場合の対処", "蛇にかまれた場合の種類別対策ページです。", "http://www.asobon.net/c3/con5_4.html"),
-            new CampMenu("・キャンプお役立ち情報", "キャンプに役立つ情報です。", "http://google.com/")
+            new CampMenu("・川で遊ぶ前に知っておきたい","川での鉄砲水の危険について紹介したページです。","http://matome.naver.jp/odai/2137090992394329301"),
+            new CampMenu("・キャンプで熊に襲われないためには","キャンプで熊に襲われないよう対策するページです","http://allabout.co.jp/gm/gc/448334/"),
+            new CampMenu("・気をつけるべき行動(調理編)","","http://nihon-hosyu.net/post-1703")
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Log.d("TEST_MainActivity","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cookinglist);
@@ -131,6 +137,8 @@ public class DangerListActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        ImageView im = (ImageView)findViewById(R.id.src) ;
+        im.setImageResource(R.drawable.bee);
         Log.d("TEST_MainActivity","onResume");
     }
 

@@ -117,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
                BeaconGetIntent.putExtra("SETID",setid);
                 bindService(BeaconGetIntent,SettingsActivity.this,0);
                 unbindService(SettingsActivity.this);
+                setResult(1);
                 finish();
             }
         });
@@ -181,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
 
         serviceStart = BeaconGetService.isStarted();
         if(serviceStart) {
-            stopService(BeaconGetIntent);
+            //stopService(BeaconGetIntent);
             Log.d("TEST_SettingsActivity","SettingsSwitch");
             SettingsSwitch.setChecked(true);
         }
@@ -206,10 +207,9 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-
+                setResult(0);
                 finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -221,6 +221,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
         Log.d("TEST_SettingsActivity","onKeyDown");
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             // 戻るボタンの処理
+            setResult(0);
             finish();
             return false;
         } else {
@@ -232,7 +233,9 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     private void startScanning() {
         Log.d("TEST_SettingsActivity","startScanning");
 
-        startService(BeaconGetIntent);
+        if(!serviceStart) {
+            startService(BeaconGetIntent);
+        }
 
         //テキストを詰めて消してListを表示
         deviceList.setVisibility(View.VISIBLE);

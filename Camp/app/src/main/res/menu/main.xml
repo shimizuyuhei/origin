@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_main_settings" android:title="@string/menu_item_settings"/>
+    <item android:id="@+id/menu_main_layout" android:title="デザイン"/>
 </menu>

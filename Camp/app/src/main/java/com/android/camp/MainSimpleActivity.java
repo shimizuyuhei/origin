@@ -23,27 +23,30 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class MainActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
+/**
+ * Created by USER on 2016/07/08.
+ */
+public class MainSimpleActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
 
     private Intent SettingsIntent;
     private Receiver myreceiver;
@@ -59,18 +62,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private ImageView Futureicon;
     private TextView FutureWeather;
     private Weather weather;
-    private final int RESULTCODE = 1;   //受け取りコード
 
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("CAMP_MainActivity","onCreate");
+        Log.d("CAMP_MainSimpleActivity","onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_second);
 
-        TextView comment_t=(TextView)findViewById(R.id.index_txt);
-         comment_t.setText("ボードを選択してください");
+         TextView comment=(TextView)findViewById(R.id.index_txt);
+        comment.setText("ボードを\n選択してください");
 
-         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
 
         //startService(BeaconGetIntent);
@@ -80,103 +83,88 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         intentfilter.addAction("action");
         registerReceiver(myreceiver, intentfilter);
 
-         //お役立ち情報
-         ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.HelpInfButton1);
-         HelpInfButton1.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 Intent intent = new Intent(MainActivity.this, PreparationListActivity.class);
-                 // 次画面のアクティビティ起動
-                 startActivity(intent);
-             }
-
-         });
-
-         ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.HelpInfButton2);
-         HelpInfButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CookingListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
-
-        });
-
-         ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.HelpInfButton3);
-         HelpInfButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DangerListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
-
-        });
-        //ボード選択画面
-
-         ImageButton BoardSettingButton =(ImageButton)findViewById(R.id.BoardSettingButton);
-         BoardSettingButton.setOnClickListener(new View.OnClickListener() {
+        ImageView BoardSettingView=(ImageView)findViewById(R.id.ladybug);
+        BoardSettingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(SettingsIntent,RESULTCODE);
+
             }
 
         });
-         LinearLayout BoardSettingLayout =(LinearLayout)findViewById(R.id.BoardSettingLayout);
-         BoardSettingLayout.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 startActivityForResult(SettingsIntent,RESULTCODE);
-                 }
 
-         });
+        ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.image_button1);
+        ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.image_button2);
+        ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.image_button3);
 
+        HelpInfButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainSimpleActivity.this, PreparationListActivity.class);
+                // 次画面のアクティビティ起動
+                startActivity(intent);
+            }
 
-         LinearLayout weather_layout=(LinearLayout)findViewById(R.id.weather_layout);
-         //天気領域クリック処理
-         weather_layout.setClickable(true);
-         weather_layout.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 startGPS();
-             }
-         });
+        });
+        HelpInfButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
+                // 次画面のアクティビティ起動
+                startActivity(intent);
+            }
 
-         Streetview = (TextView) findViewById(R.id.PlaceWeather);
-         Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
-         CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
-         Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
-         FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
-         weather = new Weather();
-         weather.Weather();
+        });
 
-         pass = "6bc4bdb0435fb3599d879b987453b459";
+        HelpInfButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainSimpleActivity.this, DangerListActivity.class);
+                // 次画面のアクティビティ起動
+                startActivity(intent);
+            }
 
-         // LocationManager インスタンス生成
-         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        });
 
+        //天気領域クリック処理
+        LinearLayout Weather_Layout=(LinearLayout)findViewById(R.id.weather_layout);
+        Weather_Layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startGPS();
+            }
+
+        });
+
+        Streetview = (TextView) findViewById(R.id.PlaceWeather);
+        Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
+        CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
+        Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
+        FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
+        weather = new Weather();
+        weather.Weather();
+
+        pass = "6bc4bdb0435fb3599d879b987453b459";
+
+        // LocationManager インスタンス生成
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
-        LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
-        TextView comment=(TextView)findViewById(R.id.index_txt);
+         TextView comment=(TextView)findViewById(R.id.index_txt);
 
         if(requestCode == this.RESULTCODE) {
             if (resultCode ==0) {
-                comment.setText("ボードを選択してください");
-                comment_layout.setClickable(true);
             } else {
-                comment_layout.setClickable(false);
                 ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
                 ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
                 ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
                 GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target1);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target1);
                 GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target2);
                 GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
+                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target3);
                 comment.setText("");
 
             }
@@ -187,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     //GPS開始
     protected void startGPS() {
-        Log.d("CAMP_MainActivity", "startGPS");
+        Log.d("CAMP_MainSimpleActivity", "startGPS");
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
@@ -201,12 +189,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             onGPS();
         } else {
             Streetview.setText("GPSを\nONにしてください");
-            Log.d("CAMP_MainActivity", "startGPS_エラー");
+            Log.d("CAMP_MainSimpleActivity", "startGPS_エラー");
         }
     }
 
     protected void onGPS(){
-        Log.d("CAMP_MainActivity", "onGPS");
+        Log.d("CAMP_MainSimpleActivity", "onGPS");
         // バックグラウンドから戻ってしまうと例外が発生する場合がある
         try {
             //GPSの開始
@@ -226,12 +214,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
             Streetview.setText("計測中\n");
+
             ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
             GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
-            Glide.with(MainActivity.this).load(R.raw.load_weather).into(target1);
+            Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target1);
             ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
             GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
-            Glide.with(MainActivity.this).load(R.raw.load_weather).into(target2);
+            Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target2);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     //GPS停止
     private void stopGPS(){
         if (locationManager != null) {
-            Log.d("CAMP_MainActivity", "onStop");
+            Log.d("CAMP_MainSimpleActivity", "onStop");
             // update を止める
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
@@ -268,27 +257,27 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onStart(){
         super.onStart();
-        Log.d("CAMP_MainActivity","onStart");
+        Log.d("CAMP_MainSimpleActivity","onStart");
     }
 
     //onStopの後
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d("CAMP_MainActivity","onRestart");
+        Log.d("CAMP_MainSimpleActivity","onRestart");
     }
 
     //onStartの後
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("CAMP_MainActivity","onResume");
+        Log.d("CAMP_MainSimpleActivity","onResume");
 
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (locationManager != null && gpsEnabled) {
             onGPS();
         } else {
-            Log.d("CAMP_MainActivity", "startGPS_エラー");
+            Log.d("CAMP_MainSimpleActivity", "startGPS_エラー");
         }
     }
 
@@ -296,22 +285,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("CAMP_MainActivity","onPause");
+        Log.d("CAMP_MainSimpleActivity","onPause");
     }
 
     //onPauseの後
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("CAMP_MainActivity","onStop");
-        stopGPS();
+        Log.d("CAMP_MainSimpleActivity","onStop");
     }
 
     //onStopの後
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("CAMP_MainActivity","onDestroy");
+        Log.d("CAMP_MainSimpleActivity","onDestroy");
         unregisterReceiver(myreceiver);
         //unbindService(this);
     }
@@ -319,31 +307,33 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     //右上メニュー
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("CAMP_MainActivity","onCreateOptionsMenu");
+        Log.d("CAMP_MainSimpleActivity","onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
+    private final int RESULTCODE = 1;   //受け取りコード
 
     //右上メニュークリック
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("CAMP_MainActivity","onOptionsItemSelected");
+        Log.d("CAMP_MainSimpleActivity","onOptionsItemSelected");
         switch (item.getItemId()) {
-              case R.id.menu_main_layout:
+            case R.id.menu_main_layout:
                 final String[] items = {"ポップ", "シンプル"};
-                int defaultItem = 0; // デフォルトでチェックされているアイテム
+                int defaultItem = 1; // デフォルトでチェックされているアイテム
                 final List<Integer> checkedItems = new ArrayList<>();
                 checkedItems.add(defaultItem);
-                new AlertDialog.Builder(MainActivity.this)
+                new AlertDialog.Builder(MainSimpleActivity.this)
                         .setTitle("デザインの変更")
                         .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 checkedItems.clear();
                                 checkedItems.add(which);
-                                if(checkedItems.get(0)==1){
-                                    Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
+                                if(checkedItems.get(0)==0){
+                                    dialog.dismiss();
+                                    Intent intent = new Intent(MainSimpleActivity.this, MainActivity.class);
                                     // 次画面のアクティビティ起動
                                     startActivity(intent);
                                     finish();
@@ -352,7 +342,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                                 }
                             }
 
-                        }) .show();
+                        })
+                        .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -363,13 +354,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.d("CAMP_MainActivity","onServiceConnected");
+        Log.d("CAMP_MainSimpleActivity","onServiceConnected");
         _messenger = new Messenger(service);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.d("CAMP_MainActivity","onServiceDisconnected");
+        Log.d("CAMP_MainSimpleActivity","onServiceDisconnected");
         _messenger = null;
     }
 
@@ -377,11 +368,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     // 結果の受け取り
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d("GPS",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );
+        Log.d("CAMP",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );
         if (requestCode == 1000) {
             // 使用が許可された
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("CAMP_Permission","checkSelfPermission true");
+                Log.d("CAMP Permission","checkSelfPermission true");
                 startGPS();
 
                 return;
@@ -403,8 +394,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         lat = location.getLatitude();
         lon = location.getLongitude();
 
-        Log.d("CAMP_MainActivity","onLocationChanged = " + lat);
-        Log.d("CAMP_MainActivity","onLocationChanged = " + lon);
+        Log.d("CAMP_MainSimpleActivity","onLocationChanged = " + lat);
+        Log.d("CAMP_MainSimpleActivity","onLocationChanged = " + lon);
 
         url = "http://api.openweathermap.org/data/2.5/forecast"
                 + "?lat=" + String.valueOf(lat)
@@ -420,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         Streetview.setText(Street);
 
-        Log.d("CAMP_MainActivity","onLocationChanged = " + Street);
+        Log.d("CAMP_MainSimpleActivity","onLocationChanged = " + Street);
         //stopGPS();
     }
 
@@ -450,7 +441,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                             id[i] = weather.get("id").toString();
                             icon[i] = weather.get("icon").toString();
-                            Log.d("CAMP_MainActivity", "run=" + id + " , " + icon);
+                            Log.d("CAMP_MainSimpleActivity", "run=" + id + " , " + icon);
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -490,18 +482,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     @Override
     public void onProviderEnabled(String provider) {
-        Log.d("CAMP_MainActivity","onProviderEnabled");
+        Log.d("CAMP_MainSimpleActivity","onProviderEnabled");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Log.d("CAMP_MainActivity","onProviderDisabled");
+        Log.d("CAMP_MainSimpleActivity","onProviderDisabled");
     }
     /*GPS終了*/
 
     public class Receiver extends BroadcastReceiver {
         String[] text = new String[3];
-        int[] color = new int[4];
+         int[] color = new int[4];
         String comment="" ;
         int id=2;
 
@@ -519,64 +511,62 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             comment=bundle.getString("comment");
             id=bundle.getInt("id");
 
-       //     Log.d("color_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
-            Log.d("CAMP_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));
+         //   Log.d("CAMP_MainSimpleActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
 
-            TextView index = (TextView) findViewById(R.id.index_txt);
-            TextView temp = (TextView) findViewById(R.id.temp_txt);
-            TextView humid = (TextView) findViewById(R.id.humid_txt);
-            TextView comment_t = (TextView) findViewById(R.id.text_comment);
+            TextView index = (TextView)findViewById(R.id.index_txt);
+            TextView temp = (TextView)findViewById(R.id.temp_txt);
+            TextView humid = (TextView)findViewById(R.id.humid_txt);
+            TextView comment_t = (TextView)findViewById(R.id.text_comment);
+            ImageView gifView1 = (ImageView) findViewById(R.id.Loading_gif1);
+            ImageView gifView2 = (ImageView) findViewById(R.id.Loading_gif2);
+            ImageView gifView3 = (ImageView) findViewById(R.id.Loading_gif3);
             index.setTextColor(Color.argb(color[0],color[1],color[2],color[3]));
-            ImageView Loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
-            ImageView Loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
-            ImageView Loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
-
-            //データが届いていなければ、ローディングアイコンの表示
             if(text[0]==null){
-                Loading_gif3.setVisibility(View.VISIBLE);
+                gifView3.setVisibility(View.VISIBLE);
+                comment_t.setText("");
             }else{
-                Loading_gif3.setVisibility(View.INVISIBLE);
                 index.setText(text[0]);
+                gifView3.setVisibility(View.INVISIBLE);
                 comment_t.setText(comment);
             }
             if(text[1]==null){
-                Loading_gif1.setVisibility(View.VISIBLE);
+                gifView1.setVisibility(View.VISIBLE);
                 temp.setText("");
             }else{
-                Loading_gif1.setVisibility(View.INVISIBLE);
+                gifView1.setVisibility(View.INVISIBLE);
                 temp.setText(text[1]+"℃");
             }
             if(text[2]==null){
-                Loading_gif2.setVisibility(View.VISIBLE);
+                gifView2.setVisibility(View.VISIBLE);
                 humid.setText("");
             }else{
-                Loading_gif2.setVisibility(View.INVISIBLE);
+                gifView2.setVisibility(View.INVISIBLE);
+
                 humid.setText(text[2]+"％");
             }
 
-            //表示するアイコンを変える
             ImageView icon = (ImageView)findViewById(R.id.ladybug);
             switch (id){
                 case 0:
-                    icon.setImageResource(R.drawable.cold);
-                        break;
+                    icon.setImageResource(R.drawable.cold2);
+                    break;
                 case 1:
-                    icon.setImageResource(R.drawable.cool);
-                        break;
+                    icon.setImageResource(R.drawable.cool2);
+                    break;
                 case 2:
-                    icon.setImageResource(R.drawable.good);
-                        break;
+                    icon.setImageResource(R.drawable.good2);
+                    break;
                 case 3:
-                    icon.setImageResource(R.drawable.warm);
-                        break;
+                    icon.setImageResource(R.drawable.warm2);
+                    break;
                 case 4:
-                    icon.setImageResource(R.drawable.hot);
-                        break;
+                    icon.setImageResource(R.drawable.hot2);
+                    break;
                 case 5:
-                    icon.setImageResource(R.drawable.veryhot);
-                        break;
-            }
+                    icon.setImageResource(R.drawable.veryhot2);
+                    break;
 
+            }
         }
     }
 }

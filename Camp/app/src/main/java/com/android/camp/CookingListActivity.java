@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,8 +27,6 @@ import java.util.Arrays;
  * Created by USER on 2016/07/06.
  */
 public class CookingListActivity extends AppCompatActivity{
-
-
     private static final class CampMenu {
         public final String title;
         public final String caption;
@@ -44,7 +44,10 @@ public class CookingListActivity extends AppCompatActivity{
             new CampMenu("・キャンプ料理　アウトドアレシピ", "おすすめのアウトドア料理のレシピをまとめたページです。", "http://camphack.nap-camp.com/762"),
             new CampMenu("・キャンプ料理　ホイル焼き", "たき火で出来るホイル焼きレシピのページです。", "http://camphack.nap-camp.com/889"),
             new CampMenu("・キャンプ料理　煮込み料理", "キャンプにおすすめの煮込み料理のページです。", "http://camphack.nap-camp.com/945"),
-        };
+            new CampMenu("・キャンプ料理　初心者","料理初心者にも簡単な料理のページです。","http://marumarumaru.com/310.html"),
+            new CampMenu("・キャンプ料理　バーベキュー","バーベキューにおすすめな料理のページです。","http://park.ajinomoto.co.jp/recipe/corner/season/barbecue"),
+            new CampMenu("・キャンプ料理　子供と作る","子供でも簡単に作れる料理のページです。","http://kosodatemama-journal.com/417.html")
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TEST_MainActivity","onCreate");
@@ -68,6 +71,7 @@ public class CookingListActivity extends AppCompatActivity{
                 }else{
                     row = convertView;
                 }
+
                 CampMenu menu = menus[position];
                 ((TextView) row.findViewById(R.id.title)).setText(menu.title);
                 ((TextView) row.findViewById(R.id.caption)).setText(menu.caption);
@@ -132,6 +136,8 @@ public class CookingListActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        ImageView im = (ImageView)findViewById(R.id.src) ;
+        im.setImageResource(R.drawable.bbq);
         Log.d("TEST_MainActivity","onResume");
     }
 
