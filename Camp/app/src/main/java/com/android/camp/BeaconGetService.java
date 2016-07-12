@@ -128,6 +128,8 @@ public class BeaconGetService extends Service{
         gStarted = false;
         unregisterReceiver(mReceiver);
 
+        manager.cancel(2);
+
         Cosiness[0] = "";
         Cosiness[1] = "";
         Cosiness[2] = "";
@@ -156,6 +158,8 @@ public class BeaconGetService extends Service{
 
         //ブロードキャスト用インテント
         actionIntent = new Intent("action");
+
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
         //Linkingインテントフィルタ指定
         IntentFilter filter = new IntentFilter();
@@ -326,6 +330,7 @@ public class BeaconGetService extends Service{
         //アイコン
         builder.setSmallIcon(R.drawable.danger);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
+
         int val = data.getDistance();
         long[] vibrate_ptn = {0, 1200, 300, 200}; // 独自バイブレーションパターン
         switch (val)
