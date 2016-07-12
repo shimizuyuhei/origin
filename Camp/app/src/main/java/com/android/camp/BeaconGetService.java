@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -303,16 +304,19 @@ public class BeaconGetService extends Service{
     int notificnt = 0;
     int notificomp = 4;
     boolean notififlg = false;
+    NotificationCompat.Builder builder;
 
     private void setNotification(BeaconData data)
     {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+     //   NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
 
         String time = timeLogFormat(System.currentTimeMillis());
         //アイコン
+        builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setSmallIcon(R.drawable.danger);
-        int val = data.getDistance();
 
+        int val = data.getDistance();
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         switch (val)
         {
             case 1:
@@ -365,6 +369,14 @@ public class BeaconGetService extends Service{
         builder.setAutoCancel(true);
         Intent intent = new Intent(this, MainActivity.class);
         builder.setContentIntent(PendingIntent.getActivity(this,0,intent,0));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                builder.setPriority(Notification.PRIORITY_DEFAULT);
+                builder.setVibrate(null);
+                manager.notify(2, builder.build());
+            }
+        }, 2500);
 
         if (notififlg)
         {
