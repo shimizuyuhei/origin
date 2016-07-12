@@ -1,18 +1,18 @@
 package com.android.camp;
-import android.content.Context;
-        import android.location.Address;
-        import android.location.Geocoder;
 
-        import java.io.IOException;
-        import java.util.HashMap;
-        import java.util.List;
-        import java.util.Locale;
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
- * Created by shimizu.yuhei on 2016/07/07.
+ * Created by USER on 2016/07/12.
  */
-public class Weather {
-    public HashMap<String,String> weathermap = new HashMap<String,String>();
+public class Weather {  public HashMap<String,String> weathermap = new HashMap<String,String>();
     public HashMap<String,String> weathericon = new HashMap<String,String>();
 
     public void Weather()
