@@ -223,7 +223,7 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
         if (locationManager != null && gpsEnabled) {
             onGPS();
         } else {
-            Streetview.setText("GPSを\nONにしてください");
+            Streetview.setText("GPSをONに\nしてください");
             Log.d("CAMP_MainActivity", "startGPS_エラー");
         }
     }
@@ -309,6 +309,7 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
         if (locationManager != null && gpsEnabled) {
             onGPS();
         } else {
+            Streetview.setText("GPSをONに\nしてください");
             Log.d("CAMP_MainActivity", "startGPS_エラー");
         }
     }

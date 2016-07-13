@@ -280,6 +280,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         if (locationManager != null && gpsEnabled) {
             onGPS();
         } else {
+            Streetview.setText("GPSをONに\nしてください");
             Log.d("CAMP_MainSimpleActivity", "startGPS_エラー");
         }
     }
