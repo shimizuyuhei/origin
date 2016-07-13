@@ -246,7 +246,6 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     private void stopScanning() {
         Log.d("TEST_SettingsActivity","stopScanning");
         stopService(BeaconGetIntent);
-
         //Listを詰めて消してテキストを表示
         deviceList.setVisibility(View.GONE);
         usageTextView.setVisibility(View.VISIBLE);

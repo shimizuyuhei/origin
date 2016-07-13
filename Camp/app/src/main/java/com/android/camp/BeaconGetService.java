@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -24,9 +25,6 @@ import com.nttdocomo.android.sdaiflib.Define;
 
 import java.util.Calendar;
 
-/**
- * Created by USER on 2016/06/14.
- */
 public class BeaconGetService extends Service{
 
     private BeaconScanner mScanner;
@@ -42,7 +40,7 @@ public class BeaconGetService extends Service{
     private String comment =null;
     private double di;            //discomfort index(double)
     private String di_index="";   //discomfort index(string)
-    private int id=2;             //icon id
+    private int icon_id=2;             //icon id
 
     private static int linkingID = 0;
     private static boolean gStarted = false;
@@ -140,14 +138,17 @@ public class BeaconGetService extends Service{
         color[1] = 0;
         color[2] = 0;
         color[3] = 0;
-        comment=null;
+        icon_id=2;
+        comment="";
         actionIntent.putExtra("colorA",color[0]);
         actionIntent.putExtra("colorR",color[1]);
         actionIntent.putExtra("colorG",color[2]);
         actionIntent.putExtra("colorB",color[3]);
         actionIntent.putExtra("comment",comment);
+        actionIntent.putExtra("icon_id",icon_id);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
+
     }
 
     @Override
@@ -159,7 +160,10 @@ public class BeaconGetService extends Service{
         //ブロードキャスト用インテント
         actionIntent = new Intent("action");
 
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        Intent in =new Intent(this, StopService.class);
+
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, in, 0);
+
 
         //Linkingインテントフィルタ指定
         IntentFilter filter = new IntentFilter();
@@ -174,7 +178,7 @@ public class BeaconGetService extends Service{
 
         THbuilder.setSmallIcon(R.drawable.camp);
         THbuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.campicon));
-
+        THbuilder.addAction(R.drawable.stop, "通知の停止", pendingIntent);
         THbuilder.setTicker("ビーコンからの通知が届きました。");
         THbuilder.setContentTitle("キャンプ役立ちアプリ");
 
@@ -245,7 +249,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("colorG",color[2]);
         actionIntent.putExtra("colorB",color[3]);
         actionIntent.putExtra("comment",comment);
-        actionIntent.putExtra("id",id);
+        actionIntent.putExtra("icon_id",icon_id);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 
@@ -264,7 +268,7 @@ public class BeaconGetService extends Service{
             color[1] = 100;
             color[2] = 100;
            color[3] = 255;
-            id=0;
+            icon_id=0;
             comment="一枚羽織ろう";
         }
         else if(di<65)
@@ -273,7 +277,7 @@ public class BeaconGetService extends Service{
             color[1] = 126;
             color[2] = 128;
             color[3] = 255;
-            id=1;
+            icon_id=1;
             comment="一枚羽織ろう";
         }
         else if(di<70)
@@ -282,7 +286,7 @@ public class BeaconGetService extends Service{
            color[1] = 255;
             color[2] = 255;
             color[3] = 255;
-            id=2;
+            icon_id=2;
             comment="快適です";
         }
         else if(di<75)
@@ -291,7 +295,7 @@ public class BeaconGetService extends Service{
             color[1] = 255;
             color[2] = 255;
             color[3] = 128;
-            id=3;
+            icon_id=3;
             comment="ちょっと暑いかも";
         }
         else if(di<80)
@@ -300,7 +304,7 @@ public class BeaconGetService extends Service{
             color[1] = 255;
             color[2] = 64;
             color[3] = 64;
-            id=4;
+            icon_id=4;
             comment=
                     "こまめに\n水分補給しようね";
         }
@@ -310,7 +314,7 @@ public class BeaconGetService extends Service{
           color[1] = 255;
             color[2] = 0;
             color[3] = 0;
-            id=5;
+            icon_id=5;
             comment="涼しい日陰で休憩をとろう";
         }
 
@@ -379,6 +383,7 @@ public class BeaconGetService extends Service{
         //builder.setSubText("サブ情報");
         //builder.setContentInfo("右の表示");
 
+        builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         //通知するタイミング
         builder.setWhen(System.currentTimeMillis());
 
@@ -459,9 +464,11 @@ public class BeaconGetService extends Service{
         Cosiness[0] =null;
         Cosiness[1] = null;
         Cosiness[2] = null;
+        comment=null;
         actionIntent.putExtra("index1",Cosiness[0]);
         actionIntent.putExtra("index2",Cosiness[1]);
         actionIntent.putExtra("index3",Cosiness[2]);
+        actionIntent.putExtra("comment",comment);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 

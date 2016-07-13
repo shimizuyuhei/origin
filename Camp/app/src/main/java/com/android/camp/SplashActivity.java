@@ -12,17 +12,19 @@ import android.view.Window;
  * Created by shimizu.yuhei on 2016/06/30.
  */
 public class SplashActivity extends Activity {
+    private Handler hdl;
+    private int time = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // タイトルを非表示にします。
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        time = 1500;
+
         // splash.xmlをViewに指定します。
         setContentView(R.layout.splash);
-        Handler hdl = new Handler();
-        // 1500ms遅延させてsplashHandlerを実行します。
-        hdl.postDelayed(new splashHandler(), 1500);
     }
 
     class splashHandler implements Runnable {
@@ -35,11 +37,29 @@ public class SplashActivity extends Activity {
         }
     }
 
+    //onStartの後
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("TEST_SplashActivity","onResume");
+        hdl = new Handler();
+        // 1500ms遅延させてsplashHandlerを実行します。
+        hdl.postDelayed(new splashHandler(), time);
+    }
+
+    //アクティビティ実行の後
+    protected void onPause() {
+        super.onPause();
+        Log.d("TEST_SplashActivity","onPause");
+        hdl.removeCallbacksAndMessages(null);
+        time = 0;
+    }
+
     //戻るボタンクリック
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("TEST_SettingsActivity","onKeyDown");
-        if(keyCode == KeyEvent.KEYCODE_BACK) {
+        Log.d("TEST_SplashActivity","onKeyDown");
+        if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {
             // 戻るボタンの処理
             return false;
         } else {

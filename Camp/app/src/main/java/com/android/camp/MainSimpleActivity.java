@@ -68,7 +68,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         Log.d("CAMP_MainSimpleActivity","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-
+        MainActivity.NotificationStopFlag=true;
          TextView comment=(TextView)findViewById(R.id.index_txt);
         comment.setText("ボードを\n選択してください");
 
@@ -87,7 +87,9 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         BoardSettingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.NotificationStopFlag=false;
                 startActivityForResult(SettingsIntent,RESULTCODE);
+
 
             }
 
@@ -153,6 +155,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
          TextView comment=(TextView)findViewById(R.id.index_txt);
 
         if(requestCode == this.RESULTCODE) {
+            MainActivity.NotificationStopFlag=true;
             if (resultCode ==0) {
             } else {
                 ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);

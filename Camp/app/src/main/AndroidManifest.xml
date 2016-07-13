@@ -82,6 +82,11 @@
             android:name=".BeaconGetService">
             <!--android:process=":beacongetservice"-->
         </service>
+
+        <service
+            android:name=".StopService">
+            <!--android:process=":beacongetservice"-->
+        </service>
     </application>
 
 </manifest>

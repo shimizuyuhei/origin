@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private TextView FutureWeather;
     private Weather weather;
     private final int RESULTCODE = 1;   //受け取りコード
+    public static boolean NotificationStopFlag = true;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         setContentView(R.layout.activity_main);
 
         TextView comment_t=(TextView)findViewById(R.id.index_txt);
-         comment_t.setText("ボードを選択してください");
-
+         if(comment_t!=null) {
+             comment_t.setText("ボードを選択してください");
+         }
          setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
 
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
          //お役立ち情報
          ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.HelpInfButton1);
+         if(HelpInfButton1!=null){
          HelpInfButton1.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -91,58 +94,69 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
              }
 
          });
-
-         ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.HelpInfButton2);
-         HelpInfButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CookingListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
-
-        });
-
-         ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.HelpInfButton3);
-         HelpInfButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DangerListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
-
-        });
-        //ボード選択画面
-
-         ImageButton BoardSettingButton =(ImageButton)findViewById(R.id.BoardSettingButton);
-         BoardSettingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(SettingsIntent,RESULTCODE);
-            }
-
-        });
-         LinearLayout BoardSettingLayout =(LinearLayout)findViewById(R.id.BoardSettingLayout);
-         BoardSettingLayout.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 startActivityForResult(SettingsIntent,RESULTCODE);
+         }
+             ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.HelpInfButton2);
+         if(HelpInfButton2!=null) {
+             HelpInfButton2.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     Intent intent = new Intent(MainActivity.this, CookingListActivity.class);
+                     // 次画面のアクティビティ起動
+                     startActivity(intent);
                  }
 
-         });
+             });
+         }
+         ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.HelpInfButton3);
+         if (HelpInfButton3!=null) {
+             HelpInfButton3.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     Intent intent = new Intent(MainActivity.this, DangerListActivity.class);
+                     // 次画面のアクティビティ起動
+                     startActivity(intent);
+                 }
+
+             });
+             //ボード選択画面
+         }
+         ImageButton BoardSettingButton =(ImageButton)findViewById(R.id.BoardSettingButton);
+         if(BoardSettingButton!=null) {
+             BoardSettingButton.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     NotificationStopFlag = false;
+                     startActivityForResult(SettingsIntent, RESULTCODE);
+
+                 }
+
+             });
+         }
+         LinearLayout BoardSettingLayout =(LinearLayout)findViewById(R.id.BoardSettingLayout);
+
+         if(BoardSettingLayout!=null) {
+             BoardSettingLayout.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     NotificationStopFlag = false;
+                     startActivityForResult(SettingsIntent, RESULTCODE);
+                 }
+
+             });
+         }
 
 
          LinearLayout weather_layout=(LinearLayout)findViewById(R.id.weather_layout);
          //天気領域クリック処理
-         weather_layout.setClickable(true);
-         weather_layout.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 startGPS();
-             }
-         });
-
+         if(weather_layout!=null) {
+             weather_layout.setClickable(true);
+             weather_layout.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     startGPS();
+                 }
+             });
+         }
          Streetview = (TextView) findViewById(R.id.PlaceWeather);
          Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
          CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
@@ -160,13 +174,20 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
         TextView comment=(TextView)findViewById(R.id.index_txt);
+Log.d("onActivityResultttttttt",String.valueOf(resultCode));
+        Log.d("onActivityResultttttttt",String.valueOf(requestCode));
 
         if(requestCode == this.RESULTCODE) {
+            NotificationStopFlag=true;
             if (resultCode ==0) {
-                comment.setText("ボードを選択してください");
-                comment_layout.setClickable(true);
-            } else {
-                comment_layout.setClickable(false);
+
+                if(comment_layout!=null){
+                    comment_layout.setClickable(true);
+                }
+            } else if (resultCode==1){
+                if(comment_layout!=null) {
+                    comment_layout.setClickable(false);
+                }
                 ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
                 ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
                 ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
@@ -177,7 +198,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
                 GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
                 Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
-                comment.setText("");
+                if(comment!=null) {
+                    comment.setText("");
+                }
 
             }
         }
@@ -253,8 +276,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 return;
             }
             locationManager.removeUpdates(this);
-        } else {
-
         }
     }
 
@@ -384,8 +405,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 Log.d("CAMP_Permission","checkSelfPermission true");
                 startGPS();
 
-                return;
-
             } else {
                 // それでも拒否された時の対応
                 Toast toast = Toast.makeText(this, "これ以上なにもできません", Toast.LENGTH_SHORT);
@@ -503,11 +522,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         String[] text = new String[3];
         int[] color = new int[4];
         String comment="" ;
-        int id=2;
+        int icon_id=2;
 
         //  横幅のみ画面サイズに変更
         @Override
         public void onReceive(Context context, Intent intent) {
+
             Bundle bundle = intent.getExtras();
             text[0] = bundle.getString("index1");
             text[1] = bundle.getString("index2");
@@ -517,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             color[2] = bundle.getInt("colorG");
             color[3] = bundle.getInt("colorB");
             comment=bundle.getString("comment");
-            id=bundle.getInt("id");
+            icon_id=bundle.getInt("icon_id");
 
        //     Log.d("color_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
             Log.d("CAMP_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));
@@ -526,57 +546,86 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             TextView temp = (TextView) findViewById(R.id.temp_txt);
             TextView humid = (TextView) findViewById(R.id.humid_txt);
             TextView comment_t = (TextView) findViewById(R.id.text_comment);
-            index.setTextColor(Color.argb(color[0],color[1],color[2],color[3]));
+            if(index!=null) {
+                index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
+            }
             ImageView Loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
             ImageView Loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
             ImageView Loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
             //データが届いていなければ、ローディングアイコンの表示
             if(text[0]==null){
-                Loading_gif3.setVisibility(View.VISIBLE);
+                if(Loading_gif3!=null) {
+                    Loading_gif3.setVisibility(View.VISIBLE);
+                }
             }else{
-                Loading_gif3.setVisibility(View.INVISIBLE);
-                index.setText(text[0]);
-                comment_t.setText(comment);
+                if(Loading_gif3!=null){
+                    Loading_gif3.setVisibility(View.INVISIBLE);
+                }
+                if(index!=null) {
+                    index.setText(text[0]);
+                }
+                if(comment_t!=null) {
+                    comment_t.setText(comment);
+                }
             }
             if(text[1]==null){
-                Loading_gif1.setVisibility(View.VISIBLE);
-                temp.setText("");
-            }else{
-                Loading_gif1.setVisibility(View.INVISIBLE);
-                temp.setText(text[1]+"℃");
+                if(Loading_gif1!=null) {
+                    Loading_gif1.setVisibility(View.VISIBLE);
+                }
+                if(temp!=null) {
+                    temp.setText("");
+                }
+            }else {
+                if(Loading_gif1!=null) {
+                    Loading_gif1.setVisibility(View.INVISIBLE);
+                }
+                if(temp!=null){
+                    temp.setText(text[1]+"℃");
+                }
             }
+
             if(text[2]==null){
-                Loading_gif2.setVisibility(View.VISIBLE);
-                humid.setText("");
+                if(Loading_gif2!=null) {
+                    Loading_gif2.setVisibility(View.VISIBLE);
+                }
+                if(humid!=null){
+                    humid.setText("");
+                }
             }else{
-                Loading_gif2.setVisibility(View.INVISIBLE);
-                humid.setText(text[2]+"％");
+                if(Loading_gif2!=null){
+                    Loading_gif2.setVisibility(View.INVISIBLE);
+                }
+                if(humid!=null){
+                    humid.setText(text[2]+"％");
+                }
             }
 
             //表示するアイコンを変える
             ImageView icon = (ImageView)findViewById(R.id.ladybug);
-            switch (id){
-                case 0:
-                    icon.setImageResource(R.drawable.cold);
+            if(icon!=null) {
+                switch (icon_id) {
+                    case 0:
+                        icon.setImageResource(R.drawable.cold);
                         break;
-                case 1:
-                    icon.setImageResource(R.drawable.cool);
+                    case 1:
+                        icon.setImageResource(R.drawable.cool);
                         break;
-                case 2:
-                    icon.setImageResource(R.drawable.good);
+                    case 2:
+                        icon.setImageResource(R.drawable.good);
                         break;
-                case 3:
-                    icon.setImageResource(R.drawable.warm);
+                    case 3:
+                        icon.setImageResource(R.drawable.warm);
                         break;
-                case 4:
-                    icon.setImageResource(R.drawable.hot);
+                    case 4:
+                        icon.setImageResource(R.drawable.hot);
                         break;
-                case 5:
-                    icon.setImageResource(R.drawable.veryhot);
+                    case 5:
+                        icon.setImageResource(R.drawable.veryhot);
                         break;
-            }
+                }
 
+            }
         }
     }
 }
