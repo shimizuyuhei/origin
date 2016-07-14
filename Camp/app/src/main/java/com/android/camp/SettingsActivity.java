@@ -50,6 +50,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     Receiver myreceiver;
     private int setidparse;
     private int index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,8 +112,6 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
                     String[] str = setidstr.split("/", 0);
                     setid = Integer.valueOf(str[1]);
                 }
-
-                //Log.d("TEST",String.valueOf(setid));
 
                BeaconGetIntent.putExtra("SETID",setid);
                 bindService(BeaconGetIntent,SettingsActivity.this,0);
@@ -183,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
         serviceStart = BeaconGetService.isStarted();
         if(serviceStart) {
             //stopService(BeaconGetIntent);
-            Log.d("TEST_SettingsActivity","SettingsSwitch");
+            Log.d("CAMP_SettingsActivity","SettingsSwitch");
             SettingsSwitch.setChecked(true);
         }
     }
@@ -198,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
         super.onDestroy();
         unregisterReceiver(myreceiver);
         //stopService(BeaconGetIntent);
-        Log.d("TEST","SettingsActivity_onDestroy");
+        Log.d("CAMP_SettingsActivity","onDestroy");
     }
 
 
@@ -218,7 +217,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     //戻るボタンクリック
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("TEST_SettingsActivity","onKeyDown");
+        Log.d("CAMP_SettingsActivity","onKeyDown");
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             // 戻るボタンの処理
             setResult(0);
@@ -231,7 +230,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
 
     //ID取得スイッチON
     private void startScanning() {
-        Log.d("TEST_SettingsActivity","startScanning");
+        Log.d("CAMP_SettingsActivity","startScanning");
 
         if(!serviceStart) {
             startService(BeaconGetIntent);
@@ -244,7 +243,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
 
     //ID取得スイッチOFF
     private void stopScanning() {
-        Log.d("TEST_SettingsActivity","stopScanning");
+        Log.d("CAMP_SettingsActivity","stopScanning");
         stopService(BeaconGetIntent);
         //Listを詰めて消してテキストを表示
         deviceList.setVisibility(View.GONE);

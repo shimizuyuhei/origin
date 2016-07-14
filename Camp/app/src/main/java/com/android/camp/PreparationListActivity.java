@@ -21,9 +21,6 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 
-/**
- * Created by USER on 2016/07/07.
- */
 public class PreparationListActivity extends AppCompatActivity {
 
 
@@ -51,7 +48,7 @@ public class PreparationListActivity extends AppCompatActivity {
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("TEST_MainActivity","onCreate");
+        Log.d("PreparationListActivity","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cookinglist);
 
@@ -62,34 +59,36 @@ public class PreparationListActivity extends AppCompatActivity {
 
 
         ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(new ArrayAdapter<CampMenu>(this, R.layout.item_menu, Arrays.asList(menus)) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View row;
-                if(convertView == null){
-                    LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    row = inflater.inflate(R.layout.item_menu, null);
-                }else{
-                    row = convertView;
+        if(listView!=null) {
+            listView.setAdapter(new ArrayAdapter<CampMenu>(this, R.layout.item_menu, Arrays.asList(menus)) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View row;
+                    if (convertView == null) {
+                        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        row = inflater.inflate(R.layout.item_menu, null);
+                    } else {
+                        row = convertView;
+                    }
+                    CampMenu menu = menus[position];
+                    ((TextView) row.findViewById(R.id.title)).setText(menu.title);
+                    ((TextView) row.findViewById(R.id.caption)).setText(menu.caption);
+
+                    return row;
                 }
-                CampMenu menu = menus[position];
-                ((TextView) row.findViewById(R.id.title)).setText(menu.title);
-                ((TextView) row.findViewById(R.id.caption)).setText(menu.caption);
+            });
 
-                return row;
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("TEST_MainActivity","listView_onItemClick");
-                //startActivity(new Intent(Intent.ACTION_VIEW, menus[position].uri));
-                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-                intent.putExtra("url", menus[position].uri.toString());
-                startActivity(intent);
-            }
-        });
-
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d("PreparationListActivity", "listView_onItemClick");
+                    //startActivity(new Intent(Intent.ACTION_VIEW, menus[position].uri));
+                    Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                    intent.putExtra("url", menus[position].uri.toString());
+                    startActivity(intent);
+                }
+            });
+        }
     }
     //戻るメニュークリック処理
     @Override
@@ -108,7 +107,7 @@ public class PreparationListActivity extends AppCompatActivity {
     //戻るボタンクリック
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("TEST_SettingsActivity","onKeyDown");
+        Log.d("PreparationListActivity","onKeyDown");
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             // 戻るボタンの処理
             finish();
@@ -122,7 +121,7 @@ public class PreparationListActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        Log.d("TEST_MainActivity","onStart");
+        Log.d("PreparationListActivity","onStart");
     }
 
     //onStopの後
@@ -130,7 +129,7 @@ public class PreparationListActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        Log.d("TEST_MainActivity","onRestart");
+        Log.d("PreparationListActivity","onRestart");
     }
 
     //onStartの後
@@ -138,29 +137,31 @@ public class PreparationListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ImageView im = (ImageView)findViewById(R.id.src) ;
-        im.setImageResource(R.drawable.gw_family);
-        Log.d("TEST_MainActivity","onResume");
+        if(im!=null) {
+            im.setImageResource(R.drawable.gw_family);
+        }
+            Log.d("PreparationListActivity","onResume");
     }
 
     //アクティビティ実行の後
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("TEST_MainActivity","onPause");
+        Log.d("PreparationListActivity","onPause");
     }
 
     //onPauseの後
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("TEST_MainActivity","onStop");
+        Log.d("PreparationListActivity","onStop");
     }
 
     //onStopの後
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("TEST_MainActivity","onDestroy");
+        Log.d("PreparationListActivity","onDestroy");
         //unbindService(this);
     }
 

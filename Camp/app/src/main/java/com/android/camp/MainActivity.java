@@ -23,12 +23,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,9 +56,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private TextView CurrentWeather;
     private ImageView Futureicon;
     private TextView FutureWeather;
-    private Weather weather;
+    private com.android.camp.weather weather;
     private final int RESULTCODE = 1;   //受け取りコード
     public static boolean NotificationStopFlag = true;
+    public static boolean board_choice=true;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
 
         //startService(BeaconGetIntent);
-
         myreceiver = new Receiver();
         IntentFilter intentfilter = new IntentFilter();
         intentfilter.addAction("action");
@@ -162,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
          CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
          Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
          FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
-         weather = new Weather();
+         weather = new weather();
          weather.Weather();
 
          pass = "6bc4bdb0435fb3599d879b987453b459";
@@ -174,17 +172,20 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
         TextView comment=(TextView)findViewById(R.id.index_txt);
-Log.d("onActivityResultttttttt",String.valueOf(resultCode));
-        Log.d("onActivityResultttttttt",String.valueOf(requestCode));
 
-        if(requestCode == this.RESULTCODE) {
+       if(requestCode == this.RESULTCODE) {
             NotificationStopFlag=true;
             if (resultCode ==0) {
-
+                if(comment !=null){
+                    Log.d("OnActivityResult","aaaaaaaaaaaaaaaaaaaaa");
+                   // comment.setText("ボードを選択してください");
+                    board_choice=false;
+                }
                 if(comment_layout!=null){
                     comment_layout.setClickable(true);
                 }
             } else if (resultCode==1){
+                board_choice = true;
                 if(comment_layout!=null) {
                     comment_layout.setClickable(false);
                 }
@@ -192,12 +193,18 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
                 ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
                 ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
-                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target1);
-                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
-                GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
-                Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
+                if(loading_gif1!=null) {
+                    GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
+                    Glide.with(MainActivity.this).load(R.raw.loading).into(target1);
+                }
+                if(loading_gif2!=null) {
+                    GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
+                    Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
+                }
+                if(loading_gif3!=null) {
+                    GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
+                    Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
+                }
                 if(comment!=null) {
                     comment.setText("");
                 }
@@ -250,12 +257,15 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
             Streetview.setText("計測中\n");
             ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
-            GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
-            Glide.with(MainActivity.this).load(R.raw.load_weather).into(target1);
+            if(weather1 !=null) {
+                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
+                Glide.with(MainActivity.this).load(R.raw.load_weather).into(target1);
+            }
             ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
-            GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
-            Glide.with(MainActivity.this).load(R.raw.load_weather).into(target2);
-
+            if(weather2!=null) {
+                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
+                Glide.with(MainActivity.this).load(R.raw.load_weather).into(target2);
+            }
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -296,6 +306,7 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
     @Override
     protected void onRestart() {
         super.onRestart();
+
         Log.d("CAMP_MainActivity","onRestart");
     }
 
@@ -303,7 +314,15 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("CAMP_MainActivity","onResume");
+        TextView te = (TextView)findViewById(R.id.index_txt);
+
+        if(!board_choice){
+            Log.d("CAMP_MainActivity","onResume");
+
+            te.setText("ボードを選択してください");
+        }else{
+            te.setText("");
+        }
 
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (locationManager != null && gpsEnabled) {
@@ -345,7 +364,6 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
 
     //右上メニュークリック
     @Override
@@ -472,7 +490,6 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
 
                                 id[i] = weather.get("id").toString();
                                 icon[i] = weather.get("icon").toString();
-                                Log.d("CAMP_MainActivity", "run=" + id + " , " + icon);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -489,7 +506,6 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
                     FutureWeather.setText(weather.Getweather(id[1]));
                     Futureicon.setImageResource(weather.Getweathericon(icon[1]));
                 }
-                //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
             }
         });
         thread = null;
@@ -515,6 +531,8 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
         Log.d("CAMP_MainActivity","onProviderEnabled");
     }
 
+
+
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("CAMP_MainActivity","onProviderDisabled");
@@ -526,30 +544,47 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
         int[] color = new int[4];
         String comment="" ;
         int icon_id=2;
+        private String temp_string="";
+        private String humid_string="";
+        TextView index = (TextView) findViewById(R.id.index_txt);
+        TextView temp = (TextView) findViewById(R.id.temp_txt);
+        TextView humid = (TextView) findViewById(R.id.humid_txt);
+        TextView comment_t = (TextView) findViewById(R.id.text_comment);
+
 
         //  横幅のみ画面サイズに変更
         @Override
         public void onReceive(Context context, Intent intent) {
+              Bundle bundle = intent.getExtras();
+            if(bundle.getInt("destroy")==1){
+                Log.d("ONreceive","destroy");
+                text[0] = "ボードを選択してください";
+                text[1] = null;
+                text[2] = null;
+                color[0] = 0;
+                color[1] = 0;
+                color[2] = 0;
+                color[3] = 0;
+                comment=bundle.getString("comment");
+                icon_id=bundle.getInt("icon_id");
 
-            Bundle bundle = intent.getExtras();
-            text[0] = bundle.getString("index1");
-            text[1] = bundle.getString("index2");
-            text[2] = bundle.getString("index3");
-            color[0] = bundle.getInt("colorA");
-            color[1] = bundle.getInt("colorR");
-            color[2] = bundle.getInt("colorG");
-            color[3] = bundle.getInt("colorB");
-            comment=bundle.getString("comment");
-            icon_id=bundle.getInt("icon_id");
+            }else if(bundle.getInt("destroy")==0){
+                Log.d("ONreceive","nooooootdestroy");
+                text[0] = bundle.getString("index1");
+                text[1] = bundle.getString("index2");
+                text[2] = bundle.getString("index3");
+                color[0] = bundle.getInt("colorA");
+                color[1] = bundle.getInt("colorR");
+                color[2] = bundle.getInt("colorG");
+                color[3] = bundle.getInt("colorB");
+                comment=bundle.getString("comment");
+                icon_id=bundle.getInt("icon_id");
+            }
 
        //     Log.d("color_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
             Log.d("CAMP_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));
 
-            TextView index = (TextView) findViewById(R.id.index_txt);
-            TextView temp = (TextView) findViewById(R.id.temp_txt);
-            TextView humid = (TextView) findViewById(R.id.humid_txt);
-            TextView comment_t = (TextView) findViewById(R.id.text_comment);
-            if(index!=null) {
+             if(index!=null) {
                 index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
             }
             ImageView Loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
@@ -584,7 +619,8 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
                     Loading_gif1.setVisibility(View.INVISIBLE);
                 }
                 if(temp!=null){
-                    temp.setText(text[1]+"℃");
+                    temp_string=text[1]+"℃";
+                    temp.setText(temp_string);
                 }
             }
 
@@ -600,7 +636,8 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
                     Loading_gif2.setVisibility(View.INVISIBLE);
                 }
                 if(humid!=null){
-                    humid.setText(text[2]+"％");
+                    humid_string=text[2]+"％";
+                    humid.setText(humid_string);
                 }
             }
 

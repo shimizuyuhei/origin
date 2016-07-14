@@ -8,9 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 
-/**
- * Created by shimizu.yuhei on 2016/06/30.
- */
+
 public class SplashActivity extends Activity {
     private Handler hdl;
     private int time = 0;

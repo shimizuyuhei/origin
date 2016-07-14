@@ -109,7 +109,7 @@ public class BeaconGetService extends Service{
 
     @Override
     public void onCreate() {
-        Log.d("TEST_BeaconGetService","onCreate");
+        Log.d("CAMP_BeaconGetService","onCreate");
         super.onCreate();
         mScanner = new BeaconScanner(this);
         mReceiver = new BeaconReceiver();
@@ -121,7 +121,7 @@ public class BeaconGetService extends Service{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("TEST_BeaconGetService","onDestroy");
+        Log.d("CAMP_BeaconGetService","onDestroy");
         Toast.makeText(getApplicationContext(), "スキャン停止", Toast.LENGTH_SHORT).show();
         linkingID = 0;
         gStarted = false;
@@ -147,6 +147,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("colorB",color[3]);
         actionIntent.putExtra("comment",comment);
         actionIntent.putExtra("icon_id",icon_id);
+        actionIntent.putExtra("destroy",1);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 
@@ -154,7 +155,7 @@ public class BeaconGetService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
-        Log.d("TEST_BeaconGetService","onStartCommand");
+        Log.d("CAMP_BeaconGetService","onStartCommand");
         gStarted = true;
         super.onStartCommand(intent, flags, startid);
 
@@ -251,6 +252,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("colorB",color[3]);
         actionIntent.putExtra("comment",comment);
         actionIntent.putExtra("icon_id",icon_id);
+        actionIntent.putExtra("destroy",0);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
 
@@ -330,7 +332,6 @@ public class BeaconGetService extends Service{
     private void setNotification(BeaconData data)
     {
      //   NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-      //  NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder = new NotificationCompat.Builder(getApplicationContext());
         String time = timeLogFormat(System.currentTimeMillis());
         //アイコン
@@ -338,7 +339,6 @@ public class BeaconGetService extends Service{
         builder.setSmallIcon(R.drawable.danger);
 
         int val = data.getDistance();
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
         long[] vibrate_ptn = {0, 1200, 300, 200}; // 独自バイブレーションパターン
@@ -384,10 +384,6 @@ public class BeaconGetService extends Service{
         //Notificationを開いたときに表示するもの
         builder.setContentTitle("キャンプ役立ちアプリ");
         builder.setSubText(String.format("%s Id[%d]までの距離[%d]です。", time, data.getExtraId(), val));
-        //builder.setSubText("サブ情報");
-        //builder.setContentInfo("右の表示");
-
-    //    builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         //通知するタイミング
         builder.setWhen(System.currentTimeMillis());
 
@@ -454,10 +450,10 @@ public class BeaconGetService extends Service{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("TEST_BeaconGetService","onBind");
+        Log.d("CAMP_BeaconGetService","onBind");
         Toast.makeText(getApplicationContext(), "計測開始", Toast.LENGTH_SHORT).show();
         linkingID = intent.getIntExtra("SETID",0);
-        Log.d("TEST_BeaconGetService",String.format("%s",linkingID));
+        Log.d("CAMP_BeaconGetService",String.format("%s",linkingID));
 
         Cosiness[0] =null;
         Cosiness[1] = null;
@@ -474,13 +470,14 @@ public class BeaconGetService extends Service{
     }
 
     @Override
-    public void onRebind(Intent intent) {
-        Log.d("TEST_BeaconGetService","onRebind");
+    public void onRebind(Intent intent)
+    {
+        Log.d("CAMP_BeaconGetService","onRebind");
     }
 
     @Override
     public boolean onUnbind(Intent intent){
-        Log.d("TEST_BeaconGetService","onUnbind");
+        Log.d("CAMP_BeaconGetService","onUnbind");
         return true;
     }
 }

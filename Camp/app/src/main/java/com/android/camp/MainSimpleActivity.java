@@ -43,9 +43,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by USER on 2016/07/08.
- */
 public class MainSimpleActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
 
     private Intent SettingsIntent;
@@ -61,7 +58,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     private TextView CurrentWeather;
     private ImageView Futureicon;
     private TextView FutureWeather;
-    private Weather weather;
+    private com.android.camp.weather weather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,66 +81,72 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         registerReceiver(myreceiver, intentfilter);
 
         ImageView BoardSettingView=(ImageView)findViewById(R.id.ladybug);
-        BoardSettingView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.NotificationStopFlag=false;
-                startActivityForResult(SettingsIntent,RESULTCODE);
+        if(BoardSettingView!=null) {
+            BoardSettingView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.NotificationStopFlag = false;
+                    startActivityForResult(SettingsIntent, RESULTCODE);
 
 
-            }
+                }
 
-        });
-
+            });
+        }
         ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.image_button1);
         ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.image_button2);
         ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.image_button3);
 
-        HelpInfButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSimpleActivity.this, PreparationListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
+        if(HelpInfButton1!=null) {
+            HelpInfButton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainSimpleActivity.this, PreparationListActivity.class);
+                    // 次画面のアクティビティ起動
+                    startActivity(intent);
+                }
 
-        });
-        HelpInfButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
+            });
+        }
+        if(HelpInfButton2!=null) {
+            HelpInfButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainSimpleActivity.this, CookingListActivity.class);
+                    // 次画面のアクティビティ起動
+                    startActivity(intent);
+                }
 
-        });
+            });
+        }
+        if(HelpInfButton3!=null) {
+            HelpInfButton3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainSimpleActivity.this, DangerListActivity.class);
+                    // 次画面のアクティビティ起動
+                    startActivity(intent);
+                }
 
-        HelpInfButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSimpleActivity.this, DangerListActivity.class);
-                // 次画面のアクティビティ起動
-                startActivity(intent);
-            }
-
-        });
-
+            });
+        }
         //天気領域クリック処理
         LinearLayout Weather_Layout=(LinearLayout)findViewById(R.id.weather_layout);
-        Weather_Layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startGPS();
-            }
+        if(Weather_Layout!=null) {
+            Weather_Layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startGPS();
+                }
 
-        });
-
+            });
+        }
         Streetview = (TextView) findViewById(R.id.PlaceWeather);
         Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
         CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
         Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
         FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
-        weather = new Weather();
+        weather = new weather();
         weather.Weather();
 
         pass = "6bc4bdb0435fb3599d879b987453b459";
@@ -156,20 +159,31 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
         if(requestCode == this.RESULTCODE) {
             MainActivity.NotificationStopFlag=true;
-            if (resultCode ==0) {
+            if (resultCode == 0) {
+                if(comment != null){
+                    comment.setText("ボードを選択してください");
+                }
             } else {
                 ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
                 ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
                 ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
-                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
-                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target1);
-                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
-                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target2);
-                GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
-                Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target3);
-                comment.setText("");
+                if(loading_gif1 != null) {
+                    GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
+                    Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target1);
+                }
+                if(loading_gif2 != null) {
+                    GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
+                    Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target2);
+                }
+                if(loading_gif3 != null) {
+                    GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
 
+                    Glide.with(MainSimpleActivity.this).load(R.raw.loading).into(target3);
+                }
+                if(comment != null) {
+                   comment.setText("");
+                }
             }
         }
     }
@@ -219,11 +233,15 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             Streetview.setText("計測中\n");
 
             ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
-            GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
-            Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target1);
+            if(weather1 != null) {
+                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
+                Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target1);
+            }
             ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
-            GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
-            Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target2);
+            if(weather2 != null) {
+                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
+                Glide.with(MainSimpleActivity.this).load(R.raw.load_weather).into(target2);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -245,8 +263,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                 return;
             }
             locationManager.removeUpdates(this);
-        } else {
-
         }
     }
 
@@ -432,8 +448,11 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             @Override
             public void run() {
 
-                try {
-                    JSONArray lists = jsonObject.getJSONArray("list");
+                JSONArray lists;
+                if (jsonObject != null) {
+                    try {
+                        lists = jsonObject.getJSONArray("list");
+
 
                     //Log.d("TEST",jsonObject.toString(4));
 
@@ -453,7 +472,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                         }
 
                     }
-                } catch (JSONException e) {
+                }catch(JSONException e){
                     e.printStackTrace();
                 }
 
@@ -465,6 +484,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
                 //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
             }
+        }
         });
         thread = null;
     }
@@ -501,6 +521,9 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         String comment="" ;
         int id=2;
 
+        private String temp_string="";
+        private String humid_string="";
+
         //  横幅のみ画面サイズに変更
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -524,10 +547,18 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             ImageView gifView1 = (ImageView) findViewById(R.id.Loading_gif1);
             ImageView gifView2 = (ImageView) findViewById(R.id.Loading_gif2);
             ImageView gifView3 = (ImageView) findViewById(R.id.Loading_gif3);
-            index.setTextColor(Color.argb(color[0],color[1],color[2],color[3]));
+
+            if(index != null) {
+                index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
+            }
+
             if(text[0]==null){
-                gifView3.setVisibility(View.VISIBLE);
-                comment_t.setText("");
+                if(gifView3 != null) {
+                    gifView3.setVisibility(View.VISIBLE);
+                }
+                if(comment_t != null) {
+                    comment_t.setText("");
+                }
             }else{
                 index.setText(text[0]);
                 gifView3.setVisibility(View.INVISIBLE);

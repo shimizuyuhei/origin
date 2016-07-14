@@ -34,8 +34,9 @@ public class WebViewActivity extends AppCompatActivity {
         actionBar.setTitle("");
 
         progressBar = (ProgressBar)findViewById(R.id.webProgress);
-        progressBar.setVisibility(View.INVISIBLE);
-
+        if(progressBar!=null) {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
         webView = (WebView) findViewById(R.id.webView);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override

@@ -12,7 +12,7 @@ import java.util.Locale;
 /**
  * Created by USER on 2016/07/12.
  */
-public class Weather{ public HashMap<String,String> weathermap = new HashMap<String,String>();
+public class weather { public HashMap<String,String> weathermap = new HashMap<String,String>();
     public HashMap<String,String> weathericon = new HashMap<String,String>();
 
     public void Weather()
