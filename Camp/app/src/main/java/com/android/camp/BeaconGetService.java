@@ -122,7 +122,8 @@ public class BeaconGetService extends Service{
     public void onDestroy() {
         super.onDestroy();
         Log.d("TEST_BeaconGetService","onDestroy");
-        //linkingID = 0;
+        Toast.makeText(getApplicationContext(), "スキャン停止", Toast.LENGTH_SHORT).show();
+        linkingID = 0;
         gStarted = false;
         unregisterReceiver(mReceiver);
 
@@ -350,6 +351,7 @@ public class BeaconGetService extends Service{
                 builder.setContentText("警告 これ以上近づく場合は命を保証しません");
                 builder.setLights(0xff0000,1000,500);
                 builder.setVibrate(vibrate_ptn);
+                builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
                 notificnt = 0;
                 notififlg = true;
                 break;
@@ -360,6 +362,7 @@ public class BeaconGetService extends Service{
                 builder.setLights(0xff6d00,1000,500);
                 vibrate_ptn[1] = 500; // 独自バイブレーションパターン
                 builder.setVibrate(vibrate_ptn);
+                builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
                 builder.setContentText("危険 それ以上近づかないでください");
                 setTime(val,2);
 
@@ -372,6 +375,7 @@ public class BeaconGetService extends Service{
                 builder.setLights(0x00ff38,1000,500);
                 vibrate_ptn[1] = 200; // 独自バイブレーションパターン
                 builder.setVibrate(vibrate_ptn);
+                builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
                 builder.setContentText("注意 その先は危険です");
                 setTime(val,3);
 
@@ -383,7 +387,7 @@ public class BeaconGetService extends Service{
         //builder.setSubText("サブ情報");
         //builder.setContentInfo("右の表示");
 
-        builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+    //    builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         //通知するタイミング
         builder.setWhen(System.currentTimeMillis());
 
@@ -394,6 +398,7 @@ public class BeaconGetService extends Service{
                     @Override
                     public void run() {
                         builder.setPriority(Notification.PRIORITY_DEFAULT);
+                        builder.setSound(null);
                         builder.setVibrate(null);
                         manager.notify(2, builder.build());
                     }
@@ -403,14 +408,7 @@ public class BeaconGetService extends Service{
         builder.setAutoCancel(true);
         Intent intent = new Intent(this, MainActivity.class);
         builder.setContentIntent(PendingIntent.getActivity(this,0,intent,0));
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                builder.setPriority(Notification.PRIORITY_DEFAULT);
-                builder.setVibrate(null);
-                manager.notify(2, builder.build());
-            }
-        }, 2500);
+
 
         if (notififlg)
         {

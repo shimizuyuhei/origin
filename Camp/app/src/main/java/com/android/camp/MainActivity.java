@@ -456,37 +456,39 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
         handler.post(new Runnable() {
             @Override
             public void run() {
+                JSONArray lists;
+                if(jsonObject != null) {
+                    try {
 
-                try {
-                    JSONArray lists = jsonObject.getJSONArray("list");
+                        lists = jsonObject.getJSONArray("list");
 
-                    //Log.d("TEST",jsonObject.toString(4));
+                        //Log.d("TEST",jsonObject.toString(4));
 
-                    for (int i = 0; i < 2; i++) {
-                        try {
-                            JSONObject list = lists.getJSONObject(i);
-                            JSONArray weatherlist = list.getJSONArray("weather");
-                            JSONObject weather = weatherlist.getJSONObject(0);
+                        for (int i = 0; i < 2; i++) {
+                            try {
+                                JSONObject list = lists.getJSONObject(i);
+                                JSONArray weatherlist = list.getJSONArray("weather");
+                                JSONObject weather = weatherlist.getJSONObject(0);
 
-                            id[i] = weather.get("id").toString();
-                            icon[i] = weather.get("icon").toString();
-                            Log.d("CAMP_MainActivity", "run=" + id + " , " + icon);
+                                id[i] = weather.get("id").toString();
+                                icon[i] = weather.get("icon").toString();
+                                Log.d("CAMP_MainActivity", "run=" + id + " , " + icon);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
+                    CurrentWeather.setText(weather.Getweather(id[0]));
+                    Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
+
+                    FutureWeather.setText(weather.Getweather(id[1]));
+                    Futureicon.setImageResource(weather.Getweathericon(icon[1]));
                 }
-
-                CurrentWeather.setText(weather.Getweather(id[0]));
-                Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
-
-                FutureWeather.setText(weather.Getweather(id[1]));
-                Futureicon.setImageResource(weather.Getweathericon(icon[1]));
-
                 //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
             }
         });
