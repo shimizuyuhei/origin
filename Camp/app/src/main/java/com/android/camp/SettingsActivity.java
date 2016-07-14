@@ -90,6 +90,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
                     startScanning();
                 } else {
                     stopScanning();
+                    MainActivity.scanningFlag = false;
                 }
             }
         });
@@ -117,6 +118,7 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
                 bindService(BeaconGetIntent,SettingsActivity.this,0);
                 unbindService(SettingsActivity.this);
                 setResult(1);
+                MainActivity.scanningFlag =true;
                 finish();
             }
         });

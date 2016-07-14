@@ -268,8 +268,8 @@ public class BeaconGetService extends Service{
         if(di <60)
         {
             moji ="寒い";
-            color[1] = 100;
-            color[2] = 100;
+            color[1] = 0;
+            color[2] = 0;
            color[3] = 255;
             icon_id=0;
             comment="一枚羽織ろう";
@@ -277,8 +277,8 @@ public class BeaconGetService extends Service{
         else if(di<65)
         {
             moji ="肌寒い";
-            color[1] = 126;
-            color[2] = 128;
+            color[1] = 0;
+            color[2] = 255;
             color[3] = 255;
             icon_id=1;
             comment="一枚羽織ろう";
@@ -286,9 +286,9 @@ public class BeaconGetService extends Service{
         else if(di<70)
         {
             moji ="快適";
-           color[1] = 255;
+           color[1] = 0;
             color[2] = 255;
-            color[3] = 255;
+            color[3] = 0;
             icon_id=2;
             comment="快適です";
         }
@@ -297,7 +297,7 @@ public class BeaconGetService extends Service{
             moji ="ちょっと暑い";
             color[1] = 255;
             color[2] = 255;
-            color[3] = 128;
+            color[3] = 0;
             icon_id=3;
             comment="ちょっと暑いかも";
         }
@@ -306,7 +306,7 @@ public class BeaconGetService extends Service{
             moji ="暑く感じる";
             color[1] = 255;
             color[2] = 64;
-            color[3] = 64;
+            color[3] = 0;
             icon_id=4;
             comment=
                     "こまめに\n水分補給しようね";

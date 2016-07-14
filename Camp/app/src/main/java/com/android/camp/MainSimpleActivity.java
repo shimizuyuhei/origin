@@ -66,9 +66,10 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         MainActivity.NotificationStopFlag=true;
-         TextView comment=(TextView)findViewById(R.id.index_txt);
-        comment.setText("ボードを\n選択してください");
-
+         TextView comment=(TextView)findViewById(R.id.text_comment);
+        if(comment != null) {
+            comment.setText("ボードを\n選択してください");
+        }
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -155,13 +156,16 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
-         TextView comment=(TextView)findViewById(R.id.index_txt);
+         TextView comment=(TextView)findViewById(R.id.text_comment);
 
         if(requestCode == this.RESULTCODE) {
             MainActivity.NotificationStopFlag=true;
             if (resultCode == 0) {
-                if(comment != null){
-                    comment.setText("ボードを選択してください");
+
+                if( !MainActivity.scanningFlag){
+                    if(comment != null){
+                       comment.setText("ボードを選択してください");
+                    }
                 }
             } else {
                 ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
@@ -519,7 +523,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         String[] text = new String[3];
          int[] color = new int[4];
         String comment="" ;
-        int id=2;
+        int icon_id=2;
 
         private String temp_string="";
         private String humid_string="";
@@ -536,7 +540,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             color[2] = bundle.getInt("colorG");
             color[3] = bundle.getInt("colorB");
             comment=bundle.getString("comment");
-            id=bundle.getInt("id");
+            icon_id=bundle.getInt("icon_id");
 
          //   Log.d("CAMP_MainSimpleActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
 
@@ -560,47 +564,72 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                     comment_t.setText("");
                 }
             }else{
-                index.setText(text[0]);
-                gifView3.setVisibility(View.INVISIBLE);
-                comment_t.setText(comment);
+                if(index != null){
+                    index.setText(text[0]);
+                }
+                if(gifView3 != null){
+                    gifView3.setVisibility(View.INVISIBLE);
+                }
+                if(comment_t != null){
+                    comment_t.setText(comment);
+                }
             }
             if(text[1]==null){
-                gifView1.setVisibility(View.VISIBLE);
-                temp.setText("");
+                if(gifView1 != null){
+                    gifView1.setVisibility(View.VISIBLE);
+                }
+                if(temp != null){
+                    temp.setText("");
+                }
             }else{
-                gifView1.setVisibility(View.INVISIBLE);
-                temp.setText(text[1]+"℃");
+                if(gifView1 != null){
+                    gifView1.setVisibility(View.INVISIBLE);
+                }
+                if(temp != null){
+                    temp_string =text[1]+"℃";
+                    temp.setText(temp_string);
+                }
             }
             if(text[2]==null){
-                gifView2.setVisibility(View.VISIBLE);
-                humid.setText("");
+                if(gifView2 != null){
+                    gifView2.setVisibility(View.VISIBLE);
+                }
+                if(humid != null){
+                    humid.setText("");
+                }
             }else{
-                gifView2.setVisibility(View.INVISIBLE);
-
-                humid.setText(text[2]+"％");
+                if(gifView2 != null){
+                    gifView2.setVisibility(View.INVISIBLE);
+                }
+                if(humid != null){
+                    humid_string =text[2]+"％";
+                    humid.setText(humid_string);
+                }
             }
 
             ImageView icon = (ImageView)findViewById(R.id.ladybug);
-            switch (id){
-                case 0:
-                    icon.setImageResource(R.drawable.cold2);
-                    break;
-                case 1:
-                    icon.setImageResource(R.drawable.cool2);
-                    break;
-                case 2:
-                    icon.setImageResource(R.drawable.good2);
-                    break;
-                case 3:
-                    icon.setImageResource(R.drawable.warm2);
-                    break;
-                case 4:
-                    icon.setImageResource(R.drawable.hot2);
-                    break;
-                case 5:
-                    icon.setImageResource(R.drawable.veryhot2);
-                    break;
+            if(icon != null){
+                switch (icon_id){
+                    case 0:
+                        icon.setImageResource(R.drawable.cold2);
+                        break;
+                    case 1:
+                        icon.setImageResource(R.drawable.cool2);
+                        break;
+                    case 2:
+                        icon.setImageResource(R.drawable.good2);
+                        break;
+                    case 3:
+                        icon.setImageResource(R.drawable.warm2);
+                        break;
+                    case 4:
+                        icon.setImageResource(R.drawable.hot2);
+                        break;
+                    case 5:
+                        icon.setImageResource(R.drawable.veryhot2);
+                        break;
 
+                }
             }
         }
     }

@@ -59,17 +59,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private com.android.camp.weather weather;
     private final int RESULTCODE = 1;   //受け取りコード
     public static boolean NotificationStopFlag = true;
-    public static boolean board_choice=true;
-
-     @Override
+    public static boolean scanningFlag = false;
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("CAMP_MainActivity","onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView comment_t=(TextView)findViewById(R.id.index_txt);
-         if(comment_t!=null) {
-             comment_t.setText("ボードを選択してください");
+         TextView index = (TextView) findViewById(R.id.text_comment);
+
+         if(index!=null) {
+             index.setText("ボードを選択してください");
          }
          setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
         SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -171,21 +171,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
-        TextView comment=(TextView)findViewById(R.id.index_txt);
+        TextView comment=(TextView)findViewById(R.id.text_comment);
 
        if(requestCode == this.RESULTCODE) {
             NotificationStopFlag=true;
             if (resultCode ==0) {
-                if(comment !=null){
-                    Log.d("OnActivityResult","aaaaaaaaaaaaaaaaaaaaa");
-                   // comment.setText("ボードを選択してください");
-                    board_choice=false;
+                if( !scanningFlag){
+                    if(comment !=null){
+                        comment.setText("ボードを選択してください");
+
+                    }
+                    if(comment_layout!=null){
+                        comment_layout.setClickable(true);
+                    }
                 }
-                if(comment_layout!=null){
-                    comment_layout.setClickable(true);
-                }
-            } else if (resultCode==1){
-                board_choice = true;
+            } else{
                 if(comment_layout!=null) {
                     comment_layout.setClickable(false);
                 }
@@ -314,15 +314,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onResume() {
         super.onResume();
-        TextView te = (TextView)findViewById(R.id.index_txt);
-
-        if(!board_choice){
-            Log.d("CAMP_MainActivity","onResume");
-
-            te.setText("ボードを選択してください");
-        }else{
-            te.setText("");
-        }
 
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (locationManager != null && gpsEnabled) {
@@ -546,104 +537,89 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         int icon_id=2;
         private String temp_string="";
         private String humid_string="";
-        TextView index = (TextView) findViewById(R.id.index_txt);
-        TextView temp = (TextView) findViewById(R.id.temp_txt);
-        TextView humid = (TextView) findViewById(R.id.humid_txt);
-        TextView comment_t = (TextView) findViewById(R.id.text_comment);
-
 
         //  横幅のみ画面サイズに変更
         @Override
         public void onReceive(Context context, Intent intent) {
-              Bundle bundle = intent.getExtras();
-            if(bundle.getInt("destroy")==1){
-                Log.d("ONreceive","destroy");
-                text[0] = "ボードを選択してください";
-                text[1] = null;
-                text[2] = null;
-                color[0] = 0;
-                color[1] = 0;
-                color[2] = 0;
-                color[3] = 0;
-                comment=bundle.getString("comment");
-                icon_id=bundle.getInt("icon_id");
+            Bundle bundle = intent.getExtras();
+            text[0] = bundle.getString("index1");
+            text[1] = bundle.getString("index2");
+            text[2] = bundle.getString("index3");
+            color[0] = bundle.getInt("colorA");
+            color[1] = bundle.getInt("colorR");
+            color[2] = bundle.getInt("colorG");
+            color[3] = bundle.getInt("colorB");
+            comment=bundle.getString("comment");
+            icon_id=bundle.getInt("icon_id");
 
-            }else if(bundle.getInt("destroy")==0){
-                Log.d("ONreceive","nooooootdestroy");
-                text[0] = bundle.getString("index1");
-                text[1] = bundle.getString("index2");
-                text[2] = bundle.getString("index3");
-                color[0] = bundle.getInt("colorA");
-                color[1] = bundle.getInt("colorR");
-                color[2] = bundle.getInt("colorG");
-                color[3] = bundle.getInt("colorB");
-                comment=bundle.getString("comment");
-                icon_id=bundle.getInt("icon_id");
-            }
-
-       //     Log.d("color_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
+            //     Log.d("color_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
             Log.d("CAMP_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));
-
-             if(index!=null) {
-                index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
-            }
+            TextView index = (TextView) findViewById(R.id.index_txt);
+            TextView temp = (TextView) findViewById(R.id.temp_txt);
+            TextView humid = (TextView) findViewById(R.id.humid_txt);
+            TextView comment_t = (TextView) findViewById(R.id.text_comment);
             ImageView Loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
             ImageView Loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
             ImageView Loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
-            //データが届いていなければ、ローディングアイコンの表示
+
+            if(index!=null) {
+                index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
+            }
+
             if(text[0]==null){
-                if(Loading_gif3!=null) {
+                if(Loading_gif3 != null) {
                     Loading_gif3.setVisibility(View.VISIBLE);
                 }
-            }else{
-                if(Loading_gif3!=null){
-                    Loading_gif3.setVisibility(View.INVISIBLE);
+                if(comment_t != null) {
+                    comment_t.setText("");
                 }
-                if(index!=null) {
+            }else{
+                if(index != null) {
                     index.setText(text[0]);
                 }
-                if(comment_t!=null) {
+                if(Loading_gif3 != null){
+                    Loading_gif3.setVisibility(View.INVISIBLE);
+                }
+                if(comment_t != null){
                     comment_t.setText(comment);
                 }
             }
             if(text[1]==null){
-                if(Loading_gif1!=null) {
+                if(Loading_gif1 != null){
                     Loading_gif1.setVisibility(View.VISIBLE);
                 }
-                if(temp!=null) {
+                if(temp != null){
                     temp.setText("");
                 }
-            }else {
-                if(Loading_gif1!=null) {
+            }else{
+                if(Loading_gif1 != null){
                     Loading_gif1.setVisibility(View.INVISIBLE);
                 }
-                if(temp!=null){
-                    temp_string=text[1]+"℃";
+                if(temp != null){
+                    temp_string = text[1] + "℃";
                     temp.setText(temp_string);
                 }
             }
-
             if(text[2]==null){
-                if(Loading_gif2!=null) {
+                if(Loading_gif2 != null){
                     Loading_gif2.setVisibility(View.VISIBLE);
                 }
-                if(humid!=null){
+                if(humid != null){
                     humid.setText("");
                 }
             }else{
-                if(Loading_gif2!=null){
+                if(Loading_gif2 != null){
                     Loading_gif2.setVisibility(View.INVISIBLE);
                 }
-                if(humid!=null){
-                    humid_string=text[2]+"％";
+                if(humid != null){
+                    humid_string =text[2]+"％";
                     humid.setText(humid_string);
                 }
             }
 
-            //表示するアイコンを変える
             ImageView icon = (ImageView)findViewById(R.id.ladybug);
-            if(icon!=null) {
+            if(icon != null) {
                 switch (icon_id) {
                     case 0:
                         icon.setImageResource(R.drawable.cold);
@@ -664,7 +640,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         icon.setImageResource(R.drawable.veryhot);
                         break;
                 }
-
             }
         }
     }
