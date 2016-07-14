@@ -431,38 +431,41 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
         handler.post(new Runnable() {
             @Override
             public void run() {
-
+                JSONArray lists;
                 try {
-                    JSONArray lists = jsonObject.getJSONArray("list");
+                    if(jsonObject!=null) {
 
-                    //Log.d("TEST",jsonObject.toString(4));
+                        lists = jsonObject.getJSONArray("list");
 
-                    for (int i = 0; i < 2; i++) {
-                        try {
-                            JSONObject list = lists.getJSONObject(i);
-                            JSONArray weatherlist = list.getJSONArray("weather");
-                            JSONObject weather = weatherlist.getJSONObject(0);
+                        //Log.d("TEST",jsonObject.toString(4));
 
-                            id[i] = weather.get("id").toString();
-                            icon[i] = weather.get("icon").toString();
-                            Log.d("CAMP_MainSimpleActivity", "run=" + id + " , " + icon);
+                        for (int i = 0; i < 2; i++) {
+                            try {
+                                JSONObject list = lists.getJSONObject(i);
+                                JSONArray weatherlist = list.getJSONArray("weather");
+                                JSONObject weather = weatherlist.getJSONObject(0);
+
+                                id[i] = weather.get("id").toString();
+                                icon[i] = weather.get("icon").toString();
+                                Log.d("CAMP_MainSimpleActivity", "run=" + id + " , " + icon);
 
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                         }
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if(jsonObject!=null) {
+                    CurrentWeather.setText(weather.Getweather(id[0]));
+                    Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
 
-                CurrentWeather.setText(weather.Getweather(id[0]));
-                Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
-
-                FutureWeather.setText(weather.Getweather(id[1]));
-                Futureicon.setImageResource(weather.Getweathericon(icon[1]));
-
+                    FutureWeather.setText(weather.Getweather(id[1]));
+                    Futureicon.setImageResource(weather.Getweathericon(icon[1]));
+                }
                 //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
             }
         });

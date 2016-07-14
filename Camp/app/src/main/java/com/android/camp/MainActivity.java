@@ -454,13 +454,16 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
     public void run() {
         jsonObject = jsonLoader.loadInBackground();
         handler.post(new Runnable() {
+            JSONArray
+                    lists;
+
             @Override
             public void run() {
 
-                try {
-                    JSONArray lists = jsonObject.getJSONArray("list");
-
-                    //Log.d("TEST",jsonObject.toString(4));
+                    try {
+                        if(jsonObject!=null){
+                            lists= jsonObject.getJSONArray("list");
+                         //Log.d("TEST",jsonObject.toString(4));
 
                     for (int i = 0; i < 2; i++) {
                         try {
@@ -475,19 +478,22 @@ Log.d("onActivityResultttttttt",String.valueOf(resultCode));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
+
+                        }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if(jsonObject!=null) {
 
-                CurrentWeather.setText(weather.Getweather(id[0]));
-                Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
+                    CurrentWeather.setText(weather.Getweather(id[0]));
+                    Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
 
-                FutureWeather.setText(weather.Getweather(id[1]));
-                Futureicon.setImageResource(weather.Getweathericon(icon[1]));
+                    FutureWeather.setText(weather.Getweather(id[1]));
+                    Futureicon.setImageResource(weather.Getweathericon(icon[1]));
 
-                //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MainActivity.this, weather.Getweather(id[0]), Toast.LENGTH_LONG).show();
+                }
             }
         });
         thread = null;
