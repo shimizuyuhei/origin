@@ -157,7 +157,8 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     }
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
          TextView comment=(TextView)findViewById(R.id.text_comment);
-
+        TextView temp = (TextView)findViewById(R.id.temp_txt);
+        
         if(requestCode == this.RESULTCODE) {
             MainActivity.NotificationStopFlag=true;
             if (resultCode == 0) {
@@ -165,6 +166,10 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                 if( !MainActivity.scanningFlag){
                     if(comment != null){
                        comment.setText("ボードを選択してください");
+                    }
+
+                    if(temp !=null){
+                        temp.setText("");
                     }
                 }
             } else {

@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
         TextView comment=(TextView)findViewById(R.id.text_comment);
+        TextView temp = (TextView)findViewById(R.id.temp_txt);
 
        if(requestCode == this.RESULTCODE) {
             NotificationStopFlag=true;
@@ -179,7 +180,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 if( !scanningFlag){
                     if(comment !=null){
                         comment.setText("ボードを選択してください");
-
+                    }
+                    if(temp !=null){
+                        temp.setText("");
                     }
                     if(comment_layout!=null){
                         comment_layout.setClickable(true);
