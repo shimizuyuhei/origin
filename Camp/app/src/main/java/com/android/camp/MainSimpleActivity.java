@@ -158,6 +158,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
     @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
          TextView comment=(TextView)findViewById(R.id.text_comment);
         TextView temp = (TextView)findViewById(R.id.temp_txt);
+        TextView humid = (TextView)findViewById(R.id.humid_txt);
         
         if(requestCode == this.RESULTCODE) {
             MainActivity.NotificationStopFlag=true;
@@ -170,6 +171,9 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
                     if(temp !=null){
                         temp.setText("");
+                    }
+                    if(humid != null){
+                        humid.setText("");
                     }
                 }
             } else {

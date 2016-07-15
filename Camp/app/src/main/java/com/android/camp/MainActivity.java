@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
         TextView comment=(TextView)findViewById(R.id.text_comment);
         TextView temp = (TextView)findViewById(R.id.temp_txt);
+        TextView humid = (TextView)findViewById(R.id.humid_txt);
 
        if(requestCode == this.RESULTCODE) {
             NotificationStopFlag=true;
@@ -186,6 +187,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     }
                     if(comment_layout!=null){
                         comment_layout.setClickable(true);
+                    }
+                    if(humid != null){
+                        humid.setText("");
                     }
                 }
             } else{
