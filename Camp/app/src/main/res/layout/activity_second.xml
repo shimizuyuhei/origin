@@ -282,7 +282,7 @@
 
 
                     <ImageButton
-                        android:id="@+id/image_button1"
+                        android:id="@+id/HelpInfButton1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
@@ -308,7 +308,7 @@
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:id="@+id/image_button2"
+                        android:id="@+id/HelpInfButton2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
@@ -336,7 +336,7 @@
                     android:layout_width="wrap_content"
                     android:orientation="vertical">
                     <ImageButton
-                        android:id="@+id/image_button3"
+                        android:id="@+id/HelpInfButton3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"

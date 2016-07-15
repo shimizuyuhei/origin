@@ -94,9 +94,9 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
             });
         }
-        ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.image_button1);
-        ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.image_button2);
-        ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.image_button3);
+        ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.HelpInfButton1);
+        ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.HelpInfButton2);
+        ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.HelpInfButton3);
 
         if(HelpInfButton1!=null) {
             HelpInfButton1.setOnClickListener(new View.OnClickListener() {
@@ -408,8 +408,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                 Log.d("CAMP Permission","checkSelfPermission true");
                 startGPS();
 
-                return;
-
             } else {
                 // それでも拒否された時の対応
                 Toast toast = Toast.makeText(this, "これ以上なにもできません", Toast.LENGTH_SHORT);
@@ -477,9 +475,7 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
                             id[i] = weather.get("id").toString();
                             icon[i] = weather.get("icon").toString();
-                            Log.d("CAMP_MainSimpleActivity", "run=" + id + " , " + icon);
-
-
+                       //     Log.d("CAMP_MainSimpleActivity", "run=" + id + " , " + icon);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -491,7 +487,6 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
                 CurrentWeather.setText(weather.Getweather(id[0]));
                 Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
-
                 FutureWeather.setText(weather.Getweather(id[1]));
                 Futureicon.setImageResource(weather.Getweathericon(icon[1]));
 
@@ -519,12 +514,12 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
 
     @Override
     public void onProviderEnabled(String provider) {
-        Log.d("CAMP_MainSimpleActivity","onProviderEnabled");
+    //    Log.d("CAMP_MainSimpleActivity","onProviderEnabled");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Log.d("CAMP_MainSimpleActivity","onProviderDisabled");
+    //    Log.d("CAMP_MainSimpleActivity","onProviderDisabled");
     }
     /*GPS終了*/
 
@@ -557,17 +552,17 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
             TextView temp = (TextView)findViewById(R.id.temp_txt);
             TextView humid = (TextView)findViewById(R.id.humid_txt);
             TextView comment_t = (TextView)findViewById(R.id.text_comment);
-            ImageView gifView1 = (ImageView) findViewById(R.id.Loading_gif1);
-            ImageView gifView2 = (ImageView) findViewById(R.id.Loading_gif2);
-            ImageView gifView3 = (ImageView) findViewById(R.id.Loading_gif3);
+            ImageView Loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
+            ImageView Loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
+            ImageView Loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
             if(index != null) {
                 index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
             }
 
             if(text[0]==null){
-                if(gifView3 != null) {
-                    gifView3.setVisibility(View.VISIBLE);
+                if(Loading_gif3 != null) {
+                    Loading_gif3.setVisibility(View.VISIBLE);
                 }
                 if(comment_t != null) {
                     comment_t.setText("");
@@ -576,23 +571,23 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                 if(index != null){
                     index.setText(text[0]);
                 }
-                if(gifView3 != null){
-                    gifView3.setVisibility(View.INVISIBLE);
+                if(Loading_gif3 != null){
+                    Loading_gif3.setVisibility(View.INVISIBLE);
                 }
                 if(comment_t != null){
                     comment_t.setText(comment);
                 }
             }
             if(text[1]==null){
-                if(gifView1 != null){
-                    gifView1.setVisibility(View.VISIBLE);
+                if(Loading_gif1 != null){
+                    Loading_gif1.setVisibility(View.VISIBLE);
                 }
                 if(temp != null){
                     temp.setText("");
                 }
             }else{
-                if(gifView1 != null){
-                    gifView1.setVisibility(View.INVISIBLE);
+                if(Loading_gif1 != null){
+                    Loading_gif1.setVisibility(View.INVISIBLE);
                 }
                 if(temp != null){
                     temp_string =text[1]+"℃";
@@ -600,15 +595,15 @@ public class MainSimpleActivity extends AppCompatActivity implements ServiceConn
                 }
             }
             if(text[2]==null){
-                if(gifView2 != null){
-                    gifView2.setVisibility(View.VISIBLE);
+                if(Loading_gif2 != null){
+                    Loading_gif2.setVisibility(View.VISIBLE);
                 }
                 if(humid != null){
                     humid.setText("");
                 }
             }else{
-                if(gifView2 != null){
-                    gifView2.setVisibility(View.INVISIBLE);
+                if(Loading_gif2 != null){
+                    Loading_gif2.setVisibility(View.INVISIBLE);
                 }
                 if(humid != null){
                     humid_string =text[2]+"％";
