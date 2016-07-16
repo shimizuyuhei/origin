@@ -27,18 +27,8 @@ import java.util.Arrays;
  * Created by USER on 2016/07/06.
  */
 public class CookingListActivity extends AppCompatActivity{
-    private static final class CampMenu {
-        public final String title;
-        public final String caption;
-        public final Uri uri;
 
-        public CampMenu(String title, String caption, String uri) {
-            this.title = title;
-            this.caption = caption;
-            this.uri = Uri.parse(uri);
-        }
-    }
-
+    /*表示させるリスト内容*/
     private static final CampMenu[] menus = {
             new CampMenu("・キャンプ料理　クックパッド", "クックパッドの「キャンプ料理」の検索ページです。", "http://cookpad.com/category/1760"),
             new CampMenu("・キャンプ料理　アウトドアレシピ", "おすすめのアウトドア料理のレシピをまとめたページです。", "http://camphack.nap-camp.com/762"),
@@ -50,16 +40,17 @@ public class CookingListActivity extends AppCompatActivity{
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("CAMP_CokingListActivity","onCreate");
+        /*Log.d("CAMP_CokingListActivity","onCreate");*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cookinglist);
 
+        /*Toolbarをアクションバーとして使用*/
         setSupportActionBar((Toolbar) findViewById(R.id.settings_toolbar));
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
+        /*お役立ち情報リスト*/
         ListView listView = (ListView) findViewById(R.id.listView);
         if(listView!=null) {
             listView.setAdapter(new ArrayAdapter<CampMenu>(this, R.layout.item_menu, Arrays.asList(menus)) {
@@ -67,32 +58,35 @@ public class CookingListActivity extends AppCompatActivity{
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View row;
                     if (convertView == null) {
+                        /*システムサービスから取得*/
                         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        row = inflater.inflate(R.layout.item_menu, null);
+                        row = inflater.inflate(R.layout.item_menu, null);   /*アイテムメニューのセット*/
                     } else {
                         row = convertView;
                     }
 
-                    CampMenu menu = menus[position];
-                    ((TextView) row.findViewById(R.id.title)).setText(menu.title);
-                    ((TextView) row.findViewById(R.id.caption)).setText(menu.caption);
+                    CampMenu menu = menus[position];    /*リストへセット*/
+                    ((TextView) row.findViewById(R.id.title)).setText(menu.title);  /*タイトルのセット*/
+                    ((TextView) row.findViewById(R.id.caption)).setText(menu.caption);  /*内容のセット*/
 
                     return row;
                 }
             });
+
+            /*リストクリック処理*/
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d("CAMP_CokingListActivity", "listView_onItemClick");
-                    //startActivity(new Intent(Intent.ACTION_VIEW, menus[position].uri));
-                    Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-                    intent.putExtra("url", menus[position].uri.toString());
-                    startActivity(intent);
+                    /*Log.d("CAMP_CokingListActivity", "listView_onItemClick");*/
+                    Intent intent = new Intent(getApplicationContext(), WebViewActivity.class); /*内部ブラウザのセット*/
+                    intent.putExtra("url", menus[position].uri.toString()); /*表示させるURLのセット*/
+                    startActivity(intent);  /*ブラウザへ移動*/
                 }
             });
         }
     }
-    //戻るメニュークリック処理
+
+    /*戻るメニュークリック処理*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -106,12 +100,12 @@ public class CookingListActivity extends AppCompatActivity{
         }
     }
 
-    //戻るボタンクリック
+    /*戻るボタンクリック*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("CAMP_CokingListActivity","onKeyDown");
+        /*Log.d("CAMP_CokingListActivity","onKeyDown");*/
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            // 戻るボタンの処理
+            /*戻るボタンの処理*/
             finish();
             return false;
         } else {
@@ -119,50 +113,14 @@ public class CookingListActivity extends AppCompatActivity{
         }
     }
 
-    //onCreateの後
-    @Override
-    protected void onStart(){
-        super.onStart();
-        Log.d("CAMP_CokingListActivity","onStart");
-    }
-
-    //onStopの後
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("CAMP_CokingListActivity","onRestart");
-    }
-
-    //onStartの後
+    /*onStartの後*/
     @Override
     protected void onResume() {
         super.onResume();
         ImageView im = (ImageView)findViewById(R.id.src) ;
         if(im!=null) {
-            im.setImageResource(R.drawable.bbq);
+            im.setImageResource(R.drawable.bbq);  /*イメージ画像のセット*/
         }
-        Log.d("CAMP_CokingListActivity","onResume");
-    }
-
-    //アクティビティ実行の後
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("CAMP_CokingListActivity","onPause");
-    }
-
-    //onPauseの後
-    @Override
-    protected void onStop(){
-        super.onStop();
-        Log.d("CAMP_CokingListActivity","onStop");
-    }
-
-    //onStopの後
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("CAMP_CokingListActivity","onDestroy");
-        //unbindService(this);
+        /*Log.d("CAMP_CokingListActivity","onResume");*/
     }
 }

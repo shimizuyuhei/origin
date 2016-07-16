@@ -35,36 +35,37 @@ public class BeaconGetService extends Service{
     NotificationCompat.Builder THbuilder;
 
     private String log="";
-    private String[] Cosiness={null,null,null}; //di_index,temp,humid
-    private int[] color = {0,0,0,0};
-    private String comment =null;
-    private double di;            //discomfort index(double)
-    private String di_index="";   //discomfort index(string)
-    private int icon_id=2;             //icon id
+    private String[] Cosiness={null,null,null}; /*di_index,temp,humid*/
+    private int[] color = {0,0,0};  /*赤,緑,青*/
+    private String comment =null;   /*コメント*/
+    private double di;            /*discomfort index(double)*/
+    private String di_index="";   /*discomfort index(string)*/
+    private int icon_id=2;      /*icon id*/
 
-    private static int linkingID = 0;
-    private static boolean gStarted = false;
+    private static int linkingID = 0;   /*LinkingボードID*/
+    private static boolean gStarted = false;    /*Serviceの状態を取得*/
 
-    Intent actionIntent;
+    Intent actionIntent;    /*ブロードキャスト用*/
 
-    //サービスの状態
+    /*サービスの状態*/
     public static boolean isStarted() {
         return gStarted;
     }
 
+    /*Linkingボードのビーコン情報取得クラス*/
     public final class BeaconReceiver extends BeaconReceiverBase {
         @Override
         protected void onReceiveScanResult(BeaconData beaconData) {
 
-            BeaconGetService.this.BeaconSetID(beaconData);
-            //Log.d("TEST_BeaconGetService", "linkingID=" + linkingID);
-            if(linkingID != 0) {
-                if (beaconData.getExtraId() == linkingID) {
-                    BeaconGetService.this.onBeaconArrived(beaconData);
-                }else {
-                    //デモ用フィルター
+            BeaconGetService.this.BeaconSetID(beaconData);  /*LinkingボードIDの取得*/
+            /*Log.d("TEST_BeaconGetService", "linkingID=" + linkingID);*/
+            if(linkingID != 0) {    /*IDが割り当てられていれば*/
+                if (beaconData.getExtraId() == linkingID) { /*設定されているIDであれば*/
+                    BeaconGetService.this.onBeaconArrived(beaconData);  /*温湿度から危険度の取得*/
+                }else { /*それ以外危険区域判定*/
+                    /*デモ用フィルタ*/
                     if(beaconData.getExtraId() == 32849) {
-                        BeaconGetService.this.setNotification(beaconData);
+                        BeaconGetService.this.setNotification(beaconData);  /*危険区域の距離取得*/
                     }
                 }
             }
@@ -96,12 +97,12 @@ public class BeaconGetService extends Service{
         }
     }
 
-    //Binderの生成
+    /*Binderの生成*/
     private final IBinder mBinder = new MyServiceLocalBinder();
 
-    //サービスに接続するためのBinder
+    /*サービスに接続するためのBinder*/
     public class MyServiceLocalBinder extends Binder {
-        //サービスの取得
+        /*サービスの取得*/
         BeaconGetService getService() {
             return BeaconGetService.this;
         }
@@ -109,26 +110,28 @@ public class BeaconGetService extends Service{
 
     @Override
     public void onCreate() {
-        Log.d("CAMP_BeaconGetService","onCreate");
+        /*Log.d("CAMP_BeaconGetService","onCreate");*/
         super.onCreate();
+        /*Linkingボードの初期化*/
         mScanner = new BeaconScanner(this);
-        mReceiver = new BeaconReceiver();
+        mReceiver = new BeaconReceiver();   /*Linkingボードのブロードキャストレシーバ*/
         ctx = getApplicationContext();
-        manager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        THbuilder = new NotificationCompat.Builder(getApplicationContext());
+        manager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);  /*ノーティフィケーションマネージャの設定*/
+        THbuilder = new NotificationCompat.Builder(getApplicationContext());    /*危険度表示用ノーティフィケーション*/
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("CAMP_BeaconGetService","onDestroy");
+        /*Log.d("CAMP_BeaconGetService","onDestroy");*/
         Toast.makeText(getApplicationContext(), "スキャン停止", Toast.LENGTH_SHORT).show();
-        linkingID = 0;
-        gStarted = false;
-        unregisterReceiver(mReceiver);
+        linkingID = 0;  /*IDの初期化*/
+        gStarted = false;   /*サービスを停止状態にセット*/
+        unregisterReceiver(mReceiver);  /*Linkingボードのブロードキャストレシーバ停止*/
 
-        manager.cancel(2);
+        manager.cancel(2);  /*危険区域表示用ノーティフィケーション非表示*/
 
+        /*それぞれのパラメータの初期化*/
         Cosiness[0] = "";
         Cosiness[1] = "";
         Cosiness[2] = "";
@@ -138,185 +141,192 @@ public class BeaconGetService extends Service{
         color[0] = 0;
         color[1] = 0;
         color[2] = 0;
-        color[3] = 0;
         icon_id=2;
         comment="";
-        actionIntent.putExtra("colorA",color[0]);
-        actionIntent.putExtra("colorR",color[1]);
-        actionIntent.putExtra("colorG",color[2]);
-        actionIntent.putExtra("colorB",color[3]);
+        actionIntent.putExtra("colorR",color[0]);
+        actionIntent.putExtra("colorG",color[1]);
+        actionIntent.putExtra("colorB",color[2]);
         actionIntent.putExtra("comment",comment);
         actionIntent.putExtra("icon_id",icon_id);
         actionIntent.putExtra("destroy",1);
         actionIntent.setAction("action");
         getBaseContext().sendBroadcast(actionIntent);
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
-        Log.d("CAMP_BeaconGetService","onStartCommand");
-        gStarted = true;
+        /*Log.d("CAMP_BeaconGetService","onStartCommand");*/
+        gStarted = true;    /*サービスを起動状態にセット*/
         super.onStartCommand(intent, flags, startid);
 
-        //ブロードキャスト用インテント
+        /*ブロードキャスト用インテント*/
         actionIntent = new Intent("action");
 
         Intent in =new Intent(this, StopService.class);
 
+        /*ノーティフィケーションからサービス停止用ペンディングインテント*/
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, in, 0);
 
 
-        //Linkingインテントフィルタ指定
+        /*Linkingインテントフィルタ指定*/
         IntentFilter filter = new IntentFilter();
         filter.addAction(Define.filterBeaconScanResult);
         filter.addAction(Define.filterBeaconScanState);
         registerReceiver(mReceiver, filter);
 
         mScanner.startScan(new int[]{
-                0,// デバイスID
-                1, 2, 3, 4, 5// 適当
+                0,/*デバイスID*/
+                1, 2, 3, 4, 5   /*すべて取得*/
         });
 
-        THbuilder.setSmallIcon(R.drawable.camp);
-        THbuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.campicon));
-        THbuilder.addAction(R.drawable.stop, "通知の停止", pendingIntent);
-        THbuilder.setTicker("ビーコンからの通知が届きました。");
-        THbuilder.setContentTitle("キャンプ役立ちアプリ");
+        /*危険度通知用ノーティフィケーションのセット*/
+        THbuilder.setSmallIcon(R.drawable.camp);    /*ミニアイコンの設定*/
+        THbuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.campicon));   /*アイコンの設定*/
+        THbuilder.addAction(R.drawable.stop, "通知の停止", pendingIntent);   /*サービス停止ボタンのセット*/
+        THbuilder.setTicker("ビーコンからの通知が届きました。");    /*ノーティフィケーションの通知内容*/
+        THbuilder.setContentTitle("キャンプ役立ちアプリ");    /*ノーティフィケーションタイトル*/
 
-        //タップ時に消える
+        /*タップ時に消える*/
         THbuilder.setAutoCancel(true);
+        /*タップ時メイン画面の起動*/
         Intent MainIntent = new Intent(this, MainActivity.class);
         THbuilder.setContentIntent(PendingIntent.getActivity(this,0,MainIntent,0));
-        startForeground(1,THbuilder.build());
+        startForeground(1,THbuilder.build());   /*サービスを落とさないようにノーティフィケーションを常駐させる*/
 
         return START_STICKY;
     }
 
+    /**************************************************************/
+    /*タイトル :LinkingボードのID取得                             */
+    /*引数     :無し                                              */
+    /*戻り値   :無し                                              */
+    /**************************************************************/
     private void BeaconSetID(BeaconData beaconData)
     {
+        int ID = beaconData.getExtraId();   /*IDの設定*/
 
-        int ID = beaconData.getExtraId();
-
-        actionIntent.putExtra("index",ID);
-        actionIntent.setAction("GETID");
-        getBaseContext().sendBroadcast(actionIntent);
+        actionIntent.putExtra("index",ID);  /*ID情報をセット*/
+        actionIntent.setAction("GETID");  /*送るブロードキャストレシーバを設定*/
+        getBaseContext().sendBroadcast(actionIntent);  /*アクティビティへ送信*/
     }
 
+    /*温度,湿度を宣言*/
     private Float temp  = null;
     private Float humid = null;
     private float temp_s=0;
     private float humid_s=0;
+
     private void onBeaconArrived(BeaconData beaconData) {
 
-//        long[] vibrate_ptn = {0, 100, 300, 1000};
-        //      THbuilder.setVibrate(vibrate_ptn);
-
-        //時間
-        //        String time = timeLogFormat(System.currentTimeMillis());
-        comment="";
-        temp = beaconData.getTemperature();//取得
-        humid = beaconData.getHumidity();//取得
+        comment=""; /*コメント*/
+        temp = beaconData.getTemperature(); /*温度取得*/
+        humid = beaconData.getHumidity();   /*湿度取得*/
 
         if(temp != null){
+            /*温度の取得*/
             temp_s = temp;
             Cosiness[1] = String.format("%.2f",temp_s);
-            Log.d("temparature", String.format("temp: %f", temp));
+            /*Log.d("temparature", String.format("temp: %f", temp));*/
         }
         if(humid != null) {
+            /*湿度の取得*/
             humid_s = humid;
             Cosiness[2] = String.format("%.2f",humid_s);
-            Log.d("humidity", String.format("humid: %f", humid));
+            /*Log.d("humidity", String.format("humid: %f", humid));*/
         }
         if(temp_s == 0 || humid_s == 0){
+            /*両方取得できていないとき*/
             log = String.format("測定中");
-            Log.d("inf",log);
+            /*Log.d("inf",log);*/
         }else {
-            di = (0.81 * temp_s) + (0.01 * humid_s) * ((0.99 * temp_s) - 14.3) + 46.3;
-            di_index = di_to_diindex(di);
-            Log.d("不快度", String.format("[%d]不快度:%.2f,%s", beaconData.getExtraId(), di, di_index));
+            /*温度,湿度両方取得*/
+            di = (0.81 * temp_s) + (0.01 * humid_s) * ((0.99 * temp_s) - 14.3) + 46.3;  /*不快度指数の計算*/
+            di_index = di_to_diindex(di);   /*不快度指数より危険度の取得*/
+            /*Log.d("不快度", String.format("[%d]不快度:%.2f,%s", beaconData.getExtraId(), di, di_index));*/
 
-            log = String.format("%s \n 気温:%.2f,湿度:%.2f", di_index, temp_s, humid_s);
-            Cosiness[0] = di_index;
-            Cosiness[1] = String.format("%.2f", temp_s);
-            Cosiness[2] = String.format("%.2f", humid_s);
+            log = String.format("%s \n 気温:%.2f,湿度:%.2f", di_index, temp_s, humid_s);    /*ノーティフィケーション用の危険度表示*/
+            Cosiness[0] = di_index; /*危険度*/
+            Cosiness[1] = String.format("%.2f", temp_s);    /*温度*/
+            Cosiness[2] = String.format("%.2f", humid_s);   /*湿度*/
         }
-        THbuilder.setContentText(log);
+        THbuilder.setContentText(log);  /*ノーティフィケーションへセット*/
 
+        /*ブロードキャストレシーバを使用してアクティビティへ送信*/
         actionIntent.putExtra("index1",Cosiness[0]);
         actionIntent.putExtra("index2",Cosiness[1]);
         actionIntent.putExtra("index3",Cosiness[2]);
-        actionIntent.putExtra("colorA",color[0]);
-        actionIntent.putExtra("colorR",color[1]);
-        actionIntent.putExtra("colorG",color[2]);
-        actionIntent.putExtra("colorB",color[3]);
+        actionIntent.putExtra("colorR",color[0]);
+        actionIntent.putExtra("colorG",color[1]);
+        actionIntent.putExtra("colorB",color[2]);
         actionIntent.putExtra("comment",comment);
         actionIntent.putExtra("icon_id",icon_id);
         actionIntent.putExtra("destroy",0);
         actionIntent.setAction("action");
-        getBaseContext().sendBroadcast(actionIntent);
+        getBaseContext().sendBroadcast(actionIntent);   /*情報の送信*/
 
-        manager.notify(1, THbuilder.build());
+        manager.notify(1, THbuilder.build());   /*ノーティフィケーションの更新*/
     }
 
-    //static用意
-    private   String  di_to_diindex(double di)
+    /**************************************************************/
+    /*タイトル :不快度から危険度へ変換                            */
+    /*引数     :double:不快度指数                                 */
+    /*戻り値   :String:危険度                                     */
+    /**************************************************************/
+    private String di_to_diindex(double di)
     {
         String moji =null;
-        color[0] = 200;
 
         if(di <60)
         {
             moji ="寒い";
+            color[0] = 0;
             color[1] = 0;
-            color[2] = 0;
-           color[3] = 255;
+           color[2] = 255;
             icon_id=0;
             comment="一枚羽織ろう";
         }
         else if(di<65)
         {
             moji ="肌寒い";
-            color[1] = 0;
+            color[0] = 0;
+            color[1] = 255;
             color[2] = 255;
-            color[3] = 255;
             icon_id=1;
             comment="一枚羽織ろう";
         }
         else if(di<70)
         {
             moji ="快適";
-           color[1] = 0;
-            color[2] = 255;
-            color[3] = 0;
+           color[0] = 0;
+            color[1] = 255;
+            color[2] = 0;
             icon_id=2;
             comment="快適です";
         }
         else if(di<75)
         {
             moji ="ちょっと暑い";
+            color[0] = 255;
             color[1] = 255;
-            color[2] = 255;
-            color[3] = 0;
+            color[2] = 0;
             icon_id=3;
             comment="ちょっと暑いかも";
         }
         else if(di<80)
         {
             moji ="暑く感じる";
-            color[1] = 255;
-            color[2] = 64;
-            color[3] = 0;
+            color[0] = 255;
+            color[1] = 64;
+            color[2] = 0;
             icon_id=4;
-            comment=
-                    "こまめに\n水分補給しようね";
+            comment= "こまめに\n水分補給しようね";
         }
         else
         {
             moji ="危険な暑さ";
-          color[1] = 255;
+            color[0] = 255;
+            color[1] = 0;
             color[2] = 0;
-            color[3] = 0;
             icon_id=5;
             comment="涼しい日陰で休憩をとろう";
         }
@@ -324,88 +334,92 @@ public class BeaconGetService extends Service{
         return moji;
     }
 
-    int notificnt = 0;
-    int notificomp = 4;
-    boolean notififlg = false;
-    NotificationCompat.Builder builder;
+    int notificnt = 0;  /*通知時間用カウント*/
+    int notificomp = 4; /*過去の距離状態*/
+    boolean notififlg = false;  /*通知フラグ*/
+    NotificationCompat.Builder builder; /*危険区域通知用ノーティフィケーション*/
 
     private void setNotification(BeaconData data)
     {
-     //   NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder = new NotificationCompat.Builder(getApplicationContext());
-        String time = timeLogFormat(System.currentTimeMillis());
-        //アイコン
-        builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setSmallIcon(R.drawable.danger);
+        builder = new NotificationCompat.Builder(getApplicationContext());  /*ノーティフィケーションのセット*/
+        String time = timeLogFormat(System.currentTimeMillis());    /*取得時間を表示*/
+        builder.setSmallIcon(R.drawable.danger);    /*ミニアイコンのセット*/
 
-        int val = data.getDistance();
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        int val = data.getDistance();   /*危険区域の距離取得*/
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);   /*ヘッドアップ通知*/
 
-        long[] vibrate_ptn = {0, 1200, 300, 200}; // 独自バイブレーションパターン
+        long[] vibrate_ptn = {0, 1200, 300, 200}; /*独自バイブレーションパターン*/
         switch (val)
         {
             case 1:
+                /*アイコンの設定*/
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning));
-                //アイコンの背景色
+                /*アイコンの背景色*/
                 builder.setColor(Color.argb(0,255,0,0));
                 builder.setContentText("警告 これ以上近づく場合は命を保証しません");
+                /*通知時のバイブレーション,音の設定*/
                 builder.setLights(0xff0000,1000,500);
                 builder.setVibrate(vibrate_ptn);
                 builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+                /*10秒おきに通知*/
                 notificnt = 0;
                 notififlg = true;
                 break;
             case 2:
+                /*アイコンの設定*/
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning2));
-                //アイコンの背景色
+                /*アイコンの背景色*/
                 builder.setColor(Color.argb(0,255,128,0));
+                builder.setContentText("危険 それ以上近づかないでください");
+                /*通知時のバイブレーション,音の設定*/
                 builder.setLights(0xff6d00,1000,500);
                 vibrate_ptn[1] = 500; // 独自バイブレーションパターン
                 builder.setVibrate(vibrate_ptn);
                 builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-                builder.setContentText("危険 それ以上近づかないでください");
-                setTime(val,2);
+                setTime(val,2);/*20秒おきに通知*/
 
                 break;
 
             case 3:
+                /*アイコンの設定*/
                 builder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.warning3));
-                //アイコンの背景色
+                /*アイコンの背景色*/
                 builder.setColor(Color.argb(0,0,200,0));
+                builder.setContentText("注意 その先は危険です");
+                /*通知時のバイブレーション,音の設定*/
                 builder.setLights(0x00ff38,1000,500);
                 vibrate_ptn[1] = 200; // 独自バイブレーションパターン
                 builder.setVibrate(vibrate_ptn);
                 builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-                builder.setContentText("注意 その先は危険です");
-                setTime(val,3);
-
+                setTime(val,3); /*30秒おきに通知*/
                 break;
         }
-        //Notificationを開いたときに表示するもの
+        /*Notificationを開いたときに表示するもの*/
         builder.setContentTitle("キャンプ役立ちアプリ");
         builder.setSubText(String.format("%s Id[%d]までの距離[%d]です。", time, data.getExtraId(), val));
-        //通知するタイミング
+        /*通知するタイミング*/
         builder.setWhen(System.currentTimeMillis());
 
-        //受信時のステータスバーに表示されるテキスト
-        //Android5.0から表示しない
+        /*受信時のステータスバーに表示されるテキスト*/
+        /*Android5.0から表示しない*/
         builder.setTicker("DANGER");
+
         new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        builder.setPriority(Notification.PRIORITY_DEFAULT);
+                        builder.setPriority(Notification.PRIORITY_DEFAULT); /*表示を通常状態へ戻す*/
                         builder.setSound(null);
                         builder.setVibrate(null);
-                        manager.notify(2, builder.build());
+                        manager.notify(2, builder.build()); /*再表示*/
                     }
-                }, 2500);
+        }, 2500);
 
-        //タップ時に消える
+        /*タップ時に消える*/
         builder.setAutoCancel(true);
         Intent intent = new Intent(this, MainActivity.class);
         builder.setContentIntent(PendingIntent.getActivity(this,0,intent,0));
 
-
+        /*危険区域通知*/
         if (notififlg)
         {
             manager.notify(2, builder.build());
@@ -415,6 +429,12 @@ public class BeaconGetService extends Service{
         notificomp = val;
     }
 
+    /**************************************************************/
+    /*タイトル :通知時間の設定                                    */
+    /*引数     :val:危険区域の距離                                */
+    /*          time:表示までのカウント時間                       */
+    /*戻り値   :無し                                              */
+    /**************************************************************/
     private void setTime(int val, int time)
     {
         if(notificomp == val) {
@@ -450,11 +470,12 @@ public class BeaconGetService extends Service{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("CAMP_BeaconGetService","onBind");
+        /*Log.d("CAMP_BeaconGetService","onBind");*/
         Toast.makeText(getApplicationContext(), "計測開始", Toast.LENGTH_SHORT).show();
-        linkingID = intent.getIntExtra("SETID",0);
-        Log.d("CAMP_BeaconGetService",String.format("%s",linkingID));
+        linkingID = intent.getIntExtra("SETID",0);  /*選択されたLinkingボードのID取得*/
+        /*Log.d("CAMP_BeaconGetService",String.format("%s",linkingID));*/
 
+        /*表示の初期化*/
         Cosiness[0] =null;
         Cosiness[1] = null;
         Cosiness[2] = null;
@@ -464,7 +485,7 @@ public class BeaconGetService extends Service{
         actionIntent.putExtra("index3",Cosiness[2]);
         actionIntent.putExtra("comment",comment);
         actionIntent.setAction("action");
-        getBaseContext().sendBroadcast(actionIntent);
+        getBaseContext().sendBroadcast(actionIntent);   /*ブロードキャストレシーバの送信*/
 
         return mBinder;
     }
@@ -472,12 +493,12 @@ public class BeaconGetService extends Service{
     @Override
     public void onRebind(Intent intent)
     {
-        Log.d("CAMP_BeaconGetService","onRebind");
+        /*Log.d("CAMP_BeaconGetService","onRebind");*/
     }
 
     @Override
     public boolean onUnbind(Intent intent){
-        Log.d("CAMP_BeaconGetService","onUnbind");
+        /*Log.d("CAMP_BeaconGetService","onUnbind");*/
         return true;
     }
 }
