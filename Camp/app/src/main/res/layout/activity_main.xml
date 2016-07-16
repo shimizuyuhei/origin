@@ -137,9 +137,9 @@
             </LinearLayout>
 
             <ImageView
-            android:id="@+id/Loading_gif2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                android:id="@+id/Loading_gif2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
         </FrameLayout>

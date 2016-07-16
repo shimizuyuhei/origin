@@ -41,237 +41,249 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection,LocationListener,Runnable {
+public class MainActivity extends AppCompatActivity implements LocationListener,Runnable {
 
-    private Intent SettingsIntent;
-    private Receiver myreceiver;
+    private Intent SettingsIntent;  /*Linkingボード選択画面遷移用宣言*/
+    private Receiver myreceiver;    /*ブロードキャストレシーバ宣言*/
 
-    private LocationManager locationManager;
-    private String url;
-    private String pass = new String();
-    private JsonLoader jsonLoader;
-    private Thread thread;
-    private TextView Streetview;
-    private ImageView Crrenticon;
-    private TextView CurrentWeather;
-    private ImageView Futureicon;
-    private TextView FutureWeather;
-    private com.android.camp.weather weather;
-    private final int RESULTCODE = 1;   //受け取りコード
-    public static boolean NotificationStopFlag = true;
-    public static boolean scanningFlag = false;
+    private LocationManager locationManager;    /*GPS取得用宣言*/
+    private String url; /*天気APIのアクセス先URL宣言*/
+    private String pass = new String(); /*天気APIの取得用のpasskey宣言*/
+    private JsonLoader jsonLoader;  /*JSON形式のモデルデータ宣言*/
+    private Thread thread;  /*スレッド宣言*/
+    private TextView Streetview;    /*位置情報の表示宣言*/
+    private ImageView Crrenticon;   /*現在の天気アイコン宣言*/
+    private TextView CurrentWeather;    /*現在の天気情報宣言*/
+    private ImageView Futureicon;   /*3時間後の天気アイコン宣言*/
+    private TextView FutureWeather; /*3時間後の天気情報宣言*/
+    private Weather weather;    /*天気クラス宣言*/
+    private final int RESULTCODE = 1;   /*受け取りコード*/
+    public static boolean NotificationStopFlag = true;  /*ノーティフィケーションからのLinking停止可能状態*/
+    public static boolean scanningFlag = false; /*Linkingボード選択状態*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("CAMP_MainActivity","onCreate");
+        /*Log.d("CAMP_MainActivity","onCreate");*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         TextView index = (TextView) findViewById(R.id.text_comment);
+        TextView index = (TextView) findViewById(R.id.text_comment);   /*Linkingボード状態*/
 
-         if(index!=null) {
+        if(index!=null) {
              index.setText("ボードを選択してください");
+        }
+        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar)); /*Toolbarをアクションバーとして使用*/
+        SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);   /*Linkingボード選択画面遷移用セット*/
+
+        /*Linkingボード受け取り用ブロードキャストレシーバ*/
+        myreceiver = new Receiver();    /*ブロードキャストレシーバのセット*/
+        IntentFilter intentfilter = new IntentFilter(); /*インテントフィルターの作成*/
+        intentfilter.addAction("action");   /*フィルタリングする名前の設定*/
+        registerReceiver(myreceiver, intentfilter); /*フィルターのセット*/
+
+         /*お役立ち情報*/
+        /*準備編*/
+         ImageButton HelpInfButton1 = (ImageButton)findViewById(R.id.HelpInfButton1);
+         if(HelpInfButton1 != null){
+
+             HelpInfButton1.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     Intent intent = new Intent(MainActivity.this, PreparationListActivity.class);
+                     startActivity(intent); /*準備編のアクティビティ起動*/
+                 }
+
+             });
          }
-         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
-        SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-
-        //startService(BeaconGetIntent);
-        myreceiver = new Receiver();
-        IntentFilter intentfilter = new IntentFilter();
-        intentfilter.addAction("action");
-        registerReceiver(myreceiver, intentfilter);
-
-         //お役立ち情報
-         ImageButton HelpInfButton1= (ImageButton)findViewById(R.id.HelpInfButton1);
-         if(HelpInfButton1!=null){
-         HelpInfButton1.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 Intent intent = new Intent(MainActivity.this, PreparationListActivity.class);
-                 // 次画面のアクティビティ起動
-                 startActivity(intent);
-             }
-
-         });
-         }
-             ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.HelpInfButton2);
+        /*料理編*/
+        ImageButton HelpInfButton2= (ImageButton)findViewById(R.id.HelpInfButton2);
          if(HelpInfButton2!=null) {
              HelpInfButton2.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
                      Intent intent = new Intent(MainActivity.this, CookingListActivity.class);
-                     // 次画面のアクティビティ起動
-                     startActivity(intent);
+                     startActivity(intent); /*料理編のアクティビティ起動*/
                  }
 
              });
          }
+        /*危険編*/
          ImageButton HelpInfButton3= (ImageButton)findViewById(R.id.HelpInfButton3);
          if (HelpInfButton3!=null) {
              HelpInfButton3.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
                      Intent intent = new Intent(MainActivity.this, DangerListActivity.class);
-                     // 次画面のアクティビティ起動
-                     startActivity(intent);
+                     startActivity(intent); /*危険編のアクティビティ起動*/
                  }
 
              });
-             //ボード選択画面
          }
+
+        /*Linkingボード設定画面*/
          ImageButton BoardSettingButton =(ImageButton)findViewById(R.id.BoardSettingButton);
          if(BoardSettingButton!=null) {
              BoardSettingButton.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
-                     NotificationStopFlag = false;
-                     startActivityForResult(SettingsIntent, RESULTCODE);
+                     NotificationStopFlag = false;  /*ノーティフィケーションからのLinking取得停止を無効化*/
+                     startActivityForResult(SettingsIntent, RESULTCODE);    /*Linkingボード設定アクティビティ起動*/
 
                  }
 
              });
          }
-         LinearLayout BoardSettingLayout =(LinearLayout)findViewById(R.id.BoardSettingLayout);
 
+        /*温湿度による危険度の表示領域クリック*/
+         LinearLayout BoardSettingLayout =(LinearLayout)findViewById(R.id.BoardSettingLayout);
          if(BoardSettingLayout!=null) {
              BoardSettingLayout.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
-                     NotificationStopFlag = false;
-                     startActivityForResult(SettingsIntent, RESULTCODE);
+                     NotificationStopFlag = false;  /*ノーティフィケーションからのLinking取得停止を無効化*/
+                     startActivityForResult(SettingsIntent, RESULTCODE);    /*Linkingボード設定アクティビティ起動*/
                  }
 
              });
          }
 
-
+         /*天気表示領域クリック処理*/
          LinearLayout weather_layout=(LinearLayout)findViewById(R.id.weather_layout);
-         //天気領域クリック処理
          if(weather_layout!=null) {
-             weather_layout.setClickable(true);
+             weather_layout.setClickable(true); /*クリックの許可*/
              weather_layout.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
-                     startGPS();
+                     startGPS();    /*GPS、天気情報取得開始*/
                  }
              });
          }
-         Streetview = (TextView) findViewById(R.id.PlaceWeather);
-         Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);
-         CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText);
-         Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon);
-         FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);
-         weather = new weather();
-         weather.Weather();
 
-         pass = "6bc4bdb0435fb3599d879b987453b459";
+         Streetview = (TextView) findViewById(R.id.PlaceWeather);   /*位置情報の表示*/
+         Crrenticon = (ImageView) findViewById(R.id.CurrentWeatherIcon);    /*現在の天気アイコン*/
+         CurrentWeather = (TextView) findViewById(R.id.CurrentWeatherText); /*現在の天気情報*/
+         Futureicon = (ImageView) findViewById(R.id.FutureWeatherIcon); /*3時間後の天気アイコン*/
+         FutureWeather = (TextView) findViewById(R.id.FutureWeatherText);   /*3時間後の天気情報*/
+         weather = new Weather();   /*天気クラスセット*/
 
-         // LocationManager インスタンス生成
-         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+         pass = "6bc4bdb0435fb3599d879b987453b459"; /*天気APIの取得用のpasskeyの設定*/
+
+         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);    /*GPS取得用セット*/
 
     }
-    @Override protected void onActivityResult( int requestCode, int resultCode, Intent data) {
-        LinearLayout comment_layout=(LinearLayout)findViewById(R.id.BoardSettingLayout);
-        TextView comment=(TextView)findViewById(R.id.text_comment);
-        TextView temp = (TextView)findViewById(R.id.temp_txt);
-        TextView humid = (TextView)findViewById(R.id.humid_txt);
+
+
+    @Override
+    protected void onActivityResult( int requestCode, int resultCode, Intent data) {
+        LinearLayout comment_layout = (LinearLayout)findViewById(R.id.BoardSettingLayout);    /*温湿度による危険度の表示領域クリック*/
+        TextView comment = (TextView)findViewById(R.id.text_comment);   /*Linkingボード状態*/
+        TextView temp = (TextView)findViewById(R.id.temp_txt);  /*温度情報*/
+        TextView humid = (TextView)findViewById(R.id.humid_txt);    /*湿度情報*/
 
        if(requestCode == this.RESULTCODE) {
-            NotificationStopFlag=true;
-            if (resultCode ==0) {
-                if( !scanningFlag){
-                    if(comment !=null){
-                        comment.setText("ボードを選択してください");
-                    }
-                    if(temp !=null){
-                        temp.setText("");
-                    }
-                    if(comment_layout!=null){
-                        comment_layout.setClickable(true);
-                    }
-                    if(humid != null){
-                        humid.setText("");
-                    }
-                }
-            } else{
-                if(comment_layout!=null) {
-                    comment_layout.setClickable(false);
-                }
-                ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
-                ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
-                ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
+           NotificationStopFlag = true;
+           if (resultCode == 0) {
+               if (!scanningFlag) {
+                   if (comment != null) {
+                       comment.setText("ボードを選択してください");
+                   }
+                   if (temp != null) {
+                       temp.setText("");
+                   }
+                   if (comment_layout != null) {
+                       comment_layout.setClickable(true);  /*クリックの許可*/
+                   }
+                   if (humid != null) {
+                       humid.setText("");
+                   }
+               }
+           } else {
+               if (comment_layout != null) {
+                   comment_layout.setClickable(false); /*クリックの禁止*/
+               }
+               /*ロード時表示画像の設定*/
+               ImageView loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
+               ImageView loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
+               ImageView loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
-                if(loading_gif1!=null) {
-                    GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);
-                    Glide.with(MainActivity.this).load(R.raw.loading).into(target1);
-                }
-                if(loading_gif2!=null) {
-                    GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);
-                    Glide.with(MainActivity.this).load(R.raw.loading).into(target2);
-                }
-                if(loading_gif3!=null) {
-                    GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);
-                    Glide.with(MainActivity.this).load(R.raw.loading).into(target3);
-                }
-                if(comment!=null) {
-                    comment.setText("");
-                }
+               if (loading_gif1 != null) {
+                   GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(loading_gif1);   /*GIF動画を設定*/
+                   Glide.with(MainActivity.this).load(R.raw.loading).into(target1); /*表示するGIF動画をセット*/
+               }
+               if (loading_gif2 != null) {
+                   GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(loading_gif2);   /*GIF動画を設定*/
+                   Glide.with(MainActivity.this).load(R.raw.loading).into(target2); /*表示するGIF動画をセット*/
+               }
+               if (loading_gif3 != null) {
+                   GlideDrawableImageViewTarget target3 = new GlideDrawableImageViewTarget(loading_gif3);   /*GIF動画を設定*/
+                   Glide.with(MainActivity.this).load(R.raw.loading).into(target3); /*表示するGIF動画をセット*/
+               }
+               if (comment != null) {
+                   comment.setText("");
+               }
 
-            }
-        }
+           }
+       }
     }
-    private static final long MinTime = 30; //30分
-    private static final float MinDistance = 100;   //100m
 
-    //GPS開始
+    /*GPSの取得時間設定*/
+    private static final long MinTime = 30; /*30分*/
+    private static final float MinDistance = 100;   /*100m*/
+
+    /**************************************************************/
+    /*タイトル :GPS開始                                           */
+    /*引数     :無し                                              */
+    /*戻り値   :無し                                              */
+    /**************************************************************/
     protected void startGPS() {
-        Log.d("CAMP_MainActivity", "startGPS");
-        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        /*Log.d("CAMP_MainActivity", "startGPS");*/
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);   /*端末のGPSがONであるか判定*/
 
         if (!gpsEnabled) {
-            // GPSを設定するように促す
+            /*GPSを設定するように促す*/
             enableLocationSettings();
         }
 
-        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);   /*再度端末のGPSがONであるか判定*/
 
+        /*GPSが音であれば取得を開始*/
         if (locationManager != null && gpsEnabled) {
-            onGPS();
+            onGPS();    /*取得を開始*/
         } else {
             Streetview.setText("GPSをONに\nしてください");
-            Log.d("CAMP_MainActivity", "startGPS_エラー");
+            /*Log.d("CAMP_MainActivity", "startGPS_エラー");*/
         }
     }
 
+    /**************************************************************/
+    /*タイトル :GPS取得                                           */
+    /*引数     :無し                                              */
+    /*戻り値   :無し                                              */
+    /**************************************************************/
     protected void onGPS(){
-        Log.d("CAMP_MainActivity", "onGPS");
-        // バックグラウンドから戻ってしまうと例外が発生する場合がある
+        /*Log.d("CAMP_MainActivity", "onGPS");*/
+        /*バックグラウンドから戻ってしまうと例外が発生する場合がある*/
         try {
-            //GPSの開始
-            // minTime = 1000msec, minDistance = 50m
+            /*GPSの開始*/
+            /* minTime = 1000msec, minDistance = 50m */
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
+            /*GPSを取得開始*/
             locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MinTime, MinDistance, this);
             Streetview.setText("計測中\n");
-            ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon);
+            ImageView weather1 = (ImageView) findViewById(R.id.CurrentWeatherIcon); /*現在の天気アイコン*/
             if(weather1 !=null) {
-                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);
-                Glide.with(MainActivity.this).load(R.raw.load_weather).into(target1);
+                GlideDrawableImageViewTarget target1 = new GlideDrawableImageViewTarget(weather1);  /*計測時のGIF動画の設定*/
+                Glide.with(MainActivity.this).load(R.raw.load_weather).into(target1);   /*表示するGIF動画をセット*/
             }
-            ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon);
+            ImageView weather2 = (ImageView) findViewById(R.id.FutureWeatherIcon); /*3時間後の天気アイコン*/
             if(weather2!=null) {
-                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);
-                Glide.with(MainActivity.this).load(R.raw.load_weather).into(target2);
+                GlideDrawableImageViewTarget target2 = new GlideDrawableImageViewTarget(weather2);  /*計測時のGIF動画の設定*/
+                Glide.with(MainActivity.this).load(R.raw.load_weather).into(target2);   /*表示するGIF動画をセット*/
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -281,11 +293,15 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
-    //GPS停止
+    /**************************************************************/
+    /*タイトル :GPS停止                                           */
+    /*引数     :無し                                              */
+    /*戻り値   :無し                                              */
+    /**************************************************************/
     private void stopGPS(){
         if (locationManager != null) {
-            Log.d("CAMP_MainActivity", "onStop");
-            // update を止める
+            /*Log.d("CAMP_MainActivity", "onStop");*/
+            /*GPSのupdate を止める*/
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -296,134 +312,93 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
-    //GPS設定画面表示
+    /**************************************************************/
+    /*タイトル :GPS設定画面表示                                   */
+    /*引数     :無し                                              */
+    /*戻り値   :無し                                              */
+    /**************************************************************/
     private void enableLocationSettings() {
-        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(settingsIntent);
+        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);   /*GPSの設定画面のセット*/
+        startActivity(settingsIntent);  /*GPSの設定画面へ移動*/
     }
 
-    //onCreateの後
-    @Override
-    protected void onStart(){
-        super.onStart();
-        Log.d("CAMP_MainActivity","onStart");
-    }
-
-    //onStopの後
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        Log.d("CAMP_MainActivity","onRestart");
-    }
-
-    //onStartの後
+    /*onStartの後*/
     @Override
     protected void onResume() {
         super.onResume();
 
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (locationManager != null && gpsEnabled) {
-            onGPS();
+            onGPS();    /*取得を開始*/
         } else {
             Streetview.setText("GPSをONに\nしてください");
-            Log.d("CAMP_MainActivity", "startGPS_エラー");
+            /*Log.d("CAMP_MainActivity", "startGPS_エラー");*/
         }
     }
 
-    //アクティビティ実行の後
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("CAMP_MainActivity","onPause");
-    }
-
-    //onPauseの後
-    @Override
-    protected void onStop(){
-        super.onStop();
-        Log.d("CAMP_MainActivity","onStop");
-        stopGPS();
-    }
-
-    //onStopの後
+    /*onStopの後*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("CAMP_MainActivity","onDestroy");
-        unregisterReceiver(myreceiver);
-        //unbindService(this);
+        /*Log.d("CAMP_MainActivity","onDestroy");*/
+        unregisterReceiver(myreceiver); /*レシーバの登録を解除*/
     }
 
-    //右上メニュー
+    /*右上メニュー*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("CAMP_MainActivity","onCreateOptionsMenu");
+        /*Log.d("CAMP_MainActivity","onCreateOptionsMenu");*/
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    //右上メニュークリック
+    /*右上メニュークリック*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("CAMP_MainActivity","onOptionsItemSelected");
+        /*Log.d("CAMP_MainActivity","onOptionsItemSelected");*/
         switch (item.getItemId()) {
               case R.id.menu_main_layout:
                 final String[] items = {"ポップ", "シンプル"};
-                int defaultItem = 0; // デフォルトでチェックされているアイテム
-                final List<Integer> checkedItems = new ArrayList<>();
+                int defaultItem = 0;    /*デフォルトでチェックされているアイテム*/
+                final List<Integer> checkedItems = new ArrayList<>();   /*選択リスト*/
                 checkedItems.add(defaultItem);
                 new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("デザインの変更")
-                        .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                checkedItems.clear();
-                                checkedItems.add(which);
-                                if(checkedItems.get(0)==1){
-                                    Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);
-                                    // 次画面のアクティビティ起動
-                                    startActivity(intent);
-                                    finish();
-                                }else{
-                                    dialog.dismiss();
-                                }
+                    .setTitle("デザインの変更")
+                    .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            checkedItems.clear();
+                            checkedItems.add(which);
+                            if(checkedItems.get(0)==1){
+                                Intent intent = new Intent(MainActivity.this, MainSimpleActivity.class);    /*シンプルアクティビティ*/
+                                /*次画面のアクティビティ起動*/
+                                startActivity(intent);
+                                finish();
+                            }else{
+                                dialog.dismiss();
                             }
+                        }
 
-                        }) .show();
+                    }) .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private Messenger _messenger;
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.d("CAMP_MainActivity","onServiceConnected");
-        _messenger = new Messenger(service);
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        Log.d("CAMP_MainActivity","onServiceDisconnected");
-        _messenger = null;
-    }
-
     /*GPS設定*/
-    // 結果の受け取り
+    /*結果の受け取り*/
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d("GPS",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );
+        /*Log.d("GPS",Integer.toString(requestCode) +Integer.toString(grantResults[0]) );*/
         if (requestCode == 1000) {
-            // 使用が許可された
+            /*使用が許可された*/
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("CAMP_Permission","checkSelfPermission true");
+                /*Log.d("CAMP_Permission","checkSelfPermission true");*/
                 startGPS();
 
             } else {
-                // それでも拒否された時の対応
+                /*それでも拒否された時の対応*/
                 Toast toast = Toast.makeText(this, "これ以上なにもできません", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -439,55 +414,52 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         lat = location.getLatitude();
         lon = location.getLongitude();
 
-        Log.d("CAMP_MainActivity","onLocationChanged = " + lat);
-        Log.d("CAMP_MainActivity","onLocationChanged = " + lon);
+        /*Log.d("CAMP_MainActivity","onLocationChanged = " + lat);*/
+        /*Log.d("CAMP_MainActivity","onLocationChanged = " + lon);*/
 
-        url = "http://api.openweathermap.org/data/2.5/forecast"
-                + "?lat=" + String.valueOf(lat)
-                + "&lon=" + String.valueOf(lon)
-                + "&cnt=2"
-                + "&APPID=" + pass;
+        url = "http://api.openweathermap.org/data/2.5/forecast" /*天気API用URLセット*/
+                + "?lat=" + String.valueOf(lat) /*緯度*/
+                + "&lon=" + String.valueOf(lon) /*経度*/
+                + "&cnt=2"  /*現在と3時間後を取得*/
+                + "&APPID=" + pass; /*passkeyの設定*/
 
-        jsonLoader = new JsonLoader(url);
-        thread = new Thread(this);
-        thread.start();
+        jsonLoader = new JsonLoader(url);   /*APIへアクセス*/
+        thread = new Thread(this);  /*スレッドのセット*/
+        thread.start(); /*スレッドスタート*/
 
-        Street = weather.getAddress(getApplicationContext(),lat,lon);
+        Street = weather.getAddress(getApplicationContext(),lat,lon);   /*現在地の市区町村を取得*/
 
-        Streetview.setText(Street);
+        Streetview.setText(Street); /*市区町村の表示*/
 
-        Log.d("CAMP_MainActivity","onLocationChanged = " + Street);
-        //stopGPS();
+        /*Log.d("CAMP_MainActivity","onLocationChanged = " + Street);*/
     }
 
-    //HandlerはUIスレッドで生成する。
-    Handler handler = new Handler();
-    JSONObject jsonObject;
-    String[] id = new String[2];
-    String[] icon = new String[2];
+    Handler handler = new Handler();    /*HandlerはUIスレッドで生成する。*/
+    JSONObject jsonObject;  /*JSON形式のモデルデータ宣言*/
+    String[] id = new String[2];    /*現在と3時間後の天気情報ID*/
+    String[] icon = new String[2];  /*現在と3時間後の天気アイコン*/
 
     @Override
     public void run() {
-        jsonObject = jsonLoader.loadInBackground();
+        jsonObject = jsonLoader.loadInBackground(); /*JSONのセット*/
         handler.post(new Runnable() {
             @Override
             public void run() {
-                JSONArray lists;
+                JSONArray lists;    /*JSONの配列をリスト形式にする*/
                 if(jsonObject != null) {
                     try {
+                        lists = jsonObject.getJSONArray("list");    /*リストへセット*/
 
-                        lists = jsonObject.getJSONArray("list");
-
-                        //Log.d("TEST",jsonObject.toString(4));
-
+                        /*Log.d("TEST",jsonObject.toString(4));*/
+                        /*2回分の情報を取得*/
                         for (int i = 0; i < 2; i++) {
                             try {
-                                JSONObject list = lists.getJSONObject(i);
-                                JSONArray weatherlist = list.getJSONArray("weather");
-                                JSONObject weather = weatherlist.getJSONObject(0);
+                                JSONObject list = lists.getJSONObject(i);   /*リストから情報を取得*/
+                                JSONArray weatherlist = list.getJSONArray("weather");   /*天気情報のリストをセット*/
+                                JSONObject weather = weatherlist.getJSONObject(0);  /*天気情報を取得*/
 
-                                id[i] = weather.get("id").toString();
-                                icon[i] = weather.get("icon").toString();
+                                id[i] = weather.get("id").toString();   /*天気情報IDの取得*/
+                                icon[i] = weather.get("icon").toString();   /*天気アイコンIDの取得*/
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -498,15 +470,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         e.printStackTrace();
                     }
 
-                    CurrentWeather.setText(weather.Getweather(id[0]));
-                    Crrenticon.setImageResource(weather.Getweathericon(icon[0]));
+                    /*現在*/
+                    CurrentWeather.setText(weather.Getweather(id[0]));  /*天気情報IDから該当する天気を取得表示*/
+                    Crrenticon.setImageResource(weather.Getweathericon(icon[0]));   /*天気アイコンIDから該当する天気アイコンを取得表示*/
 
-                    FutureWeather.setText(weather.Getweather(id[1]));
-                    Futureicon.setImageResource(weather.Getweathericon(icon[1]));
+                    /*3時間後*/
+                    FutureWeather.setText(weather.Getweather(id[1]));   /*天気情報IDから該当する天気を取得表示*/
+                    Futureicon.setImageResource(weather.Getweathericon(icon[1]));   /*天気アイコンIDから該当する天気アイコンを取得表示*/
                 }
             }
         });
-        thread = null;
+        thread = null;  /*スレッドの削除*/
     }
 
     @Override
@@ -529,54 +503,53 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         Log.d("CAMP_MainActivity","onProviderEnabled");
     }
 
-
-
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("CAMP_MainActivity","onProviderDisabled");
     }
     /*GPS終了*/
 
+    /*ブロードキャストレシーバ*/
     public class Receiver extends BroadcastReceiver {
-        String[] text = new String[3];
-        int[] color = new int[4];
-        String comment="" ;
-        int icon_id=2;
-        private String temp_string="";
-        private String humid_string="";
+        String[] text = new String[3];  /*テキスト*/
+        int[] color = new int[3];   /*色*/
+        String comment="" ; /*コメント*/
+        int icon_id=2;  /*アイコンID*/
+        private String temp_string="";  /*温度*/
+        private String humid_string=""; /*湿度*/
 
-        //  横幅のみ画面サイズに変更
+        /*横幅のみ画面サイズに変更*/
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
-            text[0] = bundle.getString("index1");
-            text[1] = bundle.getString("index2");
-            text[2] = bundle.getString("index3");
-            color[0] = bundle.getInt("colorA");
-            color[1] = bundle.getInt("colorR");
-            color[2] = bundle.getInt("colorG");
-            color[3] = bundle.getInt("colorB");
-            comment=bundle.getString("comment");
-            icon_id=bundle.getInt("icon_id");
+            text[0] = bundle.getString("index1");   /*危険度*/
+            text[1] = bundle.getString("index2");   /*温度*/
+            text[2] = bundle.getString("index3");   /*湿度*/
+            color[0] = bundle.getInt("colorR"); /*赤*/
+            color[1] = bundle.getInt("colorG"); /*緑*/
+            color[2] = bundle.getInt("colorB"); /*青*/
+            comment=bundle.getString("comment");   /*コメント*/
+            icon_id=bundle.getInt("icon_id");   /*アイコンID*/
 
-            //     Log.d("color_MainActivity", String.format("onReceive=%s, %s, %s",color[1],color[2],color[3]));
-            Log.d("CAMP_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));
-            TextView index = (TextView) findViewById(R.id.index_txt);
-            TextView temp = (TextView) findViewById(R.id.temp_txt);
-            TextView humid = (TextView) findViewById(R.id.humid_txt);
-            TextView comment_t = (TextView) findViewById(R.id.text_comment);
+            /*Log.d("CAMP_MainActivity", String.format("onReceive=%s, %s, %s, %s",text[0],text[1],text[2],comment));*/
+
+            TextView index = (TextView) findViewById(R.id.index_txt);   /*危険度の表示*/
+            TextView temp = (TextView) findViewById(R.id.temp_txt); /*温度の表示*/
+            TextView humid = (TextView) findViewById(R.id.humid_txt);   /*湿度の表示*/
+            TextView comment_t = (TextView) findViewById(R.id.text_comment);    /*コメントの表示*/
+
+            /*ロード画像のセット*/
             ImageView Loading_gif1 = (ImageView) findViewById(R.id.Loading_gif1);
             ImageView Loading_gif2 = (ImageView) findViewById(R.id.Loading_gif2);
             ImageView Loading_gif3 = (ImageView) findViewById(R.id.Loading_gif3);
 
-
             if(index!=null) {
-                index.setTextColor(Color.argb(color[0], color[1], color[2], color[3]));
+                index.setTextColor(Color.rgb(color[0], color[1], color[2]));    /*危険度の表示食変更*/
             }
 
             if(text[0]==null){
                 if(Loading_gif3 != null) {
-                    Loading_gif3.setVisibility(View.VISIBLE);
+                    Loading_gif3.setVisibility(View.VISIBLE);   /*計測中GIF動画を表示*/
                 }
                 if(comment_t != null) {
                     comment_t.setText("");
@@ -586,65 +559,68 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     index.setText(text[0]);
                 }
                 if(Loading_gif3 != null){
-                    Loading_gif3.setVisibility(View.INVISIBLE);
+                    Loading_gif3.setVisibility(View.INVISIBLE); /*計測中GIF動画を非表示*/
                 }
                 if(comment_t != null){
-                    comment_t.setText(comment);
-                }
-            }
-            if(text[1]==null){
-                if(Loading_gif1 != null){
-                    Loading_gif1.setVisibility(View.VISIBLE);
-                }
-                if(temp != null){
-                    temp.setText("");
-                }
-            }else{
-                if(Loading_gif1 != null){
-                    Loading_gif1.setVisibility(View.INVISIBLE);
-                }
-                if(temp != null){
-                    temp_string = text[1] + "℃";
-                    temp.setText(temp_string);
-                }
-            }
-            if(text[2]==null){
-                if(Loading_gif2 != null){
-                    Loading_gif2.setVisibility(View.VISIBLE);
-                }
-                if(humid != null){
-                    humid.setText("");
-                }
-            }else{
-                if(Loading_gif2 != null){
-                    Loading_gif2.setVisibility(View.INVISIBLE);
-                }
-                if(humid != null){
-                    humid_string =text[2]+"％";
-                    humid.setText(humid_string);
+                    comment_t.setText(comment); /*コメントのセット*/
                 }
             }
 
+            if(text[1]==null){
+                if(Loading_gif1 != null){
+                    Loading_gif1.setVisibility(View.VISIBLE);   /*計測中GIF動画を表示*/
+                }
+                if(temp != null){
+                    temp.setText("");   /*温度の非表示*/
+                }
+            }else{
+                if(Loading_gif1 != null){
+                    Loading_gif1.setVisibility(View.INVISIBLE); /*計測中GIF動画を非表示*/
+                }
+                if(temp != null){
+                    temp_string = text[1] + "℃";
+                    temp.setText(temp_string);  /*温度の表示*/
+                }
+            }
+
+            if(text[2]==null){
+                if(Loading_gif2 != null){
+                    Loading_gif2.setVisibility(View.VISIBLE);   /*計測中GIF動画を表示*/
+                }
+                if(humid != null){
+                    humid.setText("");  /*湿度の非表示*/
+                }
+            }else{
+                if(Loading_gif2 != null){
+                    Loading_gif2.setVisibility(View.INVISIBLE); /*計測中GIF動画を非表示*/
+                }
+                if(humid != null){
+                    humid_string =text[2]+"％";
+                    humid.setText(humid_string);    /*湿度の表示*/
+                }
+            }
+
+            /*危険度に合わせて画像の変更*/
             ImageView icon = (ImageView)findViewById(R.id.ladybug);
             if(icon != null) {
                 switch (icon_id) {
                     case 0:
-                        icon.setImageResource(R.drawable.cold);
+                        icon.setImageResource(R.drawable.cold); /*寒い*/
                         break;
                     case 1:
-                        icon.setImageResource(R.drawable.cool);
+                        icon.setImageResource(R.drawable.cool); /*肌寒い*/
                         break;
                     case 2:
-                        icon.setImageResource(R.drawable.good);
+                        icon.setImageResource(R.drawable.good); /*快適*/
                         break;
                     case 3:
-                        icon.setImageResource(R.drawable.warm);
+                        icon.setImageResource(R.drawable.warm); /*ちょっと暑い*/
                         break;
                     case 4:
-                        icon.setImageResource(R.drawable.hot);
+                        icon.setImageResource(R.drawable.hot);  /*暑く感じる*/
                         break;
                     case 5:
-                        icon.setImageResource(R.drawable.veryhot);
+                        icon.setImageResource(R.drawable.veryhot);  /*危険な暑さ*/
                         break;
                 }
             }

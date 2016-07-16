@@ -41,116 +41,120 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
     private TextView usageTextView;
 
     ArrayList<String> list;
-    //ArrayAdapterオブジェクト生成
+    /*ArrayAdapterオブジェクト生成*/
     private ArrayAdapter<String> adapter;
-    private SharedPreferences id_pref; //プリファレンス
-    private SwitchCompat SettingsSwitch;
-    private Intent BeaconGetIntent;
-    private boolean serviceStart = false;
-    Receiver myreceiver;
-    private int setidparse;
-    private int index;
+    private SharedPreferences id_pref; /*プリファレンス*/
+    private SwitchCompat SettingsSwitch;    /*Linkingボードの取得状態*/
+    private Intent BeaconGetIntent; /*Linkingボード情報取得用のサービス*/
+    private boolean serviceStart = false;  /*サービスの状態*/
+    Receiver myreceiver;    /*ブロードキャストレシーバ*/
+    private int setidparse; /*LinkingボードのID*/
+    private int index;  /*IDの変更情報*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        id_pref = PreferenceManager.getDefaultSharedPreferences(this); /*プリファレンスの取得*/
 
-        id_pref = PreferenceManager.getDefaultSharedPreferences(this); //プリファレンスの取得
-
+        /*Toolbarをアクションバーとして使用*/
         setSupportActionBar((Toolbar) findViewById(R.id.settings_toolbar));
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);  /*戻るボタンのセット*/
 
-        deviceList = (ListView) findViewById(R.id.deviceList);
-        usageTextView = (TextView) findViewById(R.id.usageTextView);
+        deviceList = (ListView) findViewById(R.id.deviceList);  /*LinkingボードID表示用リスト*/
+        usageTextView = (TextView) findViewById(R.id.usageTextView);    /*LinkingボードID取得用サービスがOFFであることの通知*/
 
-
-        //list設定
+        /*list設定*/
         list = new ArrayList<String>();
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list)
         {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView view = (TextView)super.getView(position, convertView, parent);
-                view.setTextSize( 30 );
+                view.setTextSize( 30 ); /*30sp*/
                 return view;
             }
-        };//List追加用アダプター
+        };/*List追加用アダプター*/
 
-        SettingsSwitch = (SwitchCompat)findViewById(R.id.settings_switch);
+        SettingsSwitch = (SwitchCompat)findViewById(R.id.settings_switch);  /*スイッチの設定*/
 
-        //サービス起動スイッチ
+        /*サービス起動スイッチ*/
         SettingsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    startScanning();
+                    startScanning();    /*スイッチがONの時*/
                 } else {
-                    stopScanning();
-                    MainActivity.scanningFlag = false;
+                    stopScanning();     /*スイッチがOFFの時*/
+                    MainActivity.scanningFlag = false;  /*サービスの停止状態*/
                 }
             }
         });
 
-        //deviceList.setAdapter();
+        /*Listクリック処理*/
         deviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            //Listクリック処理
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int setid=0; /*IDの初期化*/
 
-                int setid=0;
-                // save the target device
-                //int setid = Integer.parseInt(list.get(position));
-                //String setid = list.get(position);
                 try
                 {
+                    /*名前の割り当てられていないIDの取得*/
                     setid = Integer.parseInt(list.get(position));
                 } catch (Exception e) {
+                    /*名前の割り当てられているIDの取得*/
                     String setidstr = list.get(position);
-                    String[] str = setidstr.split("/", 0);
+                    String[] str = setidstr.split("/", 0);  /*IDと名前の分割*/
                     setid = Integer.valueOf(str[1]);
                 }
 
-               BeaconGetIntent.putExtra("SETID",setid);
+                /*サービスへ選択したLinkingボードのIDをセット*/
+                BeaconGetIntent.putExtra("SETID",setid);
                 bindService(BeaconGetIntent,SettingsActivity.this,0);
                 unbindService(SettingsActivity.this);
-                setResult(1);
-                MainActivity.scanningFlag =true;
+                setResult(1);   /*メイン画面への値返却*/
+                MainActivity.scanningFlag =true;    /*サービスの起動状態*/
                 finish();
             }
         });
+
+        /*Listロングクリック処理*/
         deviceList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //テキスト入力を受け付けるビューを作成します。
+                /*テキスト入力を受け付けるビューを作成します。*/
 
                 try
                 {
+                    /*現在入力されているIDの退避*/
                     setidparse = Integer.parseInt(list.get(position));
                     index = position;
 
                 } catch (Exception e) {
+                    /*現在入力されている名前とIDを分解して退避*/
                     String setidstr = list.get(position);
                     String[] str = setidstr.split("/", 0);
                     setidparse = Integer.valueOf(str[1]);
                     index = position;
                 }
 
+                /*ダイアログを使って名前の編集*/
                 final EditText editView = new EditText(SettingsActivity.this);
                 new AlertDialog.Builder(SettingsActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_info)
                         .setTitle("ボードの表示名を変更します")
-                        //setViewにてビューを設定します。
+                        /*setViewにてビューを設定します。*/
                         .setView(editView)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                //入力した文字をトースト出力する
+                                /*入力した文字をトースト出力する*/
                                 list.remove(index);
                                 list.add(editView.getText().toString()+"/"+setidparse);
 
-                                //Adapterセット
+                                /*Adapterセット*/
                                 deviceList.setAdapter(adapter);
                                 Toast.makeText(SettingsActivity.this,
                                         editView.getText().toString()+"に変更しました。",
@@ -168,46 +172,36 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
                 return true;
             }
         });
-        //onServiceDisconnected(null);
 
-        //Intent intent = getIntent();
-        //int id = intent.getIntExtra("DATA",0);
-        //Log.d("TEST",Integer.toString(id));
+        BeaconGetIntent = new Intent(this, BeaconGetService.class); /*サービスのセット*/
 
-        BeaconGetIntent = new Intent(this, BeaconGetService.class);
+        /*Linkingボード受け取り用ブロードキャストレシーバ*/
+        myreceiver = new Receiver();    /*ブロードキャストレシーバのセット*/
+        IntentFilter intentfilter = new IntentFilter(); /*インテントフィルターの作成*/
+        intentfilter.addAction("GETID");   /*フィルタリングする名前の設定*/
+        registerReceiver(myreceiver, intentfilter); /*フィルターのセット*/
 
-        myreceiver = new Receiver();
-        IntentFilter intentfilter = new IntentFilter();
-        intentfilter.addAction("GETID");
-        registerReceiver(myreceiver, intentfilter);
-
-        serviceStart = BeaconGetService.isStarted();
+        serviceStart = BeaconGetService.isStarted();    /*サービスの状態取得*/
         if(serviceStart) {
-            //stopService(BeaconGetIntent);
-            Log.d("CAMP_SettingsActivity","SettingsSwitch");
+            /*Log.d("CAMP_SettingsActivity","SettingsSwitch");*/
             SettingsSwitch.setChecked(true);
         }
-    }
-
-    public void onResume() {
-        super.onResume();
-        //startRequestBeacon();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(myreceiver);
-        //stopService(BeaconGetIntent);
-        Log.d("CAMP_SettingsActivity","onDestroy");
+        unregisterReceiver(myreceiver);/*ブロードキャストレシーバの停止*/
+        /*Log.d("CAMP_SettingsActivity","onDestroy");*/
     }
 
 
-    //戻るメニュークリック処理
+    /*戻るメニュークリック処理*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                /*戻るボタンの処理*/
                 setResult(0);
                 finish();
                 return true;
@@ -216,12 +210,12 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
         }
     }
 
-    //戻るボタンクリック
+    /*戻るボタンクリック*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("CAMP_SettingsActivity","onKeyDown");
+        /*Log.d("CAMP_SettingsActivity","onKeyDown");*/
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            // 戻るボタンの処理
+            /*戻るボタンの処理*/
             setResult(0);
             finish();
             return false;
@@ -230,48 +224,48 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
         }
     }
 
-    //ID取得スイッチON
+    /*ID取得スイッチON*/
     private void startScanning() {
-        Log.d("CAMP_SettingsActivity","startScanning");
+        /*Log.d("CAMP_SettingsActivity","startScanning");*/
 
         if(!serviceStart) {
-            startService(BeaconGetIntent);
+            startService(BeaconGetIntent);  /*サービスの開始*/
         }
 
-        //テキストを詰めて消してListを表示
+        /*テキストを詰めて消してListを表示*/
         deviceList.setVisibility(View.VISIBLE);
         usageTextView.setVisibility(View.GONE);
     }
 
-    //ID取得スイッチOFF
+    /*ID取得スイッチOFF*/
     private void stopScanning() {
-        Log.d("CAMP_SettingsActivity","stopScanning");
+        /*Log.d("CAMP_SettingsActivity","stopScanning");*/
         stopService(BeaconGetIntent);
-        //Listを詰めて消してテキストを表示
+        /*Listを詰めて消してテキストを表示*/
         deviceList.setVisibility(View.GONE);
         usageTextView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.d("TEST","サービスに接続しました");
-        //_messenger = new Messenger(service);
+        /*Log.d("TEST","サービスに接続しました");*/
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.d("TEST","サービスから切断しました");
+        /*Log.d("TEST","サービスから切断しました");*/
     }
 
-    //サービスからデータの受け取り
+    /*サービスからデータの受け取り*/
     public class Receiver extends BroadcastReceiver {
         int Id;
         @Override
         public void onReceive(Context context , Intent intent){
             Bundle bundle = intent.getExtras();
             Id = bundle.getInt("index");
-            //Log.d("TEST",Integer.toString(Id));
+            /*Log.d("TEST",Integer.toString(Id));*/
             String setid = String.format("%d", Id);
+            /*プリファレンスの状態取得*/
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
 
             String useId = pref.getString(setid,setid);
@@ -284,10 +278,10 @@ public class SettingsActivity extends AppCompatActivity implements ServiceConnec
             } catch (Exception e) {
                 if(list.indexOf(useId+"/"+setid) == -1) {
                     list.add(useId+"/"+setid);
-            }
+                }
             }
 
-            //Adapterセット
+            /*Adapterセット*/
             deviceList.setAdapter(adapter);
         }
     }
