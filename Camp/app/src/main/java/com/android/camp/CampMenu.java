@@ -9,11 +9,13 @@ import android.net.Uri;
 public final class CampMenu {
     public final String title;  /*タイトル*/
     public final String caption;    /*内容*/
-    public final Uri uri;   /*URL*/
+    public final Uri uri;   /*URI*/
 
     /**************************************************************/
     /*タイトル :お役立ち情報リスト化                              */
-    /*引数     :無し                                              */
+    /*引数     :title:リストタイトル                              */
+    /*引数     :caption:リスト内容                                */
+    /*引数     :uri:リストURI                                     */
     /*戻り値   :無し                                              */
     /**************************************************************/
     public CampMenu(String title, String caption, String uri) {
