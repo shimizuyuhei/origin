@@ -15,8 +15,8 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-    </android.support.v7.widget.Toolbar>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -37,6 +37,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/Loading_gif3"
             android:layout_gravity="center" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,9 +60,7 @@
             android:id="@+id/text_comment"
             android:gravity="top|center_vertical|center|center_horizontal"
             android:layout_weight="1"
-            android:layout_marginTop="20dp">
-
-        </TextView>
+            android:layout_marginTop="20dp"/>
 
     </FrameLayout>
 
@@ -69,8 +68,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-
         android:layout_weight="1">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -83,93 +82,101 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="温度"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignRight="@+id/top_center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:textSize="@dimen/abc_action_bar_icon_vertical_padding_material"
-                    android:fontFamily="@string/abc_activitychooserview_choose_application"
-                    android:textColor="#ea3b3b"
-                    android:layout_weight="1"
-                    android:textIsSelectable="false" />
-                <TextView
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:id="@+id/temp_txt"
-                    android:layout_below="@+id/index_txt"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignLeft="@+id/top_center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
-                    android:fontFamily="@string/abc_activitychooserview_choose_application" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="温度"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignRight="@+id/top_center"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_marginTop="3dp"
+                        android:textSize="@dimen/abc_action_bar_icon_vertical_padding_material"
+                        android:fontFamily="@string/abc_activitychooserview_choose_application"
+                        android:textColor="#ea3b3b"
+                        android:layout_weight="1"
+                        android:textIsSelectable="false" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:id="@+id/temp_txt"
+                        android:layout_below="@+id/index_txt"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignLeft="@+id/top_center"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:textSize="@dimen/abc_select_dialog_padding_start_material"
+                        android:fontFamily="@string/abc_activitychooserview_choose_application" />
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/Loading_gif1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
+
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="湿度"
-                    android:layout_below="@+id/index_txt"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignLeft="@+id/top_center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:textSize="@dimen/abc_action_bar_icon_vertical_padding_material"
-                    android:fontFamily="@string/abc_activitychooserview_choose_application"
-                    android:textColor="#369f97"
-                    android:layout_weight="1" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:id="@+id/humid_txt"
-                    android:layout_below="@+id/index_txt"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignLeft="@+id/top_center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:textSize="@dimen/abc_select_dialog_padding_start_material"
-                    android:fontFamily="@string/abc_activitychooserview_choose_application" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="湿度"
+                        android:layout_below="@+id/index_txt"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignLeft="@+id/top_center"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_marginTop="3dp"
+                        android:textSize="@dimen/abc_action_bar_icon_vertical_padding_material"
+                        android:fontFamily="@string/abc_activitychooserview_choose_application"
+                        android:textColor="#369f97"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:id="@+id/humid_txt"
+                        android:layout_below="@+id/index_txt"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignLeft="@+id/top_center"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:textSize="@dimen/abc_select_dialog_padding_start_material"
+                        android:fontFamily="@string/abc_activitychooserview_choose_application" />
+
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/Loading_gif2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
+
             </FrameLayout>
 
         </LinearLayout>
+
         <LinearLayout android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -177,6 +184,7 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:id="@+id/weather_layout">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -186,17 +194,20 @@
                 android:layout_marginLeft="0dp"
                 android:layout_weight="2"
                 android:id="@+id/PlaceWeather"/>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:layout_gravity="center">>
+                android:layout_gravity="center">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center_horizontal">
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
@@ -204,6 +215,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/CurrentWeatherIcon"
                         android:background="#00ffffff" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -211,7 +223,9 @@
                         android:id="@+id/CurrentWeatherText"
                         android:src="@drawable/sunny"
                         android:layout_gravity="center_horizontal" />
+
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -219,17 +233,21 @@
                     android:layout_marginLeft="0dp"
                     android:layout_weight="1"
                     android:layout_gravity="center">
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="40dp"
                         android:src="@drawable/arrow"
                         android:layout_marginLeft="20dp" />
+
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_weight="1">
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
@@ -237,6 +255,7 @@
                         android:id="@+id/FutureWeatherIcon"
                         android:background="#00ffffff"
                         android:layout_marginLeft="10dp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -245,8 +264,11 @@
                         android:id="@+id/FutureWeatherText"
                         android:src="@drawable/cloudiness"
                         android:layout_marginLeft="10dp" />
+
                 </LinearLayout>
+
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -256,11 +278,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_content"
             android:background="#c7e0e7fd" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -275,11 +299,10 @@
                 android:gravity="center"
                 android:layout_weight="1"
                 android:layout_gravity="center">
+
                 <LinearLayout android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:orientation="vertical">
-
-
 
                     <ImageButton
                         android:id="@+id/image_button1"
@@ -293,7 +316,9 @@
                         android:layout_centerHorizontal="true" />
 
                 </LinearLayout>
+
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -321,8 +346,8 @@
 
                 </LinearLayout>
 
-
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -335,6 +360,7 @@
                 <LinearLayout android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:orientation="vertical">
+
                     <ImageButton
                         android:id="@+id/image_button3"
                         android:layout_width="wrap_content"
@@ -345,11 +371,13 @@
                         android:background="@null"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true" />
-                </LinearLayout>
 
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>

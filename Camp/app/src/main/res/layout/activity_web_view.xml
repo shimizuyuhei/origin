@@ -13,8 +13,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:layout_gravity="top">
-    </android.support.v7.widget.Toolbar>
+        android:layout_gravity="top"/>
 
     <WebView
         android:layout_width="match_parent"
